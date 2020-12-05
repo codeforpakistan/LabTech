@@ -7,14 +7,13 @@ from app.db.base_class import Base
 
 if TYPE_CHECKING:
     from .user import User
-    from .department import Department
-    from .survey import Survey # noqa: F401
+    from .survey import Survey  # noqa: F401
 
 
-class Hospital(Base):
+class Feedback(Base):
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    address = Column(String, index=True)
+    comment = Column(String, index=True)
     owner_id = Column(Integer, ForeignKey("user.id"))
-    owner = relationship("User", back_populates="hospitals")
-    departments = relationship("Department", back_populates="hospital")
+    owner = relationship("User", back_populates="feedbacks")
+    survey_id = Column(Integer, ForeignKey("survey.id"))
+    survey = relationship("Survey", back_populates="feedbacks")
