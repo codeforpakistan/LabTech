@@ -42,28 +42,28 @@ def create_survey(
     return survey
 
 
-@router.put("/{id}", response_model=schemas.Hospital)
-def update_hospital(
+@router.put("/{id}", response_model=schemas.Survey)
+def update_survey(
     *,
     db: Session = Depends(deps.get_db),
     id: int,
-    hospital_in: schemas.HospitalUpdate,
+    survey_in: schemas.SurveyUpdate,
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
     Update a Survey.
     """
-    hospital = crud.hospital.get(db=db, id=id)
-    if not hospital:
+    survey = crud.survey.get(db=db, id=id)
+    if not survey:
         raise HTTPException(status_code=404, detail="Hospital not found")
-    if not crud.user.is_superuser(current_user) and (hospital.owner_id != current_user.id):
+    if not crud.user.is_superuser(current_user) and (survey.owner_id != current_user.id):
         raise HTTPException(status_code=400, detail="Not enough permissions")
-    hospital = crud.hospital.update(db=db, db_obj=hospital, obj_in=hospital_in)
-    return hospital
+    survey = crud.survey.update(db=db, db_obj=survey, obj_in=survey_in)
+    return survey
 
 
-@router.get("/{id}", response_model=schemas.Hospital)
-def read_hospital(
+@router.get("/{id}", response_model=schemas.Survey)
+def read_survey(
     *,
     db: Session = Depends(deps.get_db),
     id: int,
@@ -72,16 +72,16 @@ def read_hospital(
     """
     Get Survey by ID.
     """
-    hospital = crud.hospital.get(db=db, id=id)
-    if not hospital:
-        raise HTTPException(status_code=404, detail="Hospital not found")
-    if not crud.user.is_superuser(current_user) and (hospital.owner_id != current_user.id):
+    survey = crud.survey.get(db=db, id=id)
+    if not survey:
+        raise HTTPException(status_code=404, detail="Survey not found")
+    if not crud.user.is_superuser(current_user) and (survey.owner_id != current_user.id):
         raise HTTPException(status_code=400, detail="Not enough permissions")
-    return hospital
+    return survey
 
 
-@router.delete("/{id}", response_model=schemas.Hospital)
-def delete_hospital(
+@router.delete("/{id}", response_model=schemas.Survey)
+def delete_survey(
     *,
     db: Session = Depends(deps.get_db),
     id: int,
@@ -90,10 +90,10 @@ def delete_hospital(
     """
     Delete Survey.
     """
-    hospital = crud.hospital.get(db=db, id=id)
-    if not hospital:
-        raise HTTPException(status_code=404, detail="Hospital not found")
-    if not crud.user.is_superuser(current_user) and (hospital.owner_id != current_user.id):
+    survey = crud.survey.get(db=db, id=id)
+    if not survey:
+        raise HTTPException(status_code=404, detail="Survey not found")
+    if not crud.user.is_superuser(current_user) and (survey.owner_id != current_user.id):
         raise HTTPException(status_code=400, detail="Not enough permissions")
-    hospital = crud.hospital.remove(db=db, id=id)
-    return hospital
+    survey = crud.survey.remove(db=db, id=id)
+    return survey
