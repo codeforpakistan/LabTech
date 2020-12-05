@@ -24,7 +24,9 @@ class HospitalUpdate(HospitalBase):
 class HospitalInDBBase(HospitalBase):
     id: int
     name: str
+    address: str
     owner_id: int
+    departments: list
 
     class Config:
         orm_mode = True

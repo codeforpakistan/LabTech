@@ -4,4 +4,6 @@ from app.db.base_class import Base  # noqa
 from app.models.item import Item  # noqa
 from app.models.user import User  # noqa
 from app.models.hospital import Hospital
+from app.models.department import Department
 from app.models.survey import Survey
+from app.models.feedback import Feedback

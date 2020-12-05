@@ -6,12 +6,16 @@ from pydantic import BaseModel
 # Shared properties
 class SurveyBase(BaseModel):
     name: Optional[str] = None
+    answers: Optional[list] = None
+    images: Optional[list] = None
 
 
 # Properties to receive on item creation
 class SurveyCreate(SurveyBase):
     name: str
-    hospital_id: int
+    answers: list
+    images: list
+    department_id: int
 
 
 
@@ -24,8 +28,11 @@ class SurveyUpdate(SurveyBase):
 class SurveyInDBBase(SurveyBase):
     id: int
     name: str
+    answers: list
+    images: list
     owner_id: int
-    hospital_id: int
+    department: str
+    department_id: int
 
     class Config:
         orm_mode = True
