@@ -1,20 +1,22 @@
 from typing import Optional
 
 from pydantic import BaseModel
+from typing import List, Dict
+
 
 
 # Shared properties
 class SurveyBase(BaseModel):
     name: Optional[str] = None
-    answers: Optional[list] = None
-    images: Optional[list] = None
+    answers: Optional[List[Dict]] = []
+    images: Optional[List[str]] = []
 
 
 # Properties to receive on item creation
 class SurveyCreate(SurveyBase):
     name: str
-    answers: list
-    images: list
+    answers: List[Dict]
+    images: List[str]
     department_id: int
 
 
@@ -28,10 +30,10 @@ class SurveyUpdate(SurveyBase):
 class SurveyInDBBase(SurveyBase):
     id: int
     name: str
-    answers: list
-    images: list
+    answers: List[Dict]
+    images: List[str]
     owner_id: int
-    department: str
+    # department: str
     department_id: int
 
     class Config:
