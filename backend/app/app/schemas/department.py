@@ -7,6 +7,7 @@ from pydantic import BaseModel
 class DepartmentBase(BaseModel):
     name: Optional[str] = None
 
+
 # Properties to receive on department creation
 class DepartmentCreate(DepartmentBase):
     name: str
@@ -23,7 +24,7 @@ class DepartmentInDBBase(DepartmentBase):
     id: int
     name: str
     owner_id: int
-    hospital: str
+    # hospital: str
     hospital_id: int
 
 

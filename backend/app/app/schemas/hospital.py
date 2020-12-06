@@ -1,6 +1,7 @@
-from typing import Optional
+from typing import Optional, Dict
 
 from pydantic import BaseModel
+from .user import UserInDB
 
 
 # Shared properties
@@ -26,6 +27,7 @@ class HospitalInDBBase(HospitalBase):
     name: str
     address: str
     owner_id: int
+    owner: UserInDB
     departments: list
 
     class Config:
