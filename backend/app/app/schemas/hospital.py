@@ -8,12 +8,16 @@ from .user import UserInDB
 class HospitalBase(BaseModel):
     name: Optional[str] = None
     address: Optional[str] = None
+    lat: Optional[float] = 0.0
+    lng: Optional[float] = 0.0
 
 
 # Properties to receive on hospital creation
 class HospitalCreate(HospitalBase):
     name: str
     address: str
+    lat: float
+    lng: float
 
 
 # Properties to receive on hospital update
@@ -26,6 +30,8 @@ class HospitalInDBBase(HospitalBase):
     id: int
     name: str
     address: str
+    lat: float
+    lng: float
     owner_id: int
     owner: UserInDB
     departments: list

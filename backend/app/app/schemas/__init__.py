@@ -6,3 +6,4 @@ from .feedback import Feedback, FeedbackCreate, FeedbackInDB, FeedbackUpdate
 from .msg import Msg
 from .token import Token, TokenPayload
 from .user import User, UserCreate, UserInDB, UserUpdate
+from .submission import Submission, SubmissionCreate, SubmissionInDB, SubmissionUpdate

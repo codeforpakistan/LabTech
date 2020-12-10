@@ -11,7 +11,6 @@ class FeedbackBase(BaseModel):
 # Properties to receive on feedback creation
 class FeedbackCreate(FeedbackBase):
     comment: str
-    survey_id: int
 
 
 # Properties to receive on feedback update
@@ -22,9 +21,7 @@ class FeedbackUpdate(FeedbackBase):
 # Properties shared by models stored in DB
 class FeedbackInDBBase(FeedbackBase):
     id: int
-    owner: str
     comment: str
-    survey_id: int
 
     class Config:
         orm_mode = True

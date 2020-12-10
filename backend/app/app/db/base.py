@@ -7,3 +7,4 @@ from app.models.hospital import Hospital
 from app.models.department import Department
 from app.models.survey import Survey
 from app.models.feedback import Feedback
+from app.models.submission import Submission

@@ -7,16 +7,14 @@ from typing import List, Dict
 
 # Shared properties
 class SurveyBase(BaseModel):
-    name: Optional[str] = None
-    answers: Optional[List[Dict]] = []
-    images: Optional[List[str]] = []
+    name: Optional[str] = ''
+    questions: Optional[List[Dict]] = []
 
 
 # Properties to receive on item creation
 class SurveyCreate(SurveyBase):
     name: str
-    answers: List[Dict]
-    images: List[str]
+    questions: List[Dict]
     department_id: int
 
 
@@ -30,8 +28,7 @@ class SurveyUpdate(SurveyBase):
 class SurveyInDBBase(SurveyBase):
     id: int
     name: str
-    answers: List[Dict]
-    images: List[str]
+    questions: List[Dict]
     owner_id: int
     # department: str
     department_id: int
