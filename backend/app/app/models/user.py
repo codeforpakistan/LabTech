@@ -21,7 +21,7 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
-    created_date = Column(DateTime, default=datetime.datetime.utcnow)
+    # created_date = Column(DateTime, default=datetime.datetime.utcnow)
     items = relationship("Item", back_populates="owner")
     hospitals = relationship("Hospital", back_populates="owner")
     surveys = relationship("Survey", back_populates="owner")
