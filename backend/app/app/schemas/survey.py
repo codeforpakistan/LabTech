@@ -1,17 +1,21 @@
 from typing import Optional
 
 from pydantic import BaseModel
+from typing import List, Dict
+
 
 
 # Shared properties
 class SurveyBase(BaseModel):
-    name: Optional[str] = None
+    name: Optional[str] = ''
+    questions: Optional[List[Dict]] = []
 
 
 # Properties to receive on item creation
 class SurveyCreate(SurveyBase):
     name: str
-    hospital_id: int
+    questions: List[Dict]
+    department_id: int
 
 
 
@@ -24,8 +28,10 @@ class SurveyUpdate(SurveyBase):
 class SurveyInDBBase(SurveyBase):
     id: int
     name: str
+    questions: List[Dict]
     owner_id: int
-    hospital_id: int
+    # department: str
+    department_id: int
 
     class Config:
         orm_mode = True

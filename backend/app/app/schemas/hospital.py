@@ -1,18 +1,23 @@
-from typing import Optional
+from typing import Optional, Dict
 
 from pydantic import BaseModel
+from .user import UserInDB
 
 
 # Shared properties
 class HospitalBase(BaseModel):
     name: Optional[str] = None
     address: Optional[str] = None
+    lat: Optional[float] = 0.0
+    lng: Optional[float] = 0.0
 
 
 # Properties to receive on hospital creation
 class HospitalCreate(HospitalBase):
     name: str
     address: str
+    lat: float
+    lng: float
 
 
 # Properties to receive on hospital update
@@ -24,7 +29,12 @@ class HospitalUpdate(HospitalBase):
 class HospitalInDBBase(HospitalBase):
     id: int
     name: str
+    address: str
+    lat: float
+    lng: float
     owner_id: int
+    owner: UserInDB
+    departments: list
 
     class Config:
         orm_mode = True
