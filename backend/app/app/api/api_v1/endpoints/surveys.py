@@ -14,6 +14,7 @@ def read_surveys(
     db: Session = Depends(deps.get_db),
     skip: int = 0,
     limit: int = 100,
+    department_id: int = 0,
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
@@ -22,9 +23,14 @@ def read_surveys(
     if crud.user.is_superuser(current_user):
         surveys = crud.survey.get_multi(db, skip=skip, limit=limit)
     else:
-        surveys = crud.survey.get_multi_by_owner(
-            db=db, owner_id=current_user.id, skip=skip, limit=limit
-        )
+        if department_id == 0:
+            surveys = crud.survey.get_multi_by_owner(
+                db=db, owner_id=current_user.id, skip=skip, limit=limit
+            )
+        else:
+            surveys = crud.survey.get_multi_by_department(
+                db=db, department_id=department_id, skip=skip, limit=limit
+            )
     return surveys
 
 

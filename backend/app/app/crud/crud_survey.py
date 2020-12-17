@@ -30,5 +30,16 @@ class CRUDSurvey(CRUDBase[Survey, SurveyCreate, SurveyUpdate]):
             .all()
         )
 
+    def get_multi_by_department(
+        self, db: Session, *, department_id: int, skip: int = 0, limit: int = 100
+    ) -> List[Survey]:
+        return (
+            db.query(self.model)
+            .filter(Survey.department_id == department_id)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+
 
 survey = CRUDSurvey(Survey)
