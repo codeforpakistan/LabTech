@@ -12,6 +12,7 @@ router = APIRouter()
 @router.get("/", response_model=List[schemas.Department])
 def read_departments(
     db: Session = Depends(deps.get_db),
+    hospital_id: int = 0,
     skip: int = 0,
     limit: int = 100,
     current_user: models.User = Depends(deps.get_current_active_user),
@@ -19,11 +20,11 @@ def read_departments(
     """
     Retrieve departments.
     """
-    if crud.user.is_superuser(current_user):
+    if hospital_id == 0:
         departments = crud.department.get_multi(db, skip=skip, limit=limit)
     else:
-        departments = crud.department.get_multi_by_owner(
-            db=db, owner_id=current_user.id, skip=skip, limit=limit
+        departments = crud.department.get_multi_by_hospital(
+            db=db, hospital_id=hospital_id, skip=skip, limit=limit
         )
     return departments
 
