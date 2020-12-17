@@ -24,7 +24,7 @@ class CRUDFeedback(CRUDBase[Feedback, FeedbackCreate, FeedbackUpdate]):
     ) -> List[Feedback]:
         return (
             db.query(self.model)
-            .filter(Item.owner_id == owner_id)
+            .filter(Feedback.owner_id == owner_id)
             .offset(skip)
             .limit(limit)
             .all()
