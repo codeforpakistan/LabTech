@@ -1,8 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-
 import RouterComponent from './components/RouterComponent.vue';
-
 Vue.use(Router);
 
 export default new Router({
@@ -35,6 +33,10 @@ export default new Router({
             {
               path: 'dashboard',
               component: () => import(/* webpackChunkName: "main-dashboard" */ './views/main/Dashboard.vue'),
+            },
+            {
+              path: 'reporting',
+              component: ({}) => import(/* webpackChunkName: "main-dashboard" */ './views/main/Reporting.vue'),
             },
             {
               path: 'profile',
