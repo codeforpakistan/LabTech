@@ -40,6 +40,7 @@ class SubmissionInDBBase(SubmissionBase):
     owner_id: int
     survey_id: int
     hospital: Optional[str] = ''
+    department: Optional[str] = ''
     created_date: datetime
 
     class Config:
