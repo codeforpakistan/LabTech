@@ -29,11 +29,11 @@ def read_submissions(
     # get survey with survey id
     # get department by department id
     # get hospital by hospital id
-    for submission in submissions:
-        survey = crud.survey.get(db=db, id=submission.survey_id)
-        department = crud.department.get(db=db, id=survey.department_id)
-        hospital = crud.hospital.get(db=db, id=department.hospital_id)
-        submission['hospital'] = hospital.name
+    # for submission in submissions:
+    #     survey = crud.survey.get(db=db, id=submission.survey_id)
+    #     department = crud.department.get(db=db, id=survey.department_id)
+    #     hospital = crud.hospital.get(db=db, id=department.hospital_id)
+    #     submission['hospital'] = hospital.name
     
     return submissions
 
