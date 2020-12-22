@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import datetime
 
 from pydantic import BaseModel
 
@@ -26,6 +27,7 @@ class DepartmentInDBBase(DepartmentBase):
     owner_id: int
     # hospital: str
     hospital_id: int
+    created_date: datetime
 
 
     class Config:

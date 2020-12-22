@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import datetime
 
 from pydantic import BaseModel
 from typing import List, Dict
@@ -38,6 +39,7 @@ class SubmissionInDBBase(SubmissionBase):
     lng: float
     owner_id: int
     survey_id: int
+    created_date: datetime
 
     class Config:
         orm_mode = True

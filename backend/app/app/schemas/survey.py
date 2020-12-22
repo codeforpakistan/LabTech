@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import datetime
 
 from pydantic import BaseModel
 from typing import List, Dict
@@ -32,6 +33,7 @@ class SurveyInDBBase(SurveyBase):
     owner_id: int
     # department: str
     department_id: int
+    created_date: datetime
 
     class Config:
         orm_mode = True

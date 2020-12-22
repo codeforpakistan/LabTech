@@ -1,4 +1,5 @@
 from typing import Optional, Dict
+from datetime import datetime
 
 from pydantic import BaseModel
 from .user import UserInDB
@@ -35,6 +36,7 @@ class HospitalInDBBase(HospitalBase):
     owner_id: int
     owner: UserInDB
     departments: list
+    created_date: datetime
 
     class Config:
         orm_mode = True
