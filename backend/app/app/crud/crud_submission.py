@@ -25,7 +25,7 @@ class CRUDSubmission(CRUDBase[Submission, SubmissionCreate, SubmissionUpdate]):
         return (
             db.query(self.model)
             .filter(Submission.owner_id == owner_id)
-            .order_by(Submission.created_date)
+            .order_by(Submission.created_date.desc())
             .offset(skip)
             .limit(limit)
             .all()
