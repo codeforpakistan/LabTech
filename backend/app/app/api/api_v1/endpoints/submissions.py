@@ -61,6 +61,7 @@ def create_submission(
     """
     Create new submission.
     """
+    print(submission_in.answers)
     submission = crud.submission.create_with_owner(db=db, obj_in=submission_in, owner_id=current_user.id)
     
     return submission
