@@ -20,17 +20,12 @@ def read_surveys(
     """
     Retrieve Surveys.
     """
-    if crud.user.is_superuser(current_user):
+    if department_id == 0:
         surveys = crud.survey.get_multi(db, skip=skip, limit=limit)
     else:
-        if department_id == 0:
-            surveys = crud.survey.get_multi_by_owner(
-                db=db, owner_id=current_user.id, skip=skip, limit=limit
-            )
-        else:
-            surveys = crud.survey.get_multi_by_department(
-                db=db, department_id=department_id, skip=skip, limit=limit
-            )
+        surveys = crud.survey.get_multi_by_department(
+            db=db, department_id=department_id, skip=skip, limit=limit
+        )
     return surveys
 
 
