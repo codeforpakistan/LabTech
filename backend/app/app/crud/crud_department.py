@@ -24,7 +24,18 @@ class CRUDDepartment(CRUDBase[Department, DepartmentCreate, DepartmentUpdate]):
     ) -> List[Department]:
         return (
             db.query(self.model)
-            .filter(Item.owner_id == owner_id)
+            .filter(Department.owner_id == owner_id)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+
+    def get_multi_by_hospital(
+        self, db: Session, *, hospital_id: int, skip: int = 0, limit: int = 100
+    ) -> List[Department]:
+        return (
+            db.query(self.model)
+            .filter(Department.hospital_id == hospital_id)
             .offset(skip)
             .limit(limit)
             .all()

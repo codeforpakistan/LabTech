@@ -6,6 +6,11 @@ from sqlalchemy.orm import Session
 from app import crud, models, schemas
 from app.api import deps
 
+from app.models.survey import Survey
+from app.models.department import Department
+from app.models.hospital import Hospital
+
+
 router = APIRouter()
 
 
@@ -19,12 +24,30 @@ def read_submissions(
     """
     Retrieve submissions.
     """
-    if crud.user.is_superuser(current_user):
+    if False:# crud.user.is_superuser(current_user):
         submissions = crud.submission.get_multi(db, skip=skip, limit=limit)
     else:
         submissions = crud.submission.get_multi_by_owner(
             db=db, owner_id=current_user.id, skip=skip, limit=limit
         )
+
+    # get survey with survey id
+    # get department by department id
+    # get hospital by hospital id
+    # for submission in submissions:
+    #     survey = survey.get(db=db, id=submission.survey_id)
+    #     department = department.get(db=db, id=survey.department_id)
+    #     hospital = hospital.get(db=db, id=department.hospital_id)
+    #     submission['hospital'] = hospital.name
+
+
+    print('Submissions', submissions)
+    for submission in list(submissions):
+        survey = db.query(Survey).filter(Survey.id == submission.survey_id).first()
+        department = db.query(Department).filter(Department.id == survey.department_id).first()
+        hospital = db.query(Hospital).filter(Hospital.id == department.hospital_id).first()
+        submission.hospital = hospital.name
+        submission.department = department.name
     return submissions
 
 
@@ -38,7 +61,9 @@ def create_submission(
     """
     Create new submission.
     """
+    print(submission_in.answers)
     submission = crud.submission.create_with_owner(db=db, obj_in=submission_in, owner_id=current_user.id)
+    
     return submission
 
 
