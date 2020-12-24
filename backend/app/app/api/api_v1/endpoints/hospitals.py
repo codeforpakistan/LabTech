@@ -19,12 +19,7 @@ def read_hospitals(
     """
     Retrieve Hospitals.
     """
-    if crud.user.is_superuser(current_user):
-        hospitals = crud.hospital.get_multi(db, skip=skip, limit=limit)
-    else:
-        hospitals = crud.hospital.get_multi_by_owner(
-            db=db, owner_id=current_user.id, skip=skip, limit=limit
-        )
+    hospitals = crud.hospital.get_multi(db, skip=skip, limit=limit)
     return hospitals
 
 
