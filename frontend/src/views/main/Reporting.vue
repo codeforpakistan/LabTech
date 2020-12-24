@@ -1,11 +1,44 @@
 <template>
-  <v-container fluid>
+ <v-container>
+  <v-container justify="space-between">
+    <v-row align="start">
+      <v-col>
+        <v-card
+          class="pa-1"
+          outlined
+          tile
+        >
+          One of three columns
+        </v-card>
+      </v-col>
+      <v-col>
+        <v-card
+          class="pa-2"
+          outlined
+          tile
+        >
+          One of three columns
+        </v-card>
+      </v-col>
+      <v-col>
+        <v-card
+          class="pa-2"
+          outlined
+          tile
+        >
+          One of three columns
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+  <v-container>
     <highcharts
       class="stock"
       :constructor-type="'stockChart'"
       :options="performanceTimeline"
     ></highcharts>
   </v-container>
+ </v-container>
 </template>
 
 <script lang="ts">
