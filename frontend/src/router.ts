@@ -61,28 +61,54 @@ export default new Router({
             {
               path: 'admin',
               component: () => import(/* webpackChunkName: "main-admin" */ './views/main/admin/Admin.vue'),
-              redirect: 'admin/users/all',
               children: [
                 {
                   path: 'users',
+                  component: RouterComponent,
                   redirect: 'users/all',
+                  children: [
+                    {
+                      path: 'all',
+                      component: () => import(
+                        /* webpackChunkName: "main-admin-users" */ './views/main/admin/AdminUsers.vue'),
+                    },
+                    {
+                      path: 'edit/:id',
+                      name: 'main-admin-users-edit',
+                      component: () => import(
+                        /* webpackChunkName: "main-admin-users-edit" */ './views/main/admin/EditUser.vue'),
+                    },
+                    {
+                      path: 'create',
+                      name: 'main-admin-users-create',
+                      component: () => import(
+                        /* webpackChunkName: "main-admin-users-create" */ './views/main/admin/CreateUser.vue'),
+                    },
+                  ],
                 },
                 {
-                  path: 'users/all',
-                  component: () => import(
-                    /* webpackChunkName: "main-admin-users" */ './views/main/admin/AdminUsers.vue'),
-                },
-                {
-                  path: 'users/edit/:id',
-                  name: 'main-admin-users-edit',
-                  component: () => import(
-                    /* webpackChunkName: "main-admin-users-edit" */ './views/main/admin/EditUser.vue'),
-                },
-                {
-                  path: 'users/create',
-                  name: 'main-admin-users-create',
-                  component: () => import(
-                    /* webpackChunkName: "main-admin-users-create" */ './views/main/admin/CreateUser.vue'),
+                  path: 'hospital',
+                  component: RouterComponent,
+                  redirect: 'hospital/all',
+                  children: [
+                    {
+                      path: 'all',
+                      component: () => import(
+                          /* webpackChunkName: "main-profile-edit" */ './views/main/admin/hospital/all.vue'),
+                    },
+                    {
+                      path: 'edit/:id',
+                      name: 'main-admin-users-edit',
+                      component: () => import(
+                        /* webpackChunkName: "main-admin-users-edit" */ './views/main/admin/EditUser.vue'),
+                    },
+                    {
+                      path: 'create',
+                      name: 'main-admin-users-create',
+                      component: () => import(
+                        /* webpackChunkName: "main-admin-users-create" */ './views/main/admin/hospital/CreateHospital.vue'),
+                    },
+                  ],
                 },
               ],
             },

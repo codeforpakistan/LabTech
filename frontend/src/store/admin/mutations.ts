@@ -1,9 +1,17 @@
-import { IUserProfile } from '@/interfaces';
+import { IUserProfile, IHospital } from '@/interfaces';
 import { AdminState } from './state';
 import { getStoreAccessors } from 'typesafe-vuex';
 import { State } from '../state';
 
 export const mutations = {
+    setHospitals(state: AdminState, payload: IHospital[]) {
+       state.hospitals = payload;
+    },
+    setHospital(state: AdminState, payload: IHospital) {
+        const hospitals = state.hospitals.filter((user: IHospital) => user.id !== payload.id);
+        hospitals.push(payload);
+        state.hospitals = hospitals;
+    },
     setUsers(state: AdminState, payload: IUserProfile[]) {
         state.users = payload;
     },
@@ -18,3 +26,6 @@ const { commit } = getStoreAccessors<AdminState, State>('');
 
 export const commitSetUser = commit(mutations.setUser);
 export const commitSetUsers = commit(mutations.setUsers);
+export const commitSetHospitals = commit(mutations.setHospitals);
+export const commitSetHospital = commit(mutations.setHospital);
+

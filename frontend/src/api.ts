@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { apiUrl } from '@/env';
-import { IUserProfile, IUserProfileUpdate, IUserProfileCreate } from './interfaces';
+import { IUserProfile, IUserProfileUpdate, IUserProfileCreate, IHospital, IHospitalCreate } from './interfaces';
 
 function authHeaders(token: string) {
   return {
@@ -23,6 +23,12 @@ export const api = {
   },
   async updateMe(token: string, data: IUserProfileUpdate) {
     return axios.put<IUserProfile>(`${apiUrl}/api/v1/users/me`, data, authHeaders(token));
+  },
+  async getHospitals(token: string) {
+    return axios.get<IHospital[]>(`${apiUrl}/api/v1/hospitals`, authHeaders(token));
+  },
+  async createHospital(token: string, data: IHospitalCreate) {
+    return axios.post(`${apiUrl}/api/v1/hospitals/`, data, authHeaders(token));
   },
   async getUsers(token: string) {
     return axios.get<IUserProfile[]>(`${apiUrl}/api/v1/users/`, authHeaders(token));
