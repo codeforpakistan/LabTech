@@ -25,6 +25,7 @@ export interface IUserProfileCreate {
 export interface IHospital {
     name: string;
     address: string;
+    departments: [];
     owner_id: number;
     create_date: Date;
     lat: string;
@@ -39,4 +40,8 @@ export interface IHospitalCreate {
     create_date: Date;
     lat: string;
     lng: string;
+}
+
+export interface IDepartment {
+    name: string;
 }

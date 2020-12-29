@@ -1,10 +1,10 @@
 import { api } from '@/api';
 import { ActionContext } from 'vuex';
-import { IUserProfileCreate, IUserProfileUpdate, IHospitalCreate} from '@/interfaces';
+import { IUserProfileCreate, IUserProfileUpdate, IHospitalCreate, IHospital} from '@/interfaces';
 import { State } from '../state';
 import { AdminState } from './state';
 import { getStoreAccessors } from 'typesafe-vuex';
-import { commitSetUsers, commitSetUser, commitSetHospitals } from './mutations';
+import { commitSetUsers, commitSetUser, commitSetHospital, commitSetHospitals } from './mutations';
 import { dispatchCheckApiError } from '../main/actions';
 import { commitAddNotification, commitRemoveNotification } from '../main/mutations';
 
@@ -15,7 +15,7 @@ export const actions = {
         try {
             const response = await api.getHospitals(context.rootState.main.token);
             if (response) {
-                commitSetHospitals(context, response.data);
+               await commitSetHospitals(context, response.data);
             }
         } catch (error) {
             await dispatchCheckApiError(context, error);
@@ -29,7 +29,7 @@ export const actions = {
                 api.createHospital(context.rootState.main.token, payload),
                 await new Promise<void>((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
-            commitSetHospitals(context, response.data);
+            commitSetHospital(context, response.data);
             commitRemoveNotification(context, loadingNotification);
             commitAddNotification(context, { content: 'Hospital Record created successfully', color: 'success' });
         } catch (error) {
@@ -83,7 +83,7 @@ const { dispatch } = getStoreAccessors<AdminState, State>('');
 export const dispatchCreateUser = dispatch(actions.actionCreateUser);
 export const dispatchGetUsers = dispatch(actions.actionGetUsers);
 export const dispatchUpdateUser = dispatch(actions.actionUpdateUser);
-// hospital
+
 export const dispatchGetHospitals = dispatch(actions.actionGetHospitals);
 export const dispatchCreateHospital = dispatch(actions.actionCreateHospital);
 

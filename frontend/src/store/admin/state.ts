@@ -1,8 +1,7 @@
-import { IUserProfile } from '@/interfaces';
-import { IHospital } from '@/interfaces';
-
+import { IUserProfile, IHospital, IDepartment } from '@/interfaces';
 
 export interface AdminState {
     users: IUserProfile[];
     hospitals: IHospital[];
+    departments: IDepartment[];
 }

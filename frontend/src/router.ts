@@ -94,19 +94,31 @@ export default new Router({
                     {
                       path: 'all',
                       component: () => import(
-                          /* webpackChunkName: "main-profile-edit" */ './views/main/admin/hospital/all.vue'),
+                          /* webpackChunkName: "main-admin-hospitals" */ './views/main/admin/hospital/all.vue'),
                     },
                     {
                       path: 'edit/:id',
-                      name: 'main-admin-users-edit',
+                      name: 'main-admin-hospitals-edit',
                       component: () => import(
-                        /* webpackChunkName: "main-admin-users-edit" */ './views/main/admin/EditUser.vue'),
+                        /* webpackChunkName: "main-admin-hospitals-edit" */ './views/main/admin/EditUser.vue'),
+                    },
+                    {
+                      path: '/:id',
+                      name: 'main-admin-hospitals-departments',
+                      component: () => import(
+                        /* webpackChunkName: "main-admin-hospitals-departments" */ './views/main/admin/hospital/departments/all.vue'),
+                    },
+                    {
+                      path: 'departments/:id',
+                      name: 'main-admin-hospitals-departments-survey',
+                      component: () => import(
+                        /* webpackChunkName: "main-admin-hospitals-departments" */ './views/main/admin/hospital/departments/survey/all.vue'),
                     },
                     {
                       path: 'create',
-                      name: 'main-admin-users-create',
+                      name: 'main-admin-hospitals-create',
                       component: () => import(
-                        /* webpackChunkName: "main-admin-users-create" */ './views/main/admin/hospital/CreateHospital.vue'),
+                        /* webpackChunkName: "main-admin-hospitals-create" */ './views/main/admin/hospital/CreateHospital.vue'),
                     },
                   ],
                 },
