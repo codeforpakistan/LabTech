@@ -94,19 +94,25 @@ export default new Router({
                     {
                       path: 'all',
                       component: () => import(
-                          /* webpackChunkName: "main-admin-hospitals" */ './views/main/admin/hospital/all.vue'),
+                        /* webpackChunkName: "main-admin-hospitals" */ './views/main/admin/hospital/allHospitals.vue'),
+                    },
+                    {
+                      path: 'departments',
+                      component: RouterComponent,
+                      redirect: 'departments',
+                      children: [
+                        {
+                          path: 'departments',
+                          component: () => import(
+                            /* webpackChunkName: "main-admin-hospitals-departments" */ './views/main/admin/hospital/departments/allDepartments.vue'),
+                        }
+                      ]
                     },
                     {
                       path: 'edit/:id',
                       name: 'main-admin-hospitals-edit',
                       component: () => import(
                         /* webpackChunkName: "main-admin-hospitals-edit" */ './views/main/admin/EditUser.vue'),
-                    },
-                    {
-                      path: '/:id',
-                      name: 'main-admin-hospitals-departments',
-                      component: () => import(
-                        /* webpackChunkName: "main-admin-hospitals-departments" */ './views/main/admin/hospital/departments/all.vue'),
                     },
                     {
                       path: 'departments/:id',
@@ -121,6 +127,28 @@ export default new Router({
                         /* webpackChunkName: "main-admin-hospitals-create" */ './views/main/admin/hospital/CreateHospital.vue'),
                     },
                   ],
+                },
+                {
+                  path: 'hospital/:id',
+                  component: RouterComponent,
+                  props: true,
+                  children: [
+                    {
+                      path: '',
+                      component: () => import(
+                      /* webpackChunkName: "main-admin-hospitals-departments" */ './views/main/admin/hospital/departments/allDepartments.vue'),
+                      props: {
+                        default: true,
+                        id: route => ({ search: route.query.id })
+                      },
+                    },
+                    {
+                      path: 'department/create',
+                      name: 'main-admin-hospital-department-create',
+                      component: () => import(
+                        /* webpackChunkName: "main-admin-hospitals-create" */ './views/main/admin/hospital/departments/CreateDepartment.vue'),
+                    },
+                  ]
                 },
               ],
             },

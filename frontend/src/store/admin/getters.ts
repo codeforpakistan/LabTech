@@ -17,7 +17,7 @@ export const getters = {
             return { ...filteredHospitals[0] };
         }
     },
-    hospitalDepartment: (state: AdminState) => state.departments,
+    hospitalDepartment: (state: AdminState) => state.hospitalDepartments,
 };
 
 const { read } = getStoreAccessors<AdminState, State>('');

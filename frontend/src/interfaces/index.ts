@@ -42,6 +42,12 @@ export interface IHospitalCreate {
     lng: string;
 }
 
+export interface IDepartmentCreate {
+    name: string;
+    owner_id: number;
+    hospital_id: number;
+}
+
 export interface IDepartment {
     name: string;
 }

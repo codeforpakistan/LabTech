@@ -4,7 +4,7 @@ import { IUserProfileCreate, IUserProfileUpdate, IHospitalCreate, IHospital} fro
 import { State } from '../state';
 import { AdminState } from './state';
 import { getStoreAccessors } from 'typesafe-vuex';
-import { commitSetUsers, commitSetUser, commitSetHospital, commitSetHospitals } from './mutations';
+import { commitSetUsers, commitSetUser, commitSetHospital, commitSetHospitals, commitSetHospitalDepartments} from './mutations';
 import { dispatchCheckApiError } from '../main/actions';
 import { commitAddNotification, commitRemoveNotification } from '../main/mutations';
 
@@ -32,6 +32,17 @@ export const actions = {
             commitSetHospital(context, response.data);
             commitRemoveNotification(context, loadingNotification);
             commitAddNotification(context, { content: 'Hospital Record created successfully', color: 'success' });
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
+    async actionGetHospitalDepartments(context: MainContext, hospitalId: number) {
+        try {
+            const response = await api.getHospitalDepartments(context.rootState.main.token, hospitalId);
+            if (response) {
+                console.log(response.data, 'kkk');
+                commitSetHospitalDepartments(context, response.data);
+            }
         } catch (error) {
             await dispatchCheckApiError(context, error);
         }
@@ -87,4 +98,4 @@ export const dispatchUpdateUser = dispatch(actions.actionUpdateUser);
 export const dispatchGetHospitals = dispatch(actions.actionGetHospitals);
 export const dispatchCreateHospital = dispatch(actions.actionCreateHospital);
 
-
+export const dispatchGetHospitalDepartments = dispatch(actions.actionGetHospitalDepartments);
