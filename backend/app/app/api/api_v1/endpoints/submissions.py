@@ -1,3 +1,4 @@
+import pandas as pd
 from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -31,17 +32,6 @@ def read_submissions(
             db=db, owner_id=current_user.id, skip=skip, limit=limit
         )
 
-    # get survey with survey id
-    # get department by department id
-    # get hospital by hospital id
-    # for submission in submissions:
-    #     survey = survey.get(db=db, id=submission.survey_id)
-    #     department = department.get(db=db, id=survey.department_id)
-    #     hospital = hospital.get(db=db, id=department.hospital_id)
-    #     submission['hospital'] = hospital.name
-
-
-    print('Submissions', submissions)
     for submission in list(submissions):
         survey = db.query(Survey).filter(Survey.id == submission.survey_id).first()
         department = db.query(Department).filter(Department.id == survey.department_id).first()
@@ -49,6 +39,68 @@ def read_submissions(
         submission.hospital = hospital.name
         submission.department = department.name
     return submissions
+
+
+@router.get("/report/by-questions")
+def read_submissions_report(
+    db: Session = Depends(deps.get_db),
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Geneate report for submition
+    """
+    submissions = crud.submission.get_multi(db)
+    submissions_list = []
+    questions_list = []
+    for submission in list(submissions):
+        survey = db.query(Survey).filter(Survey.id == submission.survey_id).first()
+        department = db.query(Department).filter(Department.id == survey.department_id).first()
+        hospital = db.query(Hospital).filter(Hospital.id == department.hospital_id).first()
+        submission.hospital = hospital.name
+        submission.department = department.name
+        weightage = 0
+        
+        
+        for answer in submission.answers:
+            if 'answer' in answer.keys():
+                questions_list.append({
+                    'hospital': hospital.name,
+                    'department': department.name,
+                    'answer': answer['answer'],
+                    'question': answer['question'],
+                    'date': submission.created_date
+                })
+
+            if answer.get('answer'):
+                weightage += answer.get('weightage', 0)
+
+            for sub_answer in answer.get('sub_questions', []):
+                if 'answer' in sub_answer.keys():
+                    questions_list.append({
+                        'hospital': hospital.name,
+                        'department': department.name,
+                        'answer': sub_answer['answer'],
+                        'question': sub_answer['question'],
+                        'date': submission.created_date
+                    })
+
+                if sub_answer.get('answer'):
+                    weightage += sub_answer.get('weightage', 0)
+        submissions_list.append({
+            'hospital': hospital.name,
+            'department': department.name,
+            'weightage': weightage,
+            'date': submission.created_date
+        })
+
+    df = pd.DataFrame(questions_list)
+    df['answer_true'] = df['answer'].apply(lambda x: 1 if x == True else 0)
+    df['answer_false'] = df['answer'].apply(lambda x: 0 if x == True else 1)
+    aggs = df[['question', 'answer_true', 'answer_false']].groupby(['question'], as_index=False).sum()
+    return {
+        'total_submissions': len(submissions_list),
+        'by_question': aggs.to_dict(orient='records')
+    }, 200
 
 
 @router.post("/", response_model=schemas.Submission)
