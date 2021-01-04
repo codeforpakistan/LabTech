@@ -8,6 +8,8 @@ services:
       - default
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command:
       # Enable Docker in Traefik, so that it reads labels from Docker services
       - --providers.docker
@@ -88,6 +90,8 @@ services:
       - default
     env_file:
       - .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     deploy:
       labels:
         - traefik.enable=true
@@ -104,6 +108,8 @@ services:
 
   queue:
     image: rabbitmq:3
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     # Using the below image instead is required to enable the "Broker" tab in the flower UI:
     # image: rabbitmq:3-management
     #
@@ -116,6 +122,8 @@ services:
       - default
     env_file:
       - .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command:
       - "--broker=amqp://guest@queue:5672//"
       # For the "Broker" tab to work in the flower UI, uncomment the following command argument,
@@ -139,6 +147,8 @@ services:
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
     env_file:
       - .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - SERVER_NAME=${DOMAIN?Variable not set}
       - SERVER_HOST=https://${DOMAIN?Variable not set}
@@ -162,6 +172,8 @@ services:
       - queue
     env_file:
       - .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - SERVER_NAME=${DOMAIN?Variable not set}
       - SERVER_HOST=https://${DOMAIN?Variable not set}
@@ -179,6 +191,8 @@ services:
       context: ./frontend
       args:
         FRONTEND_ENV: ${FRONTEND_ENV-production}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     deploy:
       labels:
         - traefik.enable=true
