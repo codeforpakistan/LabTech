@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { apiUrl } from '@/env';
-import { IUserProfile, IUserProfileUpdate, IUserProfileCreate, IHospital, IHospitalCreate } from './interfaces';
+import { IUserProfile, IUserProfileUpdate, IUserProfileCreate, IHospital, IHospitalCreate, IDepartmentCreate, ISurveyCreate } from './interfaces';
 
 function authHeaders(token: string) {
   return {
@@ -41,6 +41,15 @@ export const api = {
   },
   async createUser(token: string, data: IUserProfileCreate) {
     return axios.post(`${apiUrl}/api/v1/users/`, data, authHeaders(token));
+  },
+  async createHospitalDepartment(token: string, data: IDepartmentCreate) {
+    return axios.post(`${apiUrl}/api/v1/departments/`, data, authHeaders(token));
+  },
+  async CreateDepartmentSurvey(token: string, data: ISurveyCreate) {
+    return axios.post(`${apiUrl}/api/v1/surveys/`, data, authHeaders(token));
+  },
+  async getDepartmentSurveys(token: string, departmentId: number) {
+    return axios.get(`${apiUrl}/api/v1/surveys?department_id=` + departmentId, authHeaders(token));
   },
   async passwordRecovery(email: string) {
     return axios.post(`${apiUrl}/api/v1/password-recovery/${email}`);

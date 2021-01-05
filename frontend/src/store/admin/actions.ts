@@ -1,10 +1,12 @@
 import { api } from '@/api';
 import { ActionContext } from 'vuex';
-import { IUserProfileCreate, IUserProfileUpdate, IHospitalCreate, IHospital} from '@/interfaces';
+import { IHospital, ISurveyCreate, IDepartmentCreate} from '@/interfaces';
+import { IUserProfileCreate, IUserProfileUpdate, IHospitalCreate } from '@/interfaces';
 import { State } from '../state';
 import { AdminState } from './state';
 import { getStoreAccessors } from 'typesafe-vuex';
-import { commitSetUsers, commitSetUser, commitSetHospital, commitSetHospitals, commitSetHospitalDepartments} from './mutations';
+import { commitSetUsers, commitSetUser, commitSetHospital} from './mutations';
+import { commitSetHospitals, commitSetHospitalDepartments, commitSetSurveys} from './mutations';
 import { dispatchCheckApiError } from '../main/actions';
 import { commitAddNotification, commitRemoveNotification } from '../main/mutations';
 
@@ -40,7 +42,6 @@ export const actions = {
         try {
             const response = await api.getHospitalDepartments(context.rootState.main.token, hospitalId);
             if (response) {
-                console.log(response.data, 'kkk');
                 commitSetHospitalDepartments(context, response.data);
             }
         } catch (error) {
@@ -87,6 +88,46 @@ export const actions = {
             await dispatchCheckApiError(context, error);
         }
     },
+    async actionCreateHospitalDepartment(context: MainContext, payload: IDepartmentCreate) {
+        try {
+            const loadingNotification = { content: 'saving', showProgress: true };
+            commitAddNotification(context, loadingNotification);
+            const response = (await Promise.all([
+                api.createHospitalDepartment(context.rootState.main.token, payload),
+                await new Promise<void>((resolve) => setTimeout(() => resolve(), 500)),
+            ]))[0];
+            commitSetHospitalDepartments(context, response.data);
+            commitRemoveNotification(context, loadingNotification);
+            commitAddNotification(context, { content: 'Department successfully created', color: 'success' });
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
+    async actionGetDepartmentSurveys(context: MainContext, departmentId: number) {
+        try {
+            const response = await api.getDepartmentSurveys(context.rootState.main.token, departmentId);
+            if (response) {
+                commitSetSurveys(context, response.data);
+            }
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
+    async actionCreateDepartmentSurvey(context: MainContext, payload: ISurveyCreate) {
+        try {
+            const loadingNotification = { content: 'saving', showProgress: true };
+            commitAddNotification(context, loadingNotification);
+            const response = (await Promise.all([
+                api.CreateDepartmentSurvey(context.rootState.main.token, payload),
+                await new Promise<void>((resolve) => setTimeout(() => resolve(), 500)),
+            ]))[0];
+            commitSetSurveys(context, response.data);
+            commitRemoveNotification(context, loadingNotification);
+            commitAddNotification(context, { content: 'Department Survey successfully created', color: 'success' });
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
 };
 
 const { dispatch } = getStoreAccessors<AdminState, State>('');
@@ -99,3 +140,7 @@ export const dispatchGetHospitals = dispatch(actions.actionGetHospitals);
 export const dispatchCreateHospital = dispatch(actions.actionCreateHospital);
 
 export const dispatchGetHospitalDepartments = dispatch(actions.actionGetHospitalDepartments);
+export const dispatchCreateHospitalDepartment = dispatch(actions.actionCreateHospitalDepartment);
+
+export const dispatchGetDepartmentSurveys = dispatch(actions.actionGetDepartmentSurveys);
+export const dispatchCreateDepartmentSurvey = dispatch(actions.actionCreateDepartmentSurvey);

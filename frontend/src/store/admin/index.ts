@@ -7,6 +7,7 @@ const defaultState: AdminState = {
   users: [],
   hospitals: [],
   hospitalDepartments: [],
+  departmentSurveys: [],
 };
 
 export const adminModule = {

@@ -51,3 +51,19 @@ export interface IDepartmentCreate {
 export interface IDepartment {
     name: string;
 }
+
+export interface ISurvey {
+    name: string;
+    owner_id: number;
+    department_id: number;
+    create_date: Date;
+    questions: {};
+}
+
+export interface ISurveyCreate {
+    name: string;
+    owner_id: number;
+    department_id: number;
+    create_date: Date;
+    questions: {};
+}

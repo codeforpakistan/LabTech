@@ -6,15 +6,11 @@ import { Component, Vue } from 'vue-property-decorator';
         Manage Departments
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn color="primary" to="/main/admin/hospital/1/create">Create Department</v-btn>
+      <v-btn color="primary" to="/main/admin/hospital/1/department/create">Create Department</v-btn>
     </v-toolbar>
-    <v-data-table :headers="headers" :items="hospitals">
+    <v-data-table :headers="headers" :items="departments">
       <template slot="items" slot-scope="props">
         <td>{{ props.item.name }}</td>
-        <td>{{ props.item.address }}</td>
-        <td>{{ props.item.created_date }}</td>
-        <td>{{ props.item.lat }}</td>
-        <td>{{ props.item.lng }}</td>
         <td class="justify-center layout px-0" colspan="2">
           <v-tooltip top>
             <span>View / Edit Departments</span>
@@ -37,7 +33,7 @@ import { Component, Vue } from 'vue-property-decorator';
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { Store } from 'vuex';
-import { readAdminHospital } from '@/store/admin/getters';
+import { readHospitalDepartments } from '@/store/admin/getters';
 import { dispatchGetHospitalDepartments } from '@/store/admin/actions';
 import { IHospital } from '@/interfaces';
 
@@ -54,30 +50,6 @@ export default class AdminHospitals extends Vue {
       align: 'left',
     },
     {
-      text: 'Address',
-      sortable: true,
-      value: 'address',
-      align: 'left',
-    },
-    {
-      text: 'Created Date',
-      sortable: true,
-      value: 'create_date',
-      align: 'left',
-    },
-    {
-      text: 'Lat',
-      sortable: true,
-      value: 'lat',
-      align: 'left',
-    },
-    {
-      text: 'lng',
-      sortable: true,
-      value: 'lng',
-      align: 'left',
-    },
-    {
       text: 'Actions',
       value: 'id',
       colspan: 2,
@@ -90,8 +62,8 @@ export default class AdminHospitals extends Vue {
     await dispatchGetHospitalDepartments(this.$store, this.id);
   }
 
-  get hospitals() {
-    return readAdminHospital(this.$store);
+  get departments() {
+    return readHospitalDepartments(this.$store);
   }
 }
 </script>

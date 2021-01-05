@@ -16,8 +16,8 @@
         <v-btn @click="cancel">Cancel</v-btn>
         <v-btn @click="reset">Reset</v-btn>
         <v-btn @click="submit" :disabled="!valid">
-              Save
-            </v-btn>
+          Save
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
@@ -51,15 +51,13 @@ export default class CreateHospitalDepartment extends Vue {
   }
 
   public async submit() {
-    if (await this.$validator.validateAll()) {
-      const updatedDepartment: IDepartmentCreate = {
-        name: this.name,
-        hospital_id: 1,
-        owner_id: 1,
-      };
-      await dispatchCreateHospitalDepartment(this.$store, updatedDepartment);
-      this.$router.push('/main/admin/hospital');
-    }
+    const updatedDepartment: IDepartmentCreate = {
+      name: this.name,
+      hospital_id: 1,
+      owner_id: 1,
+    };
+    await dispatchCreateHospitalDepartment(this.$store, updatedDepartment);
+    this.$router.push('/main/admin/hospital/1');
   }
 }
 </script>

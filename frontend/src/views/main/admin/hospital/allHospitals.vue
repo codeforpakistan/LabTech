@@ -45,7 +45,6 @@ import { IHospital } from '@/interfaces';
 @Component
 export default class AdminHospitals extends Vue {
   [x: string]: any;
-  // hospitals: IHospital[] = [];
   public headers = [
     {
       text: 'Name',

@@ -1,9 +1,12 @@
-import { IUserProfile, IHospital, IDepartment } from '@/interfaces';
+import { IUserProfile, IHospital, IDepartment, ISurvey } from '@/interfaces';
 import { AdminState } from './state';
 import { getStoreAccessors } from 'typesafe-vuex';
 import { State } from '../state';
 
 export const mutations = {
+    setDepartmentSurveys(state: AdminState, payload: ISurvey[]) {
+       state.departmentSurveys = payload;
+    },
     setHospitals(state: AdminState, payload: IHospital[]) {
        state.hospitals = payload;
     },
@@ -32,4 +35,7 @@ export const commitSetUsers = commit(mutations.setUsers);
 export const commitSetHospitals = commit(mutations.setHospitals);
 export const commitSetHospital = commit(mutations.setHospital);
 export const commitSetHospitalDepartments = commit(mutations.setHospitalDepartments);
+export const commitSetSurveys = commit(mutations.setDepartmentSurveys);
+
+
 
