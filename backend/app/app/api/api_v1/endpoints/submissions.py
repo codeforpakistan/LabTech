@@ -10,6 +10,7 @@ from app.api import deps
 from app.models.survey import Survey
 from app.models.department import Department
 from app.models.hospital import Hospital
+from app.models.submission import Submission
 
 
 router = APIRouter()
@@ -99,6 +100,53 @@ def read_submissions_report(
     aggs = df[['question', 'answer_true', 'answer_false']].groupby(['question'], as_index=False).sum()
     return {
         'total_submissions': len(submissions_list),
+        'by_question': aggs.to_dict(orient='records')
+    }, 200
+
+
+@router.get("/report/by-questions/{hospital_id}")
+def read_submissions_report_by_hospital(
+    db: Session = Depends(deps.get_db),
+    hospital_id: int = 0,
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Geneate report for submition by hospital
+    """
+    total_submissions = 0
+    questions_list = []
+    hospital = hospital = db.query(Hospital).filter(Hospital.id == hospital_id).first()
+    for department in hospital.departments:
+        survey = db.query(Survey).filter(Survey.department_id == department.id).first()
+        submissions = db.query(Submission).filter(Submission.survey_id == survey.id).all()
+        total_submissions += len(submissions)
+        for submission in submissions:
+            for answer in submission.answers:
+                if 'answer' in answer.keys():
+                    questions_list.append({
+                        'hospital': hospital.name,
+                        'department': department.name,
+                        'answer': answer['answer'],
+                        'question': answer['question'],
+                        'date': submission.created_date
+                    })
+
+                for sub_answer in answer.get('sub_questions', []):
+                    if 'answer' in sub_answer.keys():
+                        questions_list.append({
+                            'hospital': hospital.name,
+                            'department': department.name,
+                            'answer': sub_answer['answer'],
+                            'question': sub_answer['question'],
+                            'date': submission.created_date
+                        })
+
+    df = pd.DataFrame(questions_list)
+    df['answer_true'] = df['answer'].apply(lambda x: 1 if x == True else 0)
+    df['answer_false'] = df['answer'].apply(lambda x: 0 if x == True else 1)
+    aggs = df[['question', 'answer_true', 'answer_false']].groupby(['question'], as_index=False).sum()
+    return {
+        'total_submissions': total_submissions,
         'by_question': aggs.to_dict(orient='records')
     }, 200
 
