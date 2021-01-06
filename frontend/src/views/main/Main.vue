@@ -12,6 +12,14 @@
               <v-list-tile-title>Dashboard</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
+          <v-list-tile to="/main/reporting">
+            <v-list-tile-action>
+              <v-icon>web</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>Reporting</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
           <v-list-tile to="/main/profile/view">
             <v-list-tile-action>
               <v-icon>person</v-icon>
@@ -54,6 +62,14 @@
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>Create User</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile to="/main/admin/hospital/all">
+            <v-list-tile-action>
+              <v-icon>group</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>Manage Hospitals</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>

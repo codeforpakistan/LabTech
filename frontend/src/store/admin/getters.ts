@@ -12,6 +12,15 @@ export const getters = {
     },
     overAllStatistics: (state: AdminState) => state.overAllStatistics,
     readHospitalsStatistics: (state: AdminState) => state.hospitalStatistics,
+    adminHospital: (state: AdminState) => state.hospitals,
+    adminOneHospital: (state: AdminState) => (userId: number) => {
+        const filteredHospitals = state.hospitals.filter((user) => user.id === userId);
+        if (filteredHospitals.length > 0) {
+            return { ...filteredHospitals[0] };
+        }
+    },
+    hospitalDepartments: (state: AdminState) => state.hospitalDepartments,
+    departmentSurveys: (state: AdminState) => state.departmentSurveys,
 };
 
 const { read } = getStoreAccessors<AdminState, State>('');
@@ -21,3 +30,9 @@ export const readAdminUsers = read(getters.adminUsers);
 
 export const readOverAllStatistics = read(getters.overAllStatistics);
 export const readHospitalsStatistics = read(getters.readHospitalsStatistics);
+export const readAdminOneHospital = read(getters.adminOneHospital);
+export const readAdminHospital = read(getters.adminHospital);
+export const readHospitalDepartments = read(getters.hospitalDepartments);
+export const readDepartmentSurveys = read(getters.departmentSurveys);
+
+

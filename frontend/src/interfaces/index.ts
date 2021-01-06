@@ -21,3 +21,49 @@ export interface IUserProfileCreate {
     is_active?: boolean;
     is_superuser?: boolean;
 }
+
+export interface IHospital {
+    name: string;
+    address: string;
+    departments: [];
+    owner_id: number;
+    create_date: Date;
+    lat: string;
+    lng: string;
+    id: number;
+}
+
+export interface IHospitalCreate {
+    name: string;
+    address: string;
+    owner_id: number;
+    create_date: Date;
+    lat: string;
+    lng: string;
+}
+
+export interface IDepartmentCreate {
+    name: string;
+    owner_id: number;
+    hospital_id: number;
+}
+
+export interface IDepartment {
+    name: string;
+}
+
+export interface ISurvey {
+    name: string;
+    owner_id: number;
+    department_id: number;
+    create_date: Date;
+    questions: {};
+}
+
+export interface ISurveyCreate {
+    name: string;
+    owner_id: number;
+    department_id: number;
+    create_date: Date;
+    questions: {};
+}
