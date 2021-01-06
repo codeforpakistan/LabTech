@@ -4,7 +4,7 @@ import { IUserProfileCreate, IUserProfileUpdate } from '@/interfaces';
 import { State } from '../state';
 import { AdminState } from './state';
 import { getStoreAccessors } from 'typesafe-vuex';
-import { commitSetUsers, commitSetUser } from './mutations';
+import { commitSetUsers, commitSetUser, commitOverAllStatistics, commitHospitalStatistics, commitHospitals } from './mutations';
 import { dispatchCheckApiError } from '../main/actions';
 import { commitAddNotification, commitRemoveNotification } from '../main/mutations';
 
@@ -42,7 +42,7 @@ export const actions = {
             commitAddNotification(context, loadingNotification);
             const response = (await Promise.all([
                 api.createUser(context.rootState.main.token, payload),
-                await new Promise((resolve, reject) => setTimeout(() => resolve(), 500)),
+                await new Promise((resolve) => setTimeout(() => resolve(payload), 500)),
             ]))[0];
             commitSetUser(context, response.data);
             commitRemoveNotification(context, loadingNotification);
@@ -51,6 +51,37 @@ export const actions = {
             await dispatchCheckApiError(context, error);
         }
     },
+    async actionGetStatistics(context: MainContext) {
+        try {
+            console.log('called')
+            const response = await api.getStatistics(context.rootState.main.token);
+            if (response) {
+                commitOverAllStatistics(context, response.data);
+            }
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
+    async actionGetHospitalStatistics(context: MainContext, id: number) {
+        try {
+            const response = await api.getHospitalStatistics(context.rootState.main.token, id);
+            if (response) {
+                commitHospitalStatistics(context, response.data);
+            }
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
+    async actionGetHospitals(context: MainContext) {
+        try {
+            const response = await api.getHospitals(context.rootState.main.token, id);
+            if (response) {
+                commitHospitals(context, response.data);
+            }
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }  
+    }
 };
 
 const { dispatch } = getStoreAccessors<AdminState, State>('');
@@ -58,3 +89,8 @@ const { dispatch } = getStoreAccessors<AdminState, State>('');
 export const dispatchCreateUser = dispatch(actions.actionCreateUser);
 export const dispatchGetUsers = dispatch(actions.actionGetUsers);
 export const dispatchUpdateUser = dispatch(actions.actionUpdateUser);
+export const dispatchGetOverAllStatistics = dispatch(actions.actionGetStatistics);
+export const dispatchGetHospitalStatistics = dispatch(actions.actionGetHospitalStatistics);
+export const dispatchGetHospitals = dispatch(actions.actionGetHospitals);
+
+

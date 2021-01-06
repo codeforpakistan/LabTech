@@ -42,4 +42,10 @@ export const api = {
       token,
     });
   },
+  async getStatistics(token: string) {
+    return axios.get(`${apiUrl}/api/v1/submissions/report/by-questions`, authHeaders(token));
+  },
+  async getHospitalStatistics(token: string, hospitalId: number) {
+    return axios.get(`${apiUrl}/api/v1/submissions/report/by-questions/` + hospitalId, authHeaders(token));
+  },
 };

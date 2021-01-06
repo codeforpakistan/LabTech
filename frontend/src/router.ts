@@ -36,7 +36,7 @@ export default new Router({
             },
             {
               path: 'reporting',
-              component: ({}) => import(/* webpackChunkName: "main-dashboard" */ './views/main/Reporting.vue'),
+              component: () => import(/* webpackChunkName: "main-reporting" */ './views/main/report.vue'),
             },
             {
               path: 'profile',

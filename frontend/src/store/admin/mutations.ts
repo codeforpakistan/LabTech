@@ -12,9 +12,20 @@ export const mutations = {
         users.push(payload);
         state.users = users;
     },
+    setAllStatistics(state: AdminState, payload: any) {
+        state.overAllStatistics = payload;
+    },
+    setHospitalStatistics(state: AdminState, payload: any) {
+        state.hospitalStatistics = payload;
+    }
 };
 
 const { commit } = getStoreAccessors<AdminState, State>('');
 
 export const commitSetUser = commit(mutations.setUser);
 export const commitSetUsers = commit(mutations.setUsers);
+
+export const commitHospitalStatistics = commit(mutations.setHospitalStatistics);
+export const commitOverAllStatistics = commit(mutations.setAllStatistics);
+
+export const commitHospitals = commit(mutations.setHospitals);
