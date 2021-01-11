@@ -104,10 +104,11 @@ def read_submissions_report(
     }, 200
 
 
-@router.get("/report/by-questions/{hospital_id}")
+@router.get("/report/by-questions/{hospital_id}/{department_id}")
 def read_submissions_report_by_hospital(
     db: Session = Depends(deps.get_db),
     hospital_id: int = 0,
+    department_id: int = 0,
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
@@ -117,6 +118,8 @@ def read_submissions_report_by_hospital(
     questions_list = []
     hospital = hospital = db.query(Hospital).filter(Hospital.id == hospital_id).first()
     for department in hospital.departments:
+        if department.id != department_id:
+            continue
         survey = db.query(Survey).filter(Survey.department_id == department.id).first()
         submissions = db.query(Submission).filter(Submission.survey_id == survey.id).all()
         total_submissions += len(submissions)
@@ -142,9 +145,15 @@ def read_submissions_report_by_hospital(
                         })
 
     df = pd.DataFrame(questions_list)
+    df['count'] = 1
     df['answer_true'] = df['answer'].apply(lambda x: 1 if x == True else 0)
     df['answer_false'] = df['answer'].apply(lambda x: 0 if x == True else 1)
-    aggs = df[['question', 'answer_true', 'answer_false']].groupby(['question'], as_index=False).sum()
+    aggs = df[['question', 'answer_true', 'answer_false', 'count']].groupby(['question'], as_index=False).sum()
+    aggs['answer_true_perc'] = aggs[['answer_true', 'count']] \
+        .apply(lambda x: x[0]/x[1] if x[1] != 0 else 0, axis=1)
+    aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
+        .apply(lambda x: x[0]/x[1] if x[1] != 0 else 0, axis=1)
+    
     return {
         'total_submissions': total_submissions,
         'by_question': aggs.to_dict(orient='records')
