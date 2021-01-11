@@ -145,7 +145,7 @@ def read_submissions_report_by_hospital(
                         })
 
     df = pd.DataFrame(questions_list)
-    if len(df) > 1:
+    if len(df) < 1:
         # no submissions found, so no aggs needed.
         return {
             'total_submissions': 0,
