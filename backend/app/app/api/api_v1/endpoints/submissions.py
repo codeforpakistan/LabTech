@@ -145,6 +145,13 @@ def read_submissions_report_by_hospital(
                         })
 
     df = pd.DataFrame(questions_list)
+    if len(df) > 1:
+        # no submissions found, so no aggs needed.
+        return {
+            'total_submissions': 0,
+            'by_question': [],
+            'message': 'No submissions found to aggregate on.'
+        }, 200
     df['count'] = 1
     df['answer_true'] = df['answer'].apply(lambda x: 1 if x == True else 0)
     df['answer_false'] = df['answer'].apply(lambda x: 0 if x == True else 1)
