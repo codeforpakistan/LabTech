@@ -95,11 +95,24 @@ def read_submissions_report(
         })
 
     df = pd.DataFrame(questions_list)
+    if len(df) > 1:
+        # no submissions found, so no aggs needed.
+        return {
+            'total_submissions': 0,
+            'by_question': [],
+            'message': 'No submissions found to aggregate on.'
+        }, 200
+    df['count'] = 1
     df['answer_true'] = df['answer'].apply(lambda x: 1 if x == True else 0)
     df['answer_false'] = df['answer'].apply(lambda x: 0 if x == True else 1)
-    aggs = df[['question', 'answer_true', 'answer_false']].groupby(['question'], as_index=False).sum()
+    aggs = df[['question', 'answer_true', 'answer_false', 'count']].groupby(['question'], as_index=False).sum()
+    aggs['answer_true_perc'] = aggs[['answer_true', 'count']] \
+        .apply(lambda x: x[0]/x[1] if x[1] != 0 else 0, axis=1)
+    aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
+        .apply(lambda x: x[0]/x[1] if x[1] != 0 else 0, axis=1)
+    
     return {
-        'total_submissions': len(submissions_list),
+        'total_submissions': total_submissions,
         'by_question': aggs.to_dict(orient='records')
     }, 200
 
@@ -118,7 +131,7 @@ def read_submissions_report_by_hospital(
     questions_list = []
     hospital = hospital = db.query(Hospital).filter(Hospital.id == hospital_id).first()
     for department in hospital.departments:
-        if department.id != department_id:
+        if department.id != department_id and department_id != 0:
             continue
         survey = db.query(Survey).filter(Survey.department_id == department.id).first()
         submissions = db.query(Submission).filter(Submission.survey_id == survey.id).all()
@@ -145,7 +158,7 @@ def read_submissions_report_by_hospital(
                         })
 
     df = pd.DataFrame(questions_list)
-    if len(df) < 1:
+    if len(df) > 1:
         # no submissions found, so no aggs needed.
         return {
             'total_submissions': 0,
