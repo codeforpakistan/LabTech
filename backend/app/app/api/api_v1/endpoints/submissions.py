@@ -51,6 +51,7 @@ def read_submissions_report(
     Geneate report for submition
     """
     submissions = crud.submission.get_multi(db)
+    total_submissions = len(submissions)
     submissions_list = []
     questions_list = []
     for submission in list(submissions):
