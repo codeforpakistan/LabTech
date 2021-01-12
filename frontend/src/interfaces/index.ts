@@ -67,3 +67,12 @@ export interface ISurveyCreate {
     create_date: Date;
     questions: {};
 }
+
+export interface IStatistics {
+    total_submissions: number;
+    by_question: [{
+        question: string,
+        answer_true_perc: number,
+        answer_false_perc: number,
+    }]
+}

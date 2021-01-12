@@ -1,4 +1,4 @@
-import { IUserProfile, IHospital, IDepartment, ISurvey } from '@/interfaces';
+import { IUserProfile, IHospital, IDepartment, ISurvey, IStatistics } from '@/interfaces';
 import { AdminState } from './state';
 import { getStoreAccessors } from 'typesafe-vuex';
 import { State } from '../state';
@@ -26,12 +26,12 @@ export const mutations = {
         users.push(payload);
         state.users = users;
     },
-    setAllStatistics(state: AdminState, payload: any) {
+    setAllStatistics(state: AdminState, payload: any[]) {
         state.overAllStatistics = payload;
     },
-    setHospitalStatistics(state: AdminState, payload: any) {
+    setHospitalStatistics(state: AdminState, payload: any[]) {
         state.hospitalStatistics = payload;
-    }
+    },
 };
 
 const { commit } = getStoreAccessors<AdminState, State>('');

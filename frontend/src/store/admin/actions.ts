@@ -91,10 +91,19 @@ export const actions = {
     },
     async actionGetStatistics(context: MainContext) {
         try {
-            console.log('called')
             const response = await api.getStatistics(context.rootState.main.token);
             if (response) {
                 commitOverAllStatistics(context, response.data);
+            }
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
+    async actionGetHospitalStatistics(context: MainContext, ids: any) {
+        try {
+            const response = await api.getHospitalStatistics(context.rootState.main.token, ids.hospitalId, ids.departmentId);
+            if (response) {
+                commitHospitalStatistics(context, response.data);
             }
         } catch (error) {
             await dispatchCheckApiError(context, error);
@@ -111,16 +120,6 @@ export const actions = {
             commitSetHospitalDepartments(context, response.data);
             commitRemoveNotification(context, loadingNotification);
             commitAddNotification(context, { content: 'Department successfully created', color: 'success' });
-        } catch (error) {
-            await dispatchCheckApiError(context, error);
-        }
-    },
-    async actionGetHospitalStatistics(context: MainContext, id: number) {
-        try {
-            const response = await api.getHospitalStatistics(context.rootState.main.token, id);
-            if (response) {
-                commitHospitalStatistics(context, response.data);
-            }
         } catch (error) {
             await dispatchCheckApiError(context, error);
         }

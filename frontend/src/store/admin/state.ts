@@ -1,4 +1,4 @@
-import { IUserProfile, IHospital, IDepartment, ISurvey} from '@/interfaces';
+import { IUserProfile, IHospital, IDepartment, ISurvey, IStatistics} from '@/interfaces';
 
 export interface AdminState {
     users: IUserProfile[];
