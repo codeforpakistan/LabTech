@@ -21,6 +21,8 @@ RUN bash -c "if [ $INSTALL_DEV == 'true' ] ; then poetry install --no-root ; els
 ARG INSTALL_JUPYTER=false
 RUN bash -c "if [ $INSTALL_JUPYTER == 'true' ] ; then pip install jupyterlab ; fi"
 RUN pip install aiofiles==0.6.0
+RUN pip install pandas
+
 
 ENV C_FORCE_ROOT=1
 
