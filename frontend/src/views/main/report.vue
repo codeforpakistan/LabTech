@@ -1,38 +1,4 @@
  <style>
-    body {
-      font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
-    }
-    h1,.muted {
-      color: #2c3e5099;
-    }
-    h1 {
-      font-size: 26px;
-      font-weight: 600;
-      text-rendering: optimizelegibility;
-      -moz-osx-font-smoothing: grayscale;
-      -moz-text-size-adjust: none;
-    }
-
-    #app .dropdown li {
-      border-bottom: 1px solid rgba(112, 128, 144, 0.1)
-    }
-
-    #app .dropdown li:last-child {
-      border-bottom: none;
-    }
-
-    #app .dropdown li a {
-      padding: 10px 20px;
-      display: flex;
-      width: 100%;
-      align-items: center;
-      font-size: 1.25em;
-    }
-
-    #app .dropdown li a .fa {
-      padding-right: 0.5em;
-    }
-
     #container {
         height: 400px;
     }
