@@ -1,4 +1,38 @@
  <style>
+    body {
+      font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+    }
+    h1,.muted {
+      color: #2c3e5099;
+    }
+    h1 {
+      font-size: 26px;
+      font-weight: 600;
+      text-rendering: optimizelegibility;
+      -moz-osx-font-smoothing: grayscale;
+      -moz-text-size-adjust: none;
+    }
+
+    #app .dropdown li {
+      border-bottom: 1px solid rgba(112, 128, 144, 0.1)
+    }
+
+    #app .dropdown li:last-child {
+      border-bottom: none;
+    }
+
+    #app .dropdown li a {
+      padding: 10px 20px;
+      display: flex;
+      width: 100%;
+      align-items: center;
+      font-size: 1.25em;
+    }
+
+    #app .dropdown li a .fa {
+      padding-right: 0.5em;
+    }
+
     #container {
         height: 400px;
     }
@@ -84,6 +118,7 @@
             persistent-hint
             return-object
             single-line
+            clearable
           ></v-select>
         </v-col>
       </v-row>
@@ -99,6 +134,7 @@
             persistent-hint
             return-object
             single-line
+            clearable
           ></v-select>
         </v-col>
       </v-row>
@@ -163,44 +199,68 @@ export default class Reporting extends Vue {
 
   private async mounted() {
     await dispatchGetHospitals(this.$store);
+    this.consturctOverAllStatistics();      
+  }
+
+  private async consturctOverAllStatistics() {
     await dispatchGetOverAllStatistics(this.$store);
-    // this.select = {
-    //   id: this.hospitals[0].id,
-    //   name: this.hospitals[0].name
-    // };
-    // await dispatchGetHospitalDepartments(this.$store, this.select.id);
-    // await dispatchGetHospitalStatistics(this.$store, this.select.id, 1);
     this.calculateTotalSubmissions(true);
-    await dispatchGetOverAllStatistics(this.$store);
-    this.constructSurveyChart(
-      this.hospitalStatistics && this.hospitalStatistics.length > 0
-      ? this.hospitalStatistics
-      : this.overAllStatistics);
+    this.constructSurveyChart(this.overAllStatistics);
   }
 
-  private async changeDepartment(value) {
-    this.totalSubmissions = 0;
-    await dispatchGetHospitalStatistics(this.$store, {
-      hospitalId: this.select.id, 
-      departmentId: this.selectedDepartment.id
-    });
-    this.calculateTotalSubmissions(false);
-    this.constructSurveyChart(this.hospitalStatistics);
-  }
-
-  private async changeValue(value) {
+  private async constructSelectedHospitalStatistics(hospital) {
     this.totalSubmissions = 0;
     this.selectedDepartment = {
       id: '',
       name: '',
     };
-    await dispatchGetHospitalDepartments(this.$store, value.id);
+    await dispatchGetHospitalDepartments(this.$store, hospital.id);
     await dispatchGetHospitalStatistics(this.$store, {
       hospitalId: this.select.id, 
       departmentId: 0
     });
     this.calculateTotalSubmissions(false);
     this.constructSurveyChart(this.hospitalStatistics);
+  }
+
+  private reset() {
+    this.selectedDepartment = {
+      id: '',
+      name: '',
+    }
+    this.select = {
+      id: '',
+      name: ''
+    }
+  }
+
+  private async changeDepartment(value) {
+    if (!value && !this.select.id) {
+      this.reset();
+      this.consturctOverAllStatistics();
+      return;
+    } else if (this.select.id && !value) {
+      this.constructSelectedHospitalStatistics(this.select);
+    } else {
+      this.totalSubmissions = 0;
+      await dispatchGetHospitalStatistics(this.$store, {
+        hospitalId: this.select.id, 
+        departmentId: this.selectedDepartment.id
+      });
+      this.calculateTotalSubmissions(false);
+      this.constructSurveyChart(this.hospitalStatistics);
+    }
+
+  }
+
+  private async changeValue(value) {
+    if (!value) {
+      this.reset();
+      this.consturctOverAllStatistics();
+      return;
+    } else {
+      this.constructSelectedHospitalStatistics(value);
+    }
   }
 
   private constructSurveyChart(hospitalStatistics) {
