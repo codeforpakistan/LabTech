@@ -2,6 +2,7 @@ version: "3.3"
 services:
 
   proxy:
+    restart: always
     image: traefik:v2.2
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
@@ -84,6 +85,7 @@ services:
   #         - node.labels.${STACK_NAME?Variable not set}.app-db-data == true
 
   pgadmin:
+    restart: always
     image: dpage/pgadmin4
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
@@ -107,6 +109,7 @@ services:
         - traefik.http.services.${STACK_NAME?Variable not set}-pgadmin.loadbalancer.server.port=5050
 
   queue:
+    restart: always
     image: rabbitmq:3
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -116,6 +119,7 @@ services:
     # You also have to change the flower command
   
   flower:
+    restart: always
     image: mher/flower
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
@@ -144,6 +148,7 @@ services:
         - traefik.http.services.${STACK_NAME?Variable not set}-flower.loadbalancer.server.port=5555
   
   backend:
+    restart: always
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
     env_file:
       - .env
@@ -167,6 +172,7 @@ services:
         - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=80
   
   celeryworker:
+    restart: always
     image: '${DOCKER_IMAGE_CELERYWORKER?Variable not set}:${TAG-latest}'
     depends_on:
       - queue
@@ -186,6 +192,7 @@ services:
         INSTALL_DEV: ${INSTALL_DEV-false}
   
   frontend:
+    restart: always
     image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
     build:
       context: ./frontend
