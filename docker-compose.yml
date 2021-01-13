@@ -2,7 +2,6 @@ version: "3.3"
 services:
 
   proxy:
-    restart: always
     image: traefik:v2.2
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
@@ -70,7 +69,6 @@ services:
         - traefik.http.routers.${STACK_NAME?Variable not set}-proxy-http.middlewares=${STACK_NAME?Variable not set}-www-redirect,${STACK_NAME?Variable not set}-https-redirect
 
   db:
-    restart: always
     image: postgres:12
     volumes:
       - app-db-data:/var/lib/postgresql/data/pgdata
@@ -107,7 +105,6 @@ services:
         - traefik.http.services.${STACK_NAME?Variable not set}-pgadmin.loadbalancer.server.port=5050
 
   queue:
-    restart: always
     image: rabbitmq:3
     # Using the below image instead is required to enable the "Broker" tab in the flower UI:
     # image: rabbitmq:3-management
@@ -141,7 +138,6 @@ services:
         - traefik.http.services.${STACK_NAME?Variable not set}-flower.loadbalancer.server.port=5555
   
   backend:
-    restart: always
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
     depends_on:
       - db
@@ -165,7 +161,6 @@ services:
         - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=80
   
   celeryworker:
-    restart: always
     image: '${DOCKER_IMAGE_CELERYWORKER?Variable not set}:${TAG-latest}'
     depends_on:
       - db
@@ -184,7 +179,6 @@ services:
         INSTALL_DEV: ${INSTALL_DEV-false}
   
   frontend:
-    restart: always
     image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
     build:
       context: ./frontend
