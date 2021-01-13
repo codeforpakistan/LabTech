@@ -108,9 +108,9 @@ def read_submissions_report(
     df['answer_false'] = df['answer'].apply(lambda x: 0 if x == True else 1)
     aggs = df[['question', 'answer_true', 'answer_false', 'count']].groupby(['question'], as_index=False).sum()
     aggs['answer_true_perc'] = aggs[['answer_true', 'count']] \
-        .apply(lambda x: x[0]/x[1] if x[1] != 0 else 0, axis=1)
+        .apply(lambda x: round(x[0]/x[1])*100 if x[1] != 0 else 0, axis=1)
     aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
-        .apply(lambda x: x[0]/x[1] if x[1] != 0 else 0, axis=1)
+        .apply(lambda x: round(x[0]/x[1])*100 if x[1] != 0 else 0, axis=1)
     
     return {
         'total_submissions': total_submissions,
@@ -171,9 +171,9 @@ def read_submissions_report_by_hospital(
     df['answer_false'] = df['answer'].apply(lambda x: 0 if x == True else 1)
     aggs = df[['question', 'answer_true', 'answer_false', 'count']].groupby(['question'], as_index=False).sum()
     aggs['answer_true_perc'] = aggs[['answer_true', 'count']] \
-        .apply(lambda x: x[0]/x[1] if x[1] != 0 else 0, axis=1)
+        .apply(lambda x: round(x[0]/x[1])*100 if x[1] != 0 else 0, axis=1)
     aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
-        .apply(lambda x: x[0]/x[1] if x[1] != 0 else 0, axis=1)
+        .apply(lambda x: round(x[0]/x[1])*100 if x[1] != 0 else 0, axis=1)
     
     return {
         'total_submissions': total_submissions,
