@@ -228,11 +228,13 @@ export default class Reporting extends Vue {
       this.constructSelectedHospitalStatistics(value);
     }
   }
+  
 
   private constructSurveyChart(hospitalStatistics) {
     const vm = this;
     const pdata: any = [];
     const ndata: any = [];
+    
     if (hospitalStatistics && hospitalStatistics[0] && hospitalStatistics[0].by_question) {
         hospitalStatistics[0].by_question.forEach((each: any) => {
           pdata.push([each.question, each.answer_true_perc]);
@@ -258,7 +260,7 @@ export default class Reporting extends Vue {
           credits: {
             // href: 'http://www.bcogris.ca/sites/default/files/documents/RA2010-02' +
             // '_Public_Opinion_Survey_final-report_public_Feb_8_12.pdf',
-            text: `Total Survey Submissions  ${this.totalSubmissions}`,
+            text: `<b>Total Survey Submissions  ${this.totalSubmissions}</b>`,
           },
           yAxis: {
             labels: {
@@ -286,8 +288,8 @@ export default class Reporting extends Vue {
             enabled: false,
           },
           title: {
-            text: `Each Survey Question Response by ${this.selectedDepartment.name ? this.select.name + ' '
-            + this.selectedDepartment.name : this.select.name ? this.select.name : 'all hospitals'}  ${this.selectedDepartment.name ? 'Department' : 'Departments'}`,
+            text: `Each Survey Question Response by <b>${this.selectedDepartment.name ? this.select.name + ' '
+            + this.selectedDepartment.name : this.select.name ? this.select.name : 'all hospitals'} ${this.selectedDepartment.name ? 'Department' : 'Departments'}</b>`,
           },
           tooltip: {
             formatter: function() {
