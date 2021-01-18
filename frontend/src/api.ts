@@ -31,7 +31,7 @@ export const api = {
     return axios.post(`${apiUrl}/api/v1/hospitals/`, data, authHeaders(token));
   },
   async getHospitalDepartments(token: string, hospitalId: number) {
-    return axios.get<IHospital[]>(`${apiUrl}/api/v1/departments/`, authHeaders(token));
+    return axios.get<IHospital[]>(`${apiUrl}/api/v1/departments/?hospital_id=` + hospitalId, authHeaders(token));
   },
   async getUsers(token: string) {
     return axios.get<IUserProfile[]>(`${apiUrl}/api/v1/users/`, authHeaders(token));
