@@ -9,6 +9,14 @@ import router from './router';
 import store from '@/store';
 import './registerServiceWorker';
 import 'vuetify/dist/vuetify.min.css';
+import HighchartsVue from 'highcharts-vue';
+import Highcharts from 'highcharts';
+import highchartsMore from 'highcharts/highcharts-more';
+import stockInit from 'highcharts/modules/stock';
+
+highchartsMore(Highcharts);
+stockInit(Highcharts);
+Vue.use(HighchartsVue);
 
 Vue.config.productionTip = false;
 

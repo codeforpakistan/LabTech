@@ -72,6 +72,7 @@ export default class AdminUsers extends Vue {
       value: 'id',
     },
   ];
+
   get users() {
     return readAdminUsers(this.$store);
   }

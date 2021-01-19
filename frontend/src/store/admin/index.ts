@@ -5,6 +5,11 @@ import { AdminState } from './state';
 
 const defaultState: AdminState = {
   users: [],
+  overAllStatistics: [],
+  hospitalStatistics: [],
+  hospitals: [],
+  hospitalDepartments: [],
+  departmentSurveys: [],
 };
 
 export const adminModule = {

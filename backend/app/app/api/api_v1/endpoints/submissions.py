@@ -69,7 +69,7 @@ def read_submissions_report(
                     'hospital': hospital.name,
                     'department': department.name,
                     'answer': answer['answer'],
-                    'question': answer['question'],
+                    'question': answer['alias'],
                     'date': submission.created_date
                 })
 
@@ -82,7 +82,7 @@ def read_submissions_report(
                         'hospital': hospital.name,
                         'department': department.name,
                         'answer': sub_answer['answer'],
-                        'question': sub_answer['question'],
+                        'question': sub_answer['alias'],
                         'date': submission.created_date
                     })
 
@@ -144,7 +144,7 @@ def read_submissions_report_by_hospital(
                         'hospital': hospital.name,
                         'department': department.name,
                         'answer': answer['answer'],
-                        'question': answer['question'],
+                        'question': answer['alias'],
                         'date': submission.created_date
                     })
 
@@ -154,7 +154,7 @@ def read_submissions_report_by_hospital(
                             'hospital': hospital.name,
                             'department': department.name,
                             'answer': sub_answer['answer'],
-                            'question': sub_answer['question'],
+                            'question': sub_answer['alias'],
                             'date': submission.created_date
                         })
 
