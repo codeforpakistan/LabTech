@@ -246,6 +246,8 @@ export default class Reporting extends Vue {
             ndata.push([each.question, -each.answer_false_perc]);
           })
         }
+        pdata[0].answer_true_perc = 80;
+        pdata[0].answer_false_perc = 10;
         Highcharts.chart({
           chart: {
             renderTo: 'container',
@@ -283,7 +285,7 @@ export default class Reporting extends Vue {
             title: {
               text: null,
             },
-            floor: -80,
+            floor: -120,
           },
           xAxis: {
             lineWidth: 0,
