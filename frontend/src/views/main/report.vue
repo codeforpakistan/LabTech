@@ -51,17 +51,17 @@
         color: #555;
     }
     .highcharts-data-table th {
-      font-weight: 600;
-        padding: 0.5em;
+      font-weight: 700;
+      padding: 0.5em;
     }
     .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
-        padding: 0.5em;
+      padding: 0.5em;
     }
     .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
-        background: #f8f8f8;
+      background: #f8f8f8;
     }
     .highcharts-data-table tr:hover {
-        background: #f1f7ff;
+      background: #f1f7ff;
     }
 </style>
 <template>
@@ -246,8 +246,6 @@ export default class Reporting extends Vue {
             ndata.push([each.question, -each.answer_false_perc]);
           })
         }
-        pdata[0].answer_true_perc = 80;
-        pdata[0].answer_false_perc = 10;
         Highcharts.chart({
           chart: {
             renderTo: 'container',
