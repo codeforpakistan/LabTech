@@ -101,7 +101,8 @@ export const actions = {
     },
     async actionGetHospitalStatistics(context: MainContext, ids: any) {
         try {
-            const response = await api.getHospitalStatistics(context.rootState.main.token, ids.hospitalId, ids.departmentId);
+            const response = await api.getHospitalStatistics(context.rootState.main.token,
+            ids.hospitalId, ids.departmentId);
             if (response) {
                 commitHospitalStatistics(context, response.data);
             }
@@ -117,7 +118,6 @@ export const actions = {
                 api.createHospitalDepartment(context.rootState.main.token, payload),
                 await new Promise<void>((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
-            commitSetHospitalDepartments(context, response.data);
             commitRemoveNotification(context, loadingNotification);
             commitAddNotification(context, { content: 'Department successfully created', color: 'success' });
         } catch (error) {
@@ -142,7 +142,6 @@ export const actions = {
                 api.CreateDepartmentSurvey(context.rootState.main.token, payload),
                 await new Promise<void>((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
-            commitSetSurveys(context, response.data);
             commitRemoveNotification(context, loadingNotification);
             commitAddNotification(context, { content: 'Department Survey successfully created', color: 'success' });
         } catch (error) {

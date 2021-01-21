@@ -29,15 +29,16 @@ import {
   IHospital,
   IDepartmentCreate,
 } from '@/interfaces';
-import { dispatchGetHospitals, dispatchCreateHospitalDepartment } from '@/store/admin/actions';
+import { dispatchCreateHospitalDepartment } from '@/store/admin/actions';
 
 @Component
 export default class CreateHospitalDepartment extends Vue {
   public valid = false;
   public name: string = '';
+  private id: number = -1;
 
   public async mounted() {
-    await dispatchGetHospitals(this.$store);
+    this.id = parseInt(this.$router.currentRoute.params.id, 10);
     this.reset();
   }
 
@@ -53,11 +54,12 @@ export default class CreateHospitalDepartment extends Vue {
   public async submit() {
     const updatedDepartment: IDepartmentCreate = {
       name: this.name,
-      hospital_id: 1,
+      hospital_id: this.id,
       owner_id: 1,
     };
     await dispatchCreateHospitalDepartment(this.$store, updatedDepartment);
-    this.$router.push('/main/admin/hospital/1');
+    this.$router.push('/main/admin/hospital/' + this.id);
+    return;
   }
 }
 </script>

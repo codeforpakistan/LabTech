@@ -113,7 +113,8 @@ import { Store } from 'vuex';
 import Highcharts from 'highcharts';
 import drilldown from 'highcharts/modules/drilldown';
 drilldown( Highcharts );
-import { readOverAllStatistics, readHospitalsStatistics, readAdminHospital, readHospitalDepartments } from '@/store/admin/getters';
+import { readOverAllStatistics, readHospitalsStatistics,
+        readAdminHospital, readHospitalDepartments } from '@/store/admin/getters';
 import { dispatchGetOverAllStatistics, dispatchGetHospitalStatistics,
         dispatchGetHospitals, dispatchGetHospitalDepartments} from '@/store/admin/actions';
 
@@ -161,7 +162,7 @@ export default class Reporting extends Vue {
 
   private async mounted() {
     await dispatchGetHospitals(this.$store);
-    this.consturctOverAllStatistics();      
+    this.consturctOverAllStatistics();
   }
 
   private async consturctOverAllStatistics() {
@@ -178,8 +179,8 @@ export default class Reporting extends Vue {
     };
     await dispatchGetHospitalDepartments(this.$store, hospital.id);
     await dispatchGetHospitalStatistics(this.$store, {
-      hospitalId: this.select.id, 
-      departmentId: 0
+      hospitalId: this.select.id,
+      departmentId: 0,
     });
     this.calculateTotalSubmissions(false);
     this.constructSurveyChart(this.hospitalStatistics);
@@ -189,11 +190,11 @@ export default class Reporting extends Vue {
     this.selectedDepartment = {
       id: '',
       name: '',
-    }
+    };
     this.select = {
       id: '',
-      name: ''
-    }
+      name: '',
+    };
   }
 
   private async changeDepartment(value) {
@@ -206,8 +207,8 @@ export default class Reporting extends Vue {
     } else {
       this.totalSubmissions = 0;
       await dispatchGetHospitalStatistics(this.$store, {
-        hospitalId: this.select.id, 
-        departmentId: this.selectedDepartment.id
+        hospitalId: this.select.id,
+        departmentId: this.selectedDepartment.id,
       });
       this.calculateTotalSubmissions(false);
       this.constructSurveyChart(this.hospitalStatistics);
@@ -224,7 +225,7 @@ export default class Reporting extends Vue {
       this.constructSelectedHospitalStatistics(value);
     }
   }
-  
+
   private constructSurveyChart(hospitalStatistics) {
     const vm = this;
     const pdata: any = [];

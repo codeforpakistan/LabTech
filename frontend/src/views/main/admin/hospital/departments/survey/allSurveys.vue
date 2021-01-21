@@ -6,19 +6,19 @@ import { Component, Vue } from 'vue-property-decorator';
         Manage Survey
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn color="primary" to="/main/admin/hospital/1/department/1/survey/create">Create Survey</v-btn>
+      <v-btn color="primary" :to="'/main/admin/hospital/' + hospitalId + '/department/' + departmentId + '/survey/create'">Create Survey</v-btn>
     </v-toolbar>
     <v-data-table :headers="headers" :items="departmentSurveys">
       <template slot="items" slot-scope="props">
         <td>{{ props.item.name }}</td>
         <td>{{ props.item.questions | json }}</td>
         <td class="justify-center layout px-0" colspan="2">
-          <v-tooltip top>
+          <!-- <v-tooltip top>
             <span>Edit</span>
             <v-btn slot="activator" flat :to="{name: 'main-admin-hospital-department-survey-create', params: {id: props.item.id}}">
               <v-icon>edit</v-icon>
             </v-btn>
-          </v-tooltip>
+          </v-tooltip> -->
         </td>
       </template>
     </v-data-table>
@@ -36,7 +36,8 @@ import { ISurvey } from '@/interfaces';
 @Component
 export default class AdminHospitals extends Vue {
   [x: string]: any;
-  public id: any;
+  public departmentId: string = '';
+  public hospitalId: string = '';
   public hospitals: ISurvey[] = [];
   public headers = [
     {
@@ -60,8 +61,11 @@ export default class AdminHospitals extends Vue {
   ];
 
   public async mounted() {
-    this.id = this.$router.currentRoute.params.id;
-    await dispatchGetDepartmentSurveys(this.$store, this.id);
+    let fullPath: any = this.$router.currentRoute.fullPath;
+    fullPath = fullPath.split('/');
+    this.hospitalId = fullPath[4];
+    this.departmentId = this.$router.currentRoute.params.id;
+    await dispatchGetDepartmentSurveys(this.$store, parseInt(this.departmentId, 10));
   }
 
   get departmentSurveys() {
