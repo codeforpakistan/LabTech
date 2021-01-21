@@ -1,6 +1,6 @@
  <style>
     #container {
-        height: 400px;
+      height: 550px;
     }
 
     .highcharts-data-table table {
@@ -13,22 +13,22 @@
       max-width: 500px;
     }
     .highcharts-data-table caption {
-        padding: 1em 0;
-        font-size: 1.2em;
-        color: #555;
+      padding: 1em 0;
+      font-size: 1.2em;
+      color: #555;
     }
     .highcharts-data-table th {
       font-weight: 600;
-        padding: 0.5em;
+      padding: 0.5em;
     }
     .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
-        padding: 0.5em;
+      padding: 0.5em;
     }
     .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
-        background: #f8f8f8;
+      background: #f8f8f8;
     }
     .highcharts-data-table tr:hover {
-        background: #f1f7ff;
+      background: #f1f7ff;
     }
     .highcharts-figure, .highcharts-data-table table {
       min-width: 700px; 
@@ -36,10 +36,6 @@
       margin: 1em auto;
     }
 
-    #container {
-        height: 660px;
-    }
-
     .highcharts-data-table table {
       font-family: Verdana, sans-serif;
       border-collapse: collapse;
@@ -55,17 +51,17 @@
         color: #555;
     }
     .highcharts-data-table th {
-      font-weight: 600;
-        padding: 0.5em;
+      font-weight: 700;
+      padding: 0.5em;
     }
     .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
-        padding: 0.5em;
+      padding: 0.5em;
     }
     .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
-        background: #f8f8f8;
+      background: #f8f8f8;
     }
     .highcharts-data-table tr:hover {
-        background: #f1f7ff;
+      background: #f1f7ff;
     }
 </style>
 <template>
@@ -235,10 +231,22 @@ export default class Reporting extends Vue {
     const pdata: any = [];
     const ndata: any = [];
     if (hospitalStatistics && hospitalStatistics[0] && hospitalStatistics[0].by_question) {
+        let zeroArray: any = [];
+        hospitalStatistics[0].by_question = hospitalStatistics[0].by_question.sort((a, b) => b.answer_true_perc - a.answer_true_perc);
         hospitalStatistics[0].by_question.forEach((each: any) => {
-          pdata.push([each.question, each.answer_true_perc]);
-          ndata.push([each.question, -each.answer_false_perc]);
+          if (each.answer_true_perc === 0 && each.answer_false_perc === 0) {
+            zeroArray.push(each);
+          } else {
+            pdata.push([each.question, each.answer_true_perc]);
+            ndata.push([each.question, -each.answer_false_perc]);
+          }
         });
+        if (zeroArray && zeroArray.length > 0) {
+          zeroArray.forEach((each: any) => {
+            pdata.push([each.question, each.answer_true_perc]);
+            ndata.push([each.question, -each.answer_false_perc]);
+          })
+        }
         Highcharts.chart({
           chart: {
             renderTo: 'container',
@@ -276,9 +284,14 @@ export default class Reporting extends Vue {
             title: {
               text: null,
             },
-            floor: -80,
+            floor: -110,
           },
           xAxis: {
+            labels: {
+              style: {
+                fontSize: '11.5px',
+              }
+            },
             lineWidth: 0,
             tickLength: 0,
             type: 'category',

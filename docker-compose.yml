@@ -69,18 +69,18 @@ services:
         # to disable www redirection remove the section: ${STACK_NAME?Variable not set}-www-redirect,
         - traefik.http.routers.${STACK_NAME?Variable not set}-proxy-http.middlewares=${STACK_NAME?Variable not set}-www-redirect,${STACK_NAME?Variable not set}-https-redirect
 
-  db:
-    image: postgres:12
-    volumes:
-      - app-db-data:/var/lib/postgresql/data/pgdata
-    env_file:
-      - .env
-    environment:
-      - PGDATA=/var/lib/postgresql/data/pgdata
-    deploy:
-      placement:
-        constraints:
-          - node.labels.${STACK_NAME?Variable not set}.app-db-data == true
+  # db:
+  #   image: postgres:12
+  #   volumes:
+  #     - app-db-data:/var/lib/postgresql/data/pgdata
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - PGDATA=/var/lib/postgresql/data/pgdata
+  #   deploy:
+  #     placement:
+  #       constraints:
+  #         - node.labels.${STACK_NAME?Variable not set}.app-db-data == true
 
   pgadmin:
     restart: always
@@ -88,8 +88,6 @@ services:
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - default
-    depends_on:
-      - db
     env_file:
       - .env
     deploy:
@@ -144,8 +142,6 @@ services:
   backend:
     restart: always
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
-    depends_on:
-      - db
     env_file:
       - .env
     environment:
@@ -169,7 +165,6 @@ services:
     restart: always
     image: '${DOCKER_IMAGE_CELERYWORKER?Variable not set}:${TAG-latest}'
     depends_on:
-      - db
       - queue
     env_file:
       - .env
