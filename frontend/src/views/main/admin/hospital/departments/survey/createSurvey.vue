@@ -8,16 +8,22 @@
         <template>
           <v-form v-model="valid" ref="form" lazy-validation>
             <v-text-field label="Name" v-model="name" required></v-text-field>
-            <div v-for="eachQuestion in questions" :key="eachQuestion.id">
+            <div v-for="(eachQuestion, index) in questions" :key="eachQuestion.id" class="mt-3">
               <v-text-field label="Question" v-model="eachQuestion.question" required></v-text-field>
               <v-text-field label="Question Alias" v-model="eachQuestion.alias" required></v-text-field>
               <v-text-field label="Question Weightage" v-model="eachQuestion.weightage" type="number" required></v-text-field>
-              <v-text-field label="Sub Question" v-model="eachQuestion.sub_questions[0].question"></v-text-field>
-              <v-text-field label="Sub Question Alias" v-model="eachQuestion.sub_questions[0].alias"></v-text-field>
-              <v-text-field label="Sub Question Weightage" v-model="eachQuestion.sub_questions[0].weightage" type="number"></v-text-field>
+              <div v-for="eachSubQuestion in eachQuestion.sub_questions" :key="eachSubQuestion.id" class="mt-4">
+                <v-text-field label="Sub Question" v-model="eachSubQuestion.question"></v-text-field>
+                <v-text-field label="Sub Question Alias" v-model="eachSubQuestion.alias"></v-text-field>
+                <v-text-field label="Sub Question Weightage" v-model="eachSubQuestion.weightage" type="number"></v-text-field>
+              </div>
+              <v-btn @click="addNewSubQuestion(index)" class="mb-3">Add New Sub Question</v-btn>
             </div>
           </v-form>
-          <v-btn @click="addQuestion">Add New Question</v-btn>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="addQuestion" class="text-right">Add New Question</v-btn>
+          </v-card-actions>
         </template>
       </v-card-text>
       <v-card-actions>
@@ -53,6 +59,7 @@ export default class CreateHospitalDepartment extends Vue {
     alias: '',
     weightage: null,
     sub_questions: [{
+      id: 1,
       question: '',
       alias: '',
       weightage: null,
@@ -84,6 +91,17 @@ export default class CreateHospitalDepartment extends Vue {
       const anotherQuestion: any = JSON.parse(JSON.stringify(this.sampleQuestion));
       anotherQuestion.id++;
       this.questions.push(anotherQuestion);
+    }
+  }
+
+  public addNewSubQuestion(index) {
+     if (this.questions[index].sub_questions[this.questions[index].sub_questions.length - 1].question) {
+      const anotherSubQuestion: any = JSON.parse(JSON.stringify(this.questions[index].sub_questions[this.questions[index].sub_questions.length - 1]));
+      anotherSubQuestion.id++;
+      anotherSubQuestion.question = '';
+      anotherSubQuestion.weightage = '';
+      anotherSubQuestion.alias = '';
+      this.questions[index].sub_questions.push(anotherSubQuestion);
     }
   }
 
