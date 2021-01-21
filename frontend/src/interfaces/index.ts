@@ -74,5 +74,5 @@ export interface IStatistics {
         question: string,
         answer_true_perc: number,
         answer_false_perc: number,
-    }]
+    }];
 }

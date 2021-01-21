@@ -6,7 +6,7 @@ import { Component, Vue } from 'vue-property-decorator';
         Manage Departments
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn color="primary" to="/main/admin/hospital/1/department/create">Create Department</v-btn>
+      <v-btn color="primary" :to="'/main/admin/hospital/' + id + '/department/create'">Create Department</v-btn>
     </v-toolbar>
     <v-data-table :headers="headers" :items="departments">
       <template slot="items" slot-scope="props">
@@ -14,16 +14,16 @@ import { Component, Vue } from 'vue-property-decorator';
         <td class="justify-center layout px-0" colspan="2">
           <v-tooltip top>
             <span>View/Add/Edit Survey</span>
-            <v-btn slot="activator" flat :to="{name: 'main-admin-hospital-department-survey', params: {id: props.item.id}}">
+            <v-btn slot="activator" flat :to="{path: `/main/admin/hospital/${id}/department/${props.item.id}`, params: {departmentId: props.item.id}}">
               <v-icon>home</v-icon>
             </v-btn>
           </v-tooltip>
-          <v-tooltip top>
+          <!-- <v-tooltip top>
             <span>Edit</span>
             <v-btn slot="activator" flat :to="{name: 'main-admin-users-edit', params: {id: props.item.id}}">
               <v-icon>edit</v-icon>
             </v-btn>
-          </v-tooltip>
+          </v-tooltip> -->
         </td>
       </template>
     </v-data-table>

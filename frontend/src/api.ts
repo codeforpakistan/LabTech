@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { apiUrl } from '@/env';
-import { IUserProfile, IUserProfileUpdate, IUserProfileCreate, IHospital, IHospitalCreate, IDepartmentCreate, ISurveyCreate } from './interfaces';
+import { IUserProfile, IUserProfileUpdate,
+  IUserProfileCreate, IHospital, IHospitalCreate, IDepartmentCreate, ISurveyCreate } from './interfaces';
 
 function authHeaders(token: string) {
   return {
@@ -64,6 +65,7 @@ export const api = {
     return axios.get(`${apiUrl}/api/v1/submissions/report/by-questions`, authHeaders(token));
   },
   async getHospitalStatistics(token: string, hospitalId?: number, departmentId?: number) {
-    return axios.get(`${apiUrl}/api/v1/submissions/report/by-questions/` + hospitalId + '/' + (departmentId ? departmentId : 0), authHeaders(token));
+    return axios.get(`${apiUrl}/api/v1/submissions/report/by-questions/`
+    + hospitalId + '/' + (departmentId ? departmentId : 0), authHeaders(token));
   },
 };
