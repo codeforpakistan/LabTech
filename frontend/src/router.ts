@@ -114,7 +114,7 @@ export default new Router({
                       path: 'edit/:id',
                       name: 'main-admin-hospitals-edit',
                       component: () => import(
-                        /* webpackChunkName: 'main-admin-hospitals-edit' */ './views/main/admin/EditUser.vue'),
+                        /* webpackChunkName: 'main-admin-hospitals-edit' */ './views/main/admin/hospital/EditHospital.vue'),
                     },
                     {
                       path: 'create',
@@ -143,7 +143,13 @@ export default new Router({
                       path: 'department/create',
                       name: 'main-admin-hospital-department-create',
                       component: () => import(
-                        /* webpackChunkName: 'main-admin-hospitals-create' */ './views/main/admin/hospital/departments/CreateDepartment.vue'),
+                        /* webpackChunkName: 'main-admin-hospital-department-create' */ './views/main/admin/hospital/departments/CreateDepartment.vue'),
+                    },
+                    {
+                      path: 'department/edit/:departmentId',
+                      name: 'main-admin-hospital-department-edit',
+                      component: () => import(
+                        /* webpackChunkName: 'main-admin-hospital-department-edit' */ './views/main/admin/hospital/departments/EditDepartment.vue'),
                     },
                     {
                       path: 'department/:id',

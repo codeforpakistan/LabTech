@@ -19,6 +19,13 @@ export const getters = {
             return { ...filteredHospitals[0] };
         }
     },
+    adminOneDepartment: (state: AdminState) => (departmentId: number) => {
+        const filteredDepartments =
+            state.hospitalDepartments.filter((department) => department && department.id === departmentId);
+        if (filteredDepartments.length > 0) {
+            return { ...filteredDepartments[0] };
+        }
+    },
     hospitalDepartments: (state: AdminState) => state.hospitalDepartments,
     departmentSurveys: (state: AdminState) => state.departmentSurveys,
 };
@@ -28,11 +35,12 @@ const { read } = getStoreAccessors<AdminState, State>('');
 export const readAdminOneUser = read(getters.adminOneUser);
 export const readAdminUsers = read(getters.adminUsers);
 
-export const readOverAllStatistics = read(getters.overAllStatistics);
 export const readHospitalsStatistics = read(getters.readHospitalsStatistics);
 export const readAdminOneHospital = read(getters.adminOneHospital);
 export const readAdminHospital = read(getters.adminHospital);
+
+export const readOverAllStatistics = read(getters.overAllStatistics);
+
 export const readHospitalDepartments = read(getters.hospitalDepartments);
 export const readDepartmentSurveys = read(getters.departmentSurveys);
-
-
+export const readAdminOneDepartment = read(getters.adminOneDepartment);

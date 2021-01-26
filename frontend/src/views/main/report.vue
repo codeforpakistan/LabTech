@@ -231,8 +231,9 @@ export default class Reporting extends Vue {
     const pdata: any = [];
     const ndata: any = [];
     if (hospitalStatistics && hospitalStatistics[0] && hospitalStatistics[0].by_question) {
-        let zeroArray: any = [];
-        hospitalStatistics[0].by_question = hospitalStatistics[0].by_question.sort((a, b) => b.answer_true_perc - a.answer_true_perc);
+        const zeroArray: any = [];
+        hospitalStatistics[0].by_question =
+          hospitalStatistics[0].by_question.sort((a, b) => b.answer_true_perc - a.answer_true_perc);
         hospitalStatistics[0].by_question.forEach((each: any) => {
           if (each.answer_true_perc === 0 && each.answer_false_perc === 0) {
             zeroArray.push(each);
@@ -245,7 +246,7 @@ export default class Reporting extends Vue {
           zeroArray.forEach((each: any) => {
             pdata.push([each.question, each.answer_true_perc]);
             ndata.push([each.question, -each.answer_false_perc]);
-          })
+          });
         }
         Highcharts.chart({
           chart: {
@@ -290,7 +291,7 @@ export default class Reporting extends Vue {
             labels: {
               style: {
                 fontSize: '11.5px',
-              }
+              },
             },
             lineWidth: 0,
             tickLength: 0,
