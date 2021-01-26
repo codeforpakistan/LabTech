@@ -1,6 +1,6 @@
 import { api } from '@/api';
 import { ActionContext } from 'vuex';
-import { IHospital, ISurveyCreate, IDepartmentCreate} from '@/interfaces';
+import { IHospitalUpdate, ISurveyCreate, IDepartmentCreate, IDepartmentUpdate} from '@/interfaces';
 import { IUserProfileCreate, IUserProfileUpdate, IHospitalCreate } from '@/interfaces';
 import { State } from '../state';
 import { AdminState } from './state';
@@ -45,6 +45,21 @@ export const actions = {
             if (response) {
                 commitSetHospitalDepartments(context, response.data);
             }
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
+    async actionUpdateHospital(context: MainContext, payload: { id: number, hospital: IHospitalUpdate }) {
+        try {
+            const loadingNotification = { content: 'saving', showProgress: true };
+            commitAddNotification(context, loadingNotification);
+            const response = (await Promise.all([
+                api.updateHospital(context.rootState.main.token, payload.id, payload.hospital),
+                await new Promise<void>((resolve, reject) => setTimeout(() => resolve(), 500)),
+            ]))[0];
+            // commitSetUser(context, response.data);
+            commitRemoveNotification(context, loadingNotification);
+            commitAddNotification(context, { content: 'Hospital successfully updated', color: 'success' });
         } catch (error) {
             await dispatchCheckApiError(context, error);
         }
@@ -124,6 +139,20 @@ export const actions = {
             await dispatchCheckApiError(context, error);
         }
     },
+    async actionUpdateDepartment(context: MainContext, payload: { id: number, department: IDepartmentUpdate }) {
+        try {
+            const loadingNotification = { content: 'saving', showProgress: true };
+            commitAddNotification(context, loadingNotification);
+            const response = (await Promise.all([
+                api.updateDepartment(context.rootState.main.token, payload.id, payload.department),
+                await new Promise<void>((resolve, reject) => setTimeout(() => resolve(), 500)),
+            ]))[0];
+            commitRemoveNotification(context, loadingNotification);
+            commitAddNotification(context, { content: 'Department successfully updated', color: 'success' });
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
     async actionGetDepartmentSurveys(context: MainContext, departmentId: number) {
         try {
             const response = await api.getDepartmentSurveys(context.rootState.main.token, departmentId);
@@ -160,9 +189,11 @@ export const dispatchGetHospitalStatistics = dispatch(actions.actionGetHospitalS
 
 export const dispatchGetHospitals = dispatch(actions.actionGetHospitals);
 export const dispatchCreateHospital = dispatch(actions.actionCreateHospital);
+export const dispatchUpdateHospital = dispatch(actions.actionUpdateHospital);
 
 export const dispatchGetHospitalDepartments = dispatch(actions.actionGetHospitalDepartments);
 export const dispatchCreateHospitalDepartment = dispatch(actions.actionCreateHospitalDepartment);
+export const dispatchUpdateDepartment = dispatch(actions.actionUpdateDepartment);
 
 export const dispatchGetDepartmentSurveys = dispatch(actions.actionGetDepartmentSurveys);
 export const dispatchCreateDepartmentSurvey = dispatch(actions.actionCreateDepartmentSurvey);

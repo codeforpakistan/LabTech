@@ -22,12 +22,12 @@ import { Component, Vue } from 'vue-property-decorator';
               <v-icon>home</v-icon>
             </v-btn>
           </v-tooltip>
-          <!-- <v-tooltip top>
+          <v-tooltip top>
             <span>Edit</span>
-            <v-btn slot="activator" flat :to="{name: 'main-admin-users-edit', params: {id: props.item.id}}">
+            <v-btn slot="activator" flat :to="{name: 'main-admin-hospitals-edit', params: {id: props.item.id}}">
               <v-icon>edit</v-icon>
             </v-btn>
-          </v-tooltip> -->
+          </v-tooltip>
         </td>
       </template>
     </v-data-table>
