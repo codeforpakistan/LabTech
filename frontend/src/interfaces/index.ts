@@ -33,6 +33,16 @@ export interface IHospital {
     id: number;
 }
 
+export interface IHospitalUpdate {
+    name: string;
+    address: string;
+    owner_id: number;
+    create_date: Date;
+    lat: string;
+    lng: string;
+    id: number;
+}
+
 export interface IHospitalCreate {
     name: string;
     address: string;
@@ -48,7 +58,13 @@ export interface IDepartmentCreate {
     hospital_id: number;
 }
 
+export interface IDepartmentUpdate {
+    id: number;
+    name: string;
+}
+
 export interface IDepartment {
+    id: number;
     name: string;
 }
 

@@ -96,7 +96,8 @@ export default class CreateHospitalDepartment extends Vue {
 
   public addNewSubQuestion(index) {
      if (this.questions[index].sub_questions[this.questions[index].sub_questions.length - 1].question) {
-      const anotherSubQuestion: any = JSON.parse(JSON.stringify(this.questions[index].sub_questions[this.questions[index].sub_questions.length - 1]));
+      const anotherSubQuestion: any =
+       JSON.parse(JSON.stringify(this.questions[index].sub_questions[this.questions[index].sub_questions.length - 1]));
       anotherSubQuestion.id++;
       anotherSubQuestion.question = '';
       anotherSubQuestion.weightage = '';
