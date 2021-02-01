@@ -11,7 +11,7 @@ import { Component, Vue } from 'vue-property-decorator';
     <v-data-table :headers="headers" :items="departmentSurveys">
       <template slot="items" slot-scope="props">
         <td>{{ props.item.name }}</td>
-        <td>{{ props.item.questions | json }}</td>
+        <td>{{ props.item.questions }}</td>
         <td class="justify-center layout px-0" colspan="2">
           <!-- <v-tooltip top>
             <span>Edit</span>

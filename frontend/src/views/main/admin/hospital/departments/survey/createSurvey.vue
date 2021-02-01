@@ -8,14 +8,34 @@
         <template>
           <v-form v-model="valid" ref="form" lazy-validation>
             <v-text-field label="Name" v-model="name" required></v-text-field>
-            <div v-for="(eachQuestion, index) in questions" :key="eachQuestion.id" class="mt-3">
-              <v-text-field label="Question" v-model="eachQuestion.question" required></v-text-field>
-              <v-text-field label="Question Alias" v-model="eachQuestion.alias" required></v-text-field>
-              <v-text-field label="Question Weightage" v-model="eachQuestion.weightage" type="number" required></v-text-field>
-              <div v-for="eachSubQuestion in eachQuestion.sub_questions" :key="eachSubQuestion.id" class="mt-4">
-                <v-text-field label="Sub Question" v-model="eachSubQuestion.question"></v-text-field>
-                <v-text-field label="Sub Question Alias" v-model="eachSubQuestion.alias"></v-text-field>
-                <v-text-field label="Sub Question Weightage" v-model="eachSubQuestion.weightage" type="number"></v-text-field>
+            <div v-for="(eachQuestion, index) in questions" :key="eachQuestion.q_id" class="mt-3">
+              <div v-if="eachQuestion">
+                <v-text-field label="Question" v-model="eachQuestion.question" required></v-text-field>
+                <v-text-field label="Question Alias" v-model="eachQuestion.alias" required></v-text-field>
+                <v-select
+                  v-model="eachQuestion.weightage"
+                  :items="options"
+                  label="Question Weightage"
+                  persistent-hint
+                  return-object
+                  single-line
+                  clearable
+                  required
+                ></v-select>
+                <div v-for="eachSubQuestion in eachQuestion.sub_questions" :key="eachSubQuestion.s_q_id" class="mt-4">
+                  <v-text-field label="Sub Question" v-model="eachSubQuestion.question"></v-text-field>
+                  <v-text-field label="Sub Question Alias" v-model="eachSubQuestion.alias"></v-text-field>
+                  <v-select
+                    v-model="eachSubQuestion.weightage"
+                    :items="options"
+                    label="Sub Question Weightage"
+                    persistent-hint
+                    return-object
+                    single-line
+                    clearable
+                    required
+                  ></v-select>
+                </div>
               </div>
               <v-btn @click="addNewSubQuestion(index)" class="mb-3">Add New Sub Question</v-btn>
             </div>
@@ -51,21 +71,22 @@ export default class CreateHospitalDepartment extends Vue {
   public id: any;
   public name: string = '';
   public questions: any = [];
+  private options: any  = [ 'High', 'CRITICAL', 'LOW' ];
   private hospitalId: string = '';
   private departmentId: string = '';
   private sampleQuestion: any = {
-    id: 1,
+    q_id: 1,
     question: '',
     alias: '',
     weightage: null,
     sub_questions: [{
-      id: 1,
+      s_q_id: 1,
       question: '',
       alias: '',
       weightage: null,
     }],
   };
-  public async mounted() {
+  private async mounted() {
     let fullPath: any = this.$router.currentRoute.fullPath;
     fullPath = fullPath.split('/');
     this.hospitalId = fullPath[4];
@@ -75,30 +96,30 @@ export default class CreateHospitalDepartment extends Vue {
     this.reset();
   }
 
-  public reset() {
+  private reset() {
     this.name = '';
     this.questions = [];
     this.questions.push(JSON.parse(JSON.stringify(this.sampleQuestion)));
     this.$validator.reset();
   }
 
-  public cancel() {
+  private cancel() {
     this.$router.back();
   }
 
-  public addQuestion() {
+  private addQuestion() {
     if (this.questions[this.questions.length - 1].question) {
       const anotherQuestion: any = JSON.parse(JSON.stringify(this.sampleQuestion));
-      anotherQuestion.id++;
+      anotherQuestion.q_id++;
       this.questions.push(anotherQuestion);
     }
   }
 
-  public addNewSubQuestion(index) {
+  private addNewSubQuestion(index) {
      if (this.questions[index].sub_questions[this.questions[index].sub_questions.length - 1].question) {
       const anotherSubQuestion: any =
        JSON.parse(JSON.stringify(this.questions[index].sub_questions[this.questions[index].sub_questions.length - 1]));
-      anotherSubQuestion.id++;
+      anotherSubQuestion.s_q_id++;
       anotherSubQuestion.question = '';
       anotherSubQuestion.weightage = '';
       anotherSubQuestion.alias = '';
@@ -106,7 +127,7 @@ export default class CreateHospitalDepartment extends Vue {
     }
   }
 
-  public async submit() {
+  private async submit() {
     const updatedSurvey: ISurveyCreate = {
       name: this.name,
       owner_id: 1,
