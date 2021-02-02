@@ -70,6 +70,7 @@ def read_submissions_report(
                     'department': department.name,
                     'answer': answer['answer'],
                     'question': answer.get('alias', '') if answer.get('alias', '') != '' else answer.get('question', ''),
+                    'weightage': int(answer.get('weightage', 0)),
                     'date': submission.created_date
                 })
 
@@ -83,6 +84,7 @@ def read_submissions_report(
                         'department': department.name,
                         'answer': sub_answer['answer'],
                         'question': sub_answer.get('alias', '') if sub_answer.get('alias', '') != '' else sub_answer.get('question', ''),
+                        'weightage': int(answer.get('weightage', 0)),
                         'date': submission.created_date
                     })
 
@@ -145,6 +147,7 @@ def read_submissions_report_by_hospital(
                         'department': department.name,
                         'answer': answer['answer'],
                         'question': answer.get('alias', '') if answer.get('alias', '') != '' else answer.get('question', ''),
+                        'weightage': int(answer.get('weightage', 0)),
                         'date': submission.created_date
                     })
 
@@ -155,6 +158,7 @@ def read_submissions_report_by_hospital(
                             'department': department.name,
                             'answer': sub_answer['answer'],
                             'question': sub_answer.get('alias', '') if sub_answer.get('alias', '') != '' else sub_answer.get('question', ''),
+                            'weightage': int(answer.get('weightage', 0)),
                             'date': submission.created_date
                         })
 
