@@ -70,7 +70,7 @@ def read_submissions_report(
                     'department': department.name,
                     'answer': answer['answer'],
                     'question': answer.get('alias', '') if answer.get('alias', '') != '' else answer.get('question', ''),
-                    'weightage': int(answer.get('weightage', 0)),
+                    'weightage': str(answer.get('weightage', 0)),
                     'date': submission.created_date
                 })
 
@@ -84,7 +84,7 @@ def read_submissions_report(
                         'department': department.name,
                         'answer': sub_answer['answer'],
                         'question': sub_answer.get('alias', '') if sub_answer.get('alias', '') != '' else sub_answer.get('question', ''),
-                        'weightage': int(answer.get('weightage', 0)),
+                        'weightage': str(answer.get('weightage', 0)),
                         'date': submission.created_date
                     })
 
@@ -108,7 +108,8 @@ def read_submissions_report(
     df['count'] = 1
     df['answer_true'] = df['answer'].apply(lambda x: 1 if x == True else 0)
     df['answer_false'] = df['answer'].apply(lambda x: 0 if x == True else 1)
-    aggs = df[['question', 'answer_true', 'answer_false', 'count']].groupby(['question'], as_index=False).sum()
+    aggs = df[['question', 'weightage', 'answer_true', 'answer_false', 'count']] \
+        .groupby(['question', 'weightage'], as_index=False).sum()
     aggs['answer_true_perc'] = aggs[['answer_true', 'count']] \
         .apply(lambda x: round(x[0]/x[1], 2)*100 if x[1] != 0 else 0, axis=1)
     aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
@@ -147,7 +148,7 @@ def read_submissions_report_by_hospital(
                         'department': department.name,
                         'answer': answer['answer'],
                         'question': answer.get('alias', '') if answer.get('alias', '') != '' else answer.get('question', ''),
-                        'weightage': int(answer.get('weightage', 0)),
+                        'weightage': str(answer.get('weightage', 0)),
                         'date': submission.created_date
                     })
 
@@ -158,7 +159,7 @@ def read_submissions_report_by_hospital(
                             'department': department.name,
                             'answer': sub_answer['answer'],
                             'question': sub_answer.get('alias', '') if sub_answer.get('alias', '') != '' else sub_answer.get('question', ''),
-                            'weightage': int(answer.get('weightage', 0)),
+                            'weightage': str(answer.get('weightage', 0)),
                             'date': submission.created_date
                         })
 
@@ -175,7 +176,8 @@ def read_submissions_report_by_hospital(
     df['count'] = 1
     df['answer_true'] = df['answer'].apply(lambda x: 1 if x == True else 0)
     df['answer_false'] = df['answer'].apply(lambda x: 0 if x == True else 1)
-    aggs = df[['question', 'answer_true', 'answer_false', 'count']].groupby(['question'], as_index=False).sum()
+    aggs = df[['question', 'weightage', 'answer_true', 'answer_false', 'count']] \
+        .groupby(['question', 'weightage'], as_index=False).sum()
     aggs['answer_true_perc'] = aggs[['answer_true', 'count']] \
         .apply(lambda x: round(x[0]/x[1],2)*100 if x[1] != 0 else 0, axis=1)
     aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
