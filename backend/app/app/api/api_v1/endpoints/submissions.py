@@ -20,6 +20,12 @@ weightage_to_color_dict = {
     '2': '#FE8300',
     '3': '#FE0000'
 }
+weightage_to_level_dict = {
+    '1': 'LOW',
+    '2': 'HIGH',
+    '3': 'CRITICAL'
+}
+
 
 @router.get("/", response_model=List[schemas.Submission])
 def read_submissions(
@@ -122,6 +128,8 @@ def read_submissions_report(
     aggs = aggs.to_dict(orient='records')
     for question in aggs:
         question['color'] = weightage_to_color_dict.get(question.get('weightage', '1'))
+        question['weightage'] = weightage_to_level_dict.get(question.get('weightage', '1'))
+        
 
     return {
         'total_submissions': total_submissions,
@@ -193,6 +201,7 @@ def read_submissions_report_by_hospital(
     aggs = aggs.to_dict(orient='records')
     for question in aggs:
         question['color'] = weightage_to_color_dict.get(question.get('weightage', '1'))
+        question['weightage'] = weightage_to_level_dict.get(question.get('weightage', '1'))
 
     return {
         'total_submissions': total_submissions,
