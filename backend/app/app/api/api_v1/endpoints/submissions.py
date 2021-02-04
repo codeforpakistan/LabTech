@@ -125,6 +125,7 @@ def read_submissions_report(
         .apply(lambda x: round(x[0]/x[1], 2)*100 if x[1] != 0 else 0, axis=1)
     aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
         .apply(lambda x: round(x[0]/x[1], 2)*100 if x[1] != 0 else 0, axis=1)
+    aggs = aggs.sort_values(by=['weightage'])
     aggs = aggs.to_dict(orient='records')
     for question in aggs:
         question['color'] = weightage_to_color_dict.get(question.get('weightage', '1'))
@@ -198,6 +199,7 @@ def read_submissions_report_by_hospital(
         .apply(lambda x: round(x[0]/x[1],2)*100 if x[1] != 0 else 0, axis=1)
     aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
         .apply(lambda x: round(x[0]/x[1],2)*100 if x[1] != 0 else 0, axis=1)
+    aggs = aggs.sort_values(by=['weightage'])
     aggs = aggs.to_dict(orient='records')
     for question in aggs:
         question['color'] = weightage_to_color_dict.get(question.get('weightage', '1'))
