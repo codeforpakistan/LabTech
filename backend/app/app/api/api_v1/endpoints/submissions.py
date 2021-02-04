@@ -98,7 +98,7 @@ def read_submissions_report(
                         'weightage': str(answer.get('weightage', 0)),
                         'date': submission.created_date
                     })
-
+                
                 if sub_answer.get('answer'):
                     weightage += sub_answer.get('weightage', 0)
         submissions_list.append({
@@ -122,16 +122,15 @@ def read_submissions_report(
     aggs = df[['question', 'weightage', 'answer_true', 'answer_false', 'count']] \
         .groupby(['question', 'weightage'], as_index=False).sum()
     aggs['answer_true_perc'] = aggs[['answer_true', 'count']] \
-        .apply(lambda x: round(x[0]/x[1], 2)*100 if x[1] != 0 else 0, axis=1)
+        .apply(lambda x: int(round(x[0]/x[1], 2)*100) if x[1] != 0 else 0, axis=1)
     aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
-        .apply(lambda x: round(x[0]/x[1], 2)*100 if x[1] != 0 else 0, axis=1)
+        .apply(lambda x: int(round(x[0]/x[1], 2)*100) if x[1] != 0 else 0, axis=1)
     aggs = aggs.sort_values(by=['weightage'])
     aggs = aggs.to_dict(orient='records')
     for question in aggs:
         question['color'] = weightage_to_color_dict.get(question.get('weightage', '1'))
         question['weightage'] = weightage_to_level_dict.get(question.get('weightage', '1'))
-        
-
+    
     return {
         'total_submissions': total_submissions,
         'by_question': aggs
@@ -196,9 +195,9 @@ def read_submissions_report_by_hospital(
     aggs = df[['question', 'weightage', 'answer_true', 'answer_false', 'count']] \
         .groupby(['question', 'weightage'], as_index=False).sum()
     aggs['answer_true_perc'] = aggs[['answer_true', 'count']] \
-        .apply(lambda x: round(x[0]/x[1],2)*100 if x[1] != 0 else 0, axis=1)
+        .apply(lambda x: int(round(x[0]/x[1], 2)*100) if x[1] != 0 else 0, axis=1)
     aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
-        .apply(lambda x: round(x[0]/x[1],2)*100 if x[1] != 0 else 0, axis=1)
+        .apply(lambda x: int(round(x[0]/x[1], 2)*100) if x[1] != 0 else 0, axis=1)
     aggs = aggs.sort_values(by=['weightage'])
     aggs = aggs.to_dict(orient='records')
     for question in aggs:
