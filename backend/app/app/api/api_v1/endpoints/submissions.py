@@ -15,6 +15,11 @@ from app.models.submission import Submission
 
 router = APIRouter()
 
+weightage_to_color_dict = {
+    '1': '#02951B',
+    '2': '#FE8300',
+    '3': '#FE0000'
+}
 
 @router.get("/", response_model=List[schemas.Submission])
 def read_submissions(
@@ -114,10 +119,13 @@ def read_submissions_report(
         .apply(lambda x: round(x[0]/x[1], 2)*100 if x[1] != 0 else 0, axis=1)
     aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
         .apply(lambda x: round(x[0]/x[1], 2)*100 if x[1] != 0 else 0, axis=1)
-    
+    aggs = aggs.to_dict(orient='records')
+    for question in aggs:
+        question['color'] = weightage_to_color_dict.get(question.get('weightage', '1'))
+
     return {
         'total_submissions': total_submissions,
-        'by_question': aggs.to_dict(orient='records')
+        'by_question': aggs
     }, 200
 
 
@@ -182,10 +190,13 @@ def read_submissions_report_by_hospital(
         .apply(lambda x: round(x[0]/x[1],2)*100 if x[1] != 0 else 0, axis=1)
     aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
         .apply(lambda x: round(x[0]/x[1],2)*100 if x[1] != 0 else 0, axis=1)
-    
+    aggs = aggs.to_dict(orient='records')
+    for question in aggs:
+        question['color'] = weightage_to_color_dict.get(question.get('weightage', '1'))
+
     return {
         'total_submissions': total_submissions,
-        'by_question': aggs.to_dict(orient='records')
+        'by_question': aggs
     }, 200
 
 
