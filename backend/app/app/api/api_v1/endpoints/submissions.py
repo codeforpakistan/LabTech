@@ -15,6 +15,17 @@ from app.models.submission import Submission
 
 router = APIRouter()
 
+weightage_to_color_dict = {
+    '1': '#02951B',
+    '2': '#FE8300',
+    '3': '#FE0000'
+}
+weightage_to_level_dict = {
+    '1': 'LOW',
+    '2': 'HIGH',
+    '3': 'CRITICAL'
+}
+
 
 @router.get("/", response_model=List[schemas.Submission])
 def read_submissions(
@@ -70,6 +81,7 @@ def read_submissions_report(
                     'department': department.name,
                     'answer': answer['answer'],
                     'question': answer.get('alias', '') if answer.get('alias', '') != '' else answer.get('question', ''),
+                    'weightage': str(answer.get('weightage', 0)),
                     'date': submission.created_date
                 })
 
@@ -82,10 +94,11 @@ def read_submissions_report(
                         'hospital': hospital.name,
                         'department': department.name,
                         'answer': sub_answer['answer'],
-                        'question': sub_answer.get('alias', '') if sub_answer.get('alias', '') != '' else sub_answer.get('question', ''),
+                        'question': answer.get('alias', '') + '-' + sub_answer.get('alias', '') if sub_answer.get('alias', '') != '' else sub_answer.get('question', ''),
+                        'weightage': str(answer.get('weightage', 0)),
                         'date': submission.created_date
                     })
-
+                
                 if sub_answer.get('answer'):
                     weightage += sub_answer.get('weightage', 0)
         submissions_list.append({
@@ -106,15 +119,21 @@ def read_submissions_report(
     df['count'] = 1
     df['answer_true'] = df['answer'].apply(lambda x: 1 if x == True else 0)
     df['answer_false'] = df['answer'].apply(lambda x: 0 if x == True else 1)
-    aggs = df[['question', 'answer_true', 'answer_false', 'count']].groupby(['question'], as_index=False).sum()
+    aggs = df[['question', 'weightage', 'answer_true', 'answer_false', 'count']] \
+        .groupby(['question', 'weightage'], as_index=False).sum()
     aggs['answer_true_perc'] = aggs[['answer_true', 'count']] \
-        .apply(lambda x: round(x[0]/x[1], 2)*100 if x[1] != 0 else 0, axis=1)
+        .apply(lambda x: round(round(x[0]/x[1], 2)*100) if x[1] != 0 else 0, axis=1)
     aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
-        .apply(lambda x: round(x[0]/x[1], 2)*100 if x[1] != 0 else 0, axis=1)
+        .apply(lambda x: round(round(x[0]/x[1], 2)*100) if x[1] != 0 else 0, axis=1)
+    aggs = aggs.sort_values(by=['weightage'])
+    aggs = aggs.to_dict(orient='records')
+    for question in aggs:
+        question['color'] = weightage_to_color_dict.get(question.get('weightage', '1'))
+        question['weightage'] = weightage_to_level_dict.get(question.get('weightage', '1'))
     
     return {
         'total_submissions': total_submissions,
-        'by_question': aggs.to_dict(orient='records')
+        'by_question': aggs
     }, 200
 
 
@@ -145,6 +164,7 @@ def read_submissions_report_by_hospital(
                         'department': department.name,
                         'answer': answer['answer'],
                         'question': answer.get('alias', '') if answer.get('alias', '') != '' else answer.get('question', ''),
+                        'weightage': str(answer.get('weightage', 0)),
                         'date': submission.created_date
                     })
 
@@ -154,7 +174,8 @@ def read_submissions_report_by_hospital(
                             'hospital': hospital.name,
                             'department': department.name,
                             'answer': sub_answer['answer'],
-                            'question': sub_answer.get('alias', '') if sub_answer.get('alias', '') != '' else sub_answer.get('question', ''),
+                            'question': answer.get('alias', '') + '-' + sub_answer.get('alias', '') if sub_answer.get('alias', '') != '' else sub_answer.get('question', ''),
+                            'weightage': str(answer.get('weightage', 0)),
                             'date': submission.created_date
                         })
 
@@ -171,15 +192,21 @@ def read_submissions_report_by_hospital(
     df['count'] = 1
     df['answer_true'] = df['answer'].apply(lambda x: 1 if x == True else 0)
     df['answer_false'] = df['answer'].apply(lambda x: 0 if x == True else 1)
-    aggs = df[['question', 'answer_true', 'answer_false', 'count']].groupby(['question'], as_index=False).sum()
+    aggs = df[['question', 'weightage', 'answer_true', 'answer_false', 'count']] \
+        .groupby(['question', 'weightage'], as_index=False).sum()
     aggs['answer_true_perc'] = aggs[['answer_true', 'count']] \
-        .apply(lambda x: round(x[0]/x[1],2)*100 if x[1] != 0 else 0, axis=1)
+        .apply(lambda x: round(round(x[0]/x[1], 2)*100) if x[1] != 0 else 0, axis=1)
     aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
-        .apply(lambda x: round(x[0]/x[1],2)*100 if x[1] != 0 else 0, axis=1)
-    
+        .apply(lambda x: round(round(x[0]/x[1], 2)*100) if x[1] != 0 else 0, axis=1)
+    aggs = aggs.sort_values(by=['weightage'])
+    aggs = aggs.to_dict(orient='records')
+    for question in aggs:
+        question['color'] = weightage_to_color_dict.get(question.get('weightage', '1'))
+        question['weightage'] = weightage_to_level_dict.get(question.get('weightage', '1'))
+
     return {
         'total_submissions': total_submissions,
-        'by_question': aggs.to_dict(orient='records')
+        'by_question': aggs
     }, 200
 
 
