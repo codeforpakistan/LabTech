@@ -84,6 +84,15 @@ export interface ISurveyCreate {
     questions: {};
 }
 
+export interface ISurveyUpdate {
+    id: number;
+    name: string;
+    owner_id: number;
+    department_id: number;
+    create_date: Date;
+    questions: {};
+}
+
 export interface IStatistics {
     total_submissions: number;
     by_question: [{

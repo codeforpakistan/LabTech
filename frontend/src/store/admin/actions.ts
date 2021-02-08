@@ -177,16 +177,24 @@ export const actions = {
         try {
             const loadingNotification = { content: 'saving', showProgress: true };
             commitAddNotification(context, loadingNotification);
-            const response = (await Promise.all([
-                api.CreateDepartmentSurvey(context.rootState.main.token, payload),
-                await new Promise<void>((resolve) => setTimeout(() => resolve(), 500)),
-            ]))[0];
+            await  api.CreateDepartmentSurvey(context.rootState.main.token, payload);
             commitRemoveNotification(context, loadingNotification);
             commitAddNotification(context, { content: 'Department Survey successfully created', color: 'success' });
         } catch (error) {
             await dispatchCheckApiError(context, error);
         }
     },
+    async actionUpdateDepartmentSurvey(context: MainContext,  payload: { surveyId: number, survey: ISurveyCreate }) {
+        try {
+            const loadingNotification = { content: 'saving', showProgress: true };
+            commitAddNotification(context, loadingNotification);
+            await api.UpdateDepartmentSurvey(context.rootState.main.token, payload.surveyId, payload.survey);
+            commitRemoveNotification(context, loadingNotification);
+            commitAddNotification(context, { content: 'Department Survey successfully updated', color: 'success' });
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    }
 };
 
 const { dispatch } = getStoreAccessors<AdminState, State>('');
@@ -207,5 +215,6 @@ export const dispatchUpdateDepartment = dispatch(actions.actionUpdateDepartment)
 
 export const dispatchGetDepartmentSurveys = dispatch(actions.actionGetDepartmentSurveys);
 export const dispatchCreateDepartmentSurvey = dispatch(actions.actionCreateDepartmentSurvey);
+export const dispatchUpdateDepartmentSurvey = dispatch(actions.actionUpdateDepartmentSurvey);
 export const dispatchGetDepartmentSurvey = dispatch(actions.actionGetDepartmentSurvey);
 

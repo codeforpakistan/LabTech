@@ -32,10 +32,8 @@ import { Component, Vue } from 'vue-property-decorator';
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { Store } from 'vuex';
 import { readHospitalDepartments } from '@/store/admin/getters';
 import { dispatchGetHospitalDepartments } from '@/store/admin/actions';
-import { IHospital } from '@/interfaces';
 
 
 @Component
