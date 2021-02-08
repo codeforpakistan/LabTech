@@ -6,16 +6,16 @@ import { Component, Vue } from 'vue-property-decorator';
         Manage Survey
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn color="primary" :to="'/main/admin/hospital/' + hospitalId + '/department/' + departmentId + '/survey/create'">Create Survey</v-btn>
+      <v-btn color="primary" :to="{path: `/main/admin/hospital/${hospitalId}/department/${departmentId}/survey/create`, params: {id: departmentId, hospitalId: hospitalId}}">Create Survey</v-btn>
     </v-toolbar>
-    <v-data-table :headers="headers" :items="departmentSurveys">
+    <v-data-table v-if="departmentSurveys && departmentSurveys.length > 0" :headers="headers" :items="departmentSurveys">
       <template slot="items" slot-scope="props">
         <td>{{ props.item.name }}</td>
         <td>{{ props.item.questions }}</td>
         <td class="justify-center layout px-0" colspan="2">
           <v-tooltip top>
             <span>Edit</span>
-            <v-btn slot="activator" flat :to="{path: `/main/admin/hospital/${hospitalId}/department/${departmentId}/survey/edit/${props.item.id}`, params: {departmentId: departmentId, hospitalId: hospitalId, suveyId: props.item.id}}">
+            <v-btn slot="activator" flat :to="{path: `/main/admin/hospital/${hospitalId}/department/${departmentId}/survey/edit/${props.item.id}`, params: {departmentId: departmentId, hospitalId: hospitalId, surveyId: props.item.id}}">
               <v-icon>edit</v-icon>
             </v-btn>
           </v-tooltip>
@@ -27,7 +27,6 @@ import { Component, Vue } from 'vue-property-decorator';
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { Store } from 'vuex';
 import { readDepartmentSurveys } from '@/store/admin/getters';
 import { dispatchGetDepartmentSurveys } from '@/store/admin/actions';
 import { ISurvey } from '@/interfaces';

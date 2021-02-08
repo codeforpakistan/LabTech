@@ -74,9 +74,19 @@ export interface ISurvey {
     department_id: number;
     create_date: Date;
     questions: {};
+    key: any;
 }
 
 export interface ISurveyCreate {
+    name: string;
+    owner_id: number;
+    department_id: number;
+    create_date: Date;
+    questions: {};
+}
+
+export interface ISurveyUpdate {
+    id: number;
     name: string;
     owner_id: number;
     department_id: number;

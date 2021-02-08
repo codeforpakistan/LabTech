@@ -155,9 +155,10 @@ export default new Router({
                       path: 'department/:id',
                       component: RouterComponent,
                       props: true,
+                      redirect: 'department/:id/all',
                       children: [
                         {
-                          path: '',
+                          path: 'all',
                           name: 'main-admin-hospital-department-survey',
                           component: () => import(
                           /* webpackChunkName: 'main-admin-hospital-department-survey' */ './views/main/admin/hospital/departments/survey/allSurveys.vue'),
@@ -170,9 +171,9 @@ export default new Router({
                         },
                         {
                           path: 'survey/edit/:id',
-                          name: 'main-admin-hospital-department-survey-create',
+                          name: 'main-admin-hospital-department-survey-edit',
                           component: () => import(
-                            /* webpackChunkName: 'main-admin-hospital-department-survey-create' */ './views/main/admin/hospital/departments/survey/createSurvey.vue'),
+                            /* webpackChunkName: 'main-admin-hospital-department-survey-edit' */ './views/main/admin/hospital/departments/survey/editSurvey.vue'),
                         },
                       ],
                     },
