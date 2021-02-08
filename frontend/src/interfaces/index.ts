@@ -74,7 +74,6 @@ export interface ISurvey {
     department_id: number;
     create_date: Date;
     questions: {};
-    key: any;
 }
 
 export interface ISurveyCreate {
