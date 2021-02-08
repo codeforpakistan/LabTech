@@ -13,12 +13,12 @@ import { Component, Vue } from 'vue-property-decorator';
         <td>{{ props.item.name }}</td>
         <td>{{ props.item.questions }}</td>
         <td class="justify-center layout px-0" colspan="2">
-          <!-- <v-tooltip top>
+          <v-tooltip top>
             <span>Edit</span>
-            <v-btn slot="activator" flat :to="{name: 'main-admin-hospital-department-survey-create', params: {id: props.item.id}}">
+            <v-btn slot="activator" flat :to="{path: `/main/admin/hospital/${hospitalId}/department/${departmentId}/survey/edit/${props.item.id}`, params: {departmentId: departmentId, hospitalId: hospitalId, suveyId: props.item.id}}">
               <v-icon>edit</v-icon>
             </v-btn>
-          </v-tooltip> -->
+          </v-tooltip>
         </td>
       </template>
     </v-data-table>

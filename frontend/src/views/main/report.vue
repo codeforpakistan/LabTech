@@ -1,6 +1,6 @@
  <style>
     #container {
-      height: 550px;
+      height: 850px;
     }
 
     .highcharts-data-table table {
@@ -46,9 +46,9 @@
       max-width: 500px;
     }
     .highcharts-data-table caption {
-        padding: 1em 0;
-        font-size: 1.2em;
-        color: #555;
+      padding: 1em 0;
+      font-size: 1.2em;
+      color: #555;
     }
     .highcharts-data-table th {
       font-weight: 700;
@@ -231,23 +231,15 @@ export default class Reporting extends Vue {
     const pdata: any = [];
     const ndata: any = [];
     if (hospitalStatistics && hospitalStatistics[0] && hospitalStatistics[0].by_question) {
-        const zeroArray: any = [];
-        hospitalStatistics[0].by_question =
-          hospitalStatistics[0].by_question.sort((a, b) => b.answer_true_perc - a.answer_true_perc);
+        // hospitalStatistics[0].by_question = hospitalStatistics[0].by_question.sort((a, b) => 
+        //   b.answer_true_perc - a.answer_true_perc);
         hospitalStatistics[0].by_question.forEach((each: any) => {
-          if (each.answer_true_perc === 0 && each.answer_false_perc === 0) {
-            zeroArray.push(each);
-          } else {
-            pdata.push([each.question, each.answer_true_perc]);
-            ndata.push([each.question, -each.answer_false_perc]);
+          if (each.question) {
+            pdata.push([each.question, each.answer_true_perc, each.color, each.weightage]);
+            ndata.push([each.question, -each.answer_false_perc, each.color, each.weightage]);
           }
         });
-        if (zeroArray && zeroArray.length > 0) {
-          zeroArray.forEach((each: any) => {
-            pdata.push([each.question, each.answer_true_perc]);
-            ndata.push([each.question, -each.answer_false_perc]);
-          });
-        }
+        console.log(pdata, 'pd', ndata, 'n')
         Highcharts.chart({
           chart: {
             renderTo: 'container',
@@ -259,7 +251,7 @@ export default class Reporting extends Vue {
               stacking: 'normal',
               dataLabels: {
                 style: {
-                  fontSize: '8px',
+                  fontSize: '9px',
                 },
                 format: '{y}%',
               },
@@ -273,7 +265,7 @@ export default class Reporting extends Vue {
           yAxis: {
             labels: {
               format: '{value}%',
-              enabled: false,
+              enabled: true,
             },
             stackLabels: {
               enabled: true,
@@ -285,13 +277,18 @@ export default class Reporting extends Vue {
             title: {
               text: null,
             },
-            floor: -110,
+            floor: -210,
           },
           xAxis: {
             labels: {
+              enabled: true,
               style: {
-                fontSize: '11.5px',
+                fontSize: '13px',
               },
+              formatter () {
+                const data = pdata.find(each => each[0] === this.value);
+                return `<span style="color: ${data && data[2] ? data[2] : '#000000'}">${this.value.toString().toUpperCase()}</span>`
+              }
             },
             lineWidth: 0,
             tickLength: 0,

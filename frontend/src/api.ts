@@ -58,6 +58,9 @@ export const api = {
   async getDepartmentSurveys(token: string, departmentId: number) {
     return axios.get(`${apiUrl}/api/v1/surveys/?department_id=` + departmentId, authHeaders(token));
   },
+  async getSuveyById(token: string, surveyId: number) {
+    return axios.get(`${apiUrl}/api/v1/surveys/surveys/` + surveyId, authHeaders(token));
+  },
   async passwordRecovery(email: string) {
     return axios.post(`${apiUrl}/api/v1/password-recovery/${email}`);
   },

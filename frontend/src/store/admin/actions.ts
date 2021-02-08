@@ -129,7 +129,7 @@ export const actions = {
         try {
             const loadingNotification = { content: 'saving', showProgress: true };
             commitAddNotification(context, loadingNotification);
-            const response = (await Promise.all([
+            (await Promise.all([
                 api.createHospitalDepartment(context.rootState.main.token, payload),
                 await new Promise<void>((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
@@ -143,7 +143,7 @@ export const actions = {
         try {
             const loadingNotification = { content: 'saving', showProgress: true };
             commitAddNotification(context, loadingNotification);
-            const response = (await Promise.all([
+            (await Promise.all([
                 api.updateDepartment(context.rootState.main.token, payload.id, payload.department),
                 await new Promise<void>((resolve, reject) => setTimeout(() => resolve(), 500)),
             ]))[0];
@@ -156,6 +156,16 @@ export const actions = {
     async actionGetDepartmentSurveys(context: MainContext, departmentId: number) {
         try {
             const response = await api.getDepartmentSurveys(context.rootState.main.token, departmentId);
+            if (response) {
+                commitSetSurveys(context, response.data);
+            }
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
+    async actionGetDepartmentSurvey(context: MainContext, surveyId: number) {
+        try {
+            const response = await api.getSuveyById(context.rootState.main.token, surveyId);
             if (response) {
                 commitSetSurveys(context, response.data);
             }
@@ -197,3 +207,5 @@ export const dispatchUpdateDepartment = dispatch(actions.actionUpdateDepartment)
 
 export const dispatchGetDepartmentSurveys = dispatch(actions.actionGetDepartmentSurveys);
 export const dispatchCreateDepartmentSurvey = dispatch(actions.actionCreateDepartmentSurvey);
+export const dispatchGetDepartmentSurvey = dispatch(actions.actionGetDepartmentSurvey);
+

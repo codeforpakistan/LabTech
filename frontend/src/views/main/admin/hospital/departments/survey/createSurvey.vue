@@ -63,7 +63,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import {
   ISurveyCreate,
 } from '@/interfaces';
-import { dispatchGetDepartmentSurveys, dispatchCreateDepartmentSurvey } from '@/store/admin/actions';
+import { dispatchGetDepartmentSurvey, dispatchCreateDepartmentSurvey } from '@/store/admin/actions';
 
 @Component
 export default class CreateHospitalDepartment extends Vue {
@@ -86,15 +86,23 @@ export default class CreateHospitalDepartment extends Vue {
       weightage: null,
     }],
   };
-  private async mounted() {
-    let fullPath: any = this.$router.currentRoute.fullPath;
-    fullPath = fullPath.split('/');
-    this.hospitalId = fullPath[4];
-    this.departmentId = this.$router.currentRoute.params.id;
-    await dispatchGetDepartmentSurveys(this.$store, parseInt(this.departmentId, 10));
-    this.questions.push(JSON.parse(JSON.stringify(this.sampleQuestion)));
+
+  public async mounted() {
+    this.id = parseInt(this.$router.currentRoute.params.id, 10);
+    this.departmentId = parseInt(this.$router.currentRoute.params.departmentId, 10);
+    await dispatchGetDepartmentSurvey(this.$store, this.id);
     this.reset();
   }
+
+  // private async mounted() {
+  //   let fullPath: any = this.$router.currentRoute.fullPath;
+  //   fullPath = fullPath.split('/');
+  //   this.hospitalId = fullPath[4];
+  //   this.departmentId = this.$router.currentRoute.params.id;
+  //   await dispatchGetDepartmentSurveys(this.$store, parseInt(this.departmentId, 10));
+  //   this.questions.push(JSON.parse(JSON.stringify(this.sampleQuestion)));
+  //   this.reset();
+  // }
 
   private reset() {
     this.name = '';
