@@ -15,6 +15,8 @@
                 <v-select
                   v-model="eachQuestion.weightage"
                   :items="options"
+                  item-text="name"
+                  item-value="id"
                   label="Question Weightage"
                   persistent-hint
                   return-object
@@ -28,6 +30,8 @@
                   <v-select
                     v-model="eachSubQuestion.weightage"
                     :items="options"
+                    item-text="name"
+                    item-value="id"
                     label="Sub Question Weightage"
                     persistent-hint
                     return-object
@@ -71,7 +75,7 @@ export default class CreateHospitalDepartment extends Vue {
   public id: any;
   public name: string = '';
   public questions: any = [];
-  private options: any  = [ 'High', 'CRITICAL', 'LOW' ];
+  private options: any  = [{ id: 2, name: 'HIGH'}, { id: 3, name: 'CRITICAL'}, { id: 1, name: 'LOW' }];
   private hospitalId: string = '';
   private departmentId: number = -1;
   private sampleQuestion: any = {
@@ -87,22 +91,28 @@ export default class CreateHospitalDepartment extends Vue {
     }],
   };
 
+  getIdsManualy() {
+    let fullPath: any = this.$router.currentRoute.fullPath;
+    fullPath = fullPath.split('/');
+    if (fullPath[4]) {
+      this.hospitalId = fullPath[4];
+    }
+    if (fullPath[6]) {
+      this.departmentId = parseInt(fullPath[6], 10);
+    }
+  }
+
   public async mounted() {
-    this.id = parseInt(this.$router.currentRoute.params.id, 10);
-    this.departmentId = parseInt(this.$router.currentRoute.params.departmentId, 10);
+    if (!this.$router.currentRoute.params.departmentId) {
+      this.getIdsManualy();
+    } else {
+      this.hospitalId = this.$router.currentRoute.params.hospitalId;
+      this.departmentId = parseInt(this.$router.currentRoute.params.departmentId, 10);
+    }
+    this.id = this.departmentId;
     await dispatchGetDepartmentSurvey(this.$store, this.id);
     this.reset();
   }
-
-  // private async mounted() {
-  //   let fullPath: any = this.$router.currentRoute.fullPath;
-  //   fullPath = fullPath.split('/');
-  //   this.hospitalId = fullPath[4];
-  //   this.departmentId = this.$router.currentRoute.params.id;
-  //   await dispatchGetDepartmentSurveys(this.$store, parseInt(this.departmentId, 10));
-  //   this.questions.push(JSON.parse(JSON.stringify(this.sampleQuestion)));
-  //   this.reset();
-  // }
 
   private reset() {
     this.name = '';
@@ -135,7 +145,22 @@ export default class CreateHospitalDepartment extends Vue {
     }
   }
 
+  private iterate = (obj) => {
+    Object.keys(obj).forEach(key => {
+      if (key === 'weightage') {
+        obj[key] = obj[key].id
+      }
+      if (typeof obj[key] === 'object') {
+          this.iterate(obj[key])
+      }
+    });
+    return obj;
+  } 
+
+
   private async submit() {
+    this.questions = this.iterate(this.questions);
+    console.log(this.questions, 'this.questions')
     const updatedSurvey: ISurveyCreate = {
       name: this.name,
       owner_id: 1,
@@ -144,7 +169,7 @@ export default class CreateHospitalDepartment extends Vue {
       questions: this.questions,
     };
     await dispatchCreateDepartmentSurvey(this.$store, updatedSurvey);
-    this.$router.push(`/main/admin/hospital/${this.hospitalId}/department/${this.departmentId}`);
+    this.$router.push(`/main/admin/hospital/${this.hospitalId}/department/${this.departmentId}/all`);
   }
 }
 </script>

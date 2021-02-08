@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { apiUrl } from '@/env';
 import { IUserProfile, IUserProfileUpdate,
-  IUserProfileCreate, IHospital, IHospitalUpdate, IHospitalCreate, IDepartmentCreate, ISurveyCreate, IDepartment } from './interfaces';
+  IUserProfileCreate, IHospital, IHospitalUpdate, IHospitalCreate, IDepartmentCreate, ISurveyCreate, IDepartment, ISurvey } from './interfaces';
 
 function authHeaders(token: string) {
   return {
@@ -55,11 +55,14 @@ export const api = {
   async CreateDepartmentSurvey(token: string, data: ISurveyCreate) {
     return axios.post(`${apiUrl}/api/v1/surveys/`, data, authHeaders(token));
   },
+  async UpdateDepartmentSurvey(token: string, surveyId: number, data: ISurveyCreate) {
+    return axios.put(`${apiUrl}/api/v1/surveys/${surveyId}`, data, authHeaders(token));
+  },
   async getDepartmentSurveys(token: string, departmentId: number) {
     return axios.get(`${apiUrl}/api/v1/surveys/?department_id=` + departmentId, authHeaders(token));
   },
   async getSuveyById(token: string, surveyId: number) {
-    return axios.get(`${apiUrl}/api/v1/surveys/surveys/` + surveyId, authHeaders(token));
+    return axios.get(`${apiUrl}/api/v1/surveys/` + surveyId, authHeaders(token));
   },
   async passwordRecovery(email: string) {
     return axios.post(`${apiUrl}/api/v1/password-recovery/${email}`);
