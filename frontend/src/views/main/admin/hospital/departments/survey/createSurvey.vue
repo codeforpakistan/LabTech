@@ -73,7 +73,7 @@ export default class CreateHospitalDepartment extends Vue {
   public questions: any = [];
   private options: any  = [ 'High', 'CRITICAL', 'LOW' ];
   private hospitalId: string = '';
-  private departmentId: string = '';
+  private departmentId: number = -1;
   private sampleQuestion: any = {
     q_id: 1,
     question: '',
@@ -139,7 +139,7 @@ export default class CreateHospitalDepartment extends Vue {
     const updatedSurvey: ISurveyCreate = {
       name: this.name,
       owner_id: 1,
-      department_id: parseInt(this.departmentId, 10),
+      department_id: this.departmentId,
       create_date: new Date(),
       questions: this.questions,
     };
