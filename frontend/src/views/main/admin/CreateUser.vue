@@ -21,6 +21,21 @@
                 </v-text-field>
               </v-flex>
             </v-layout>
+            <div class="mt-3">
+              <v-label>Allowed Hospitals</v-label>
+              <v-select
+                v-model="selectedHospitals"
+                :items="hospitals"
+                item-text="name"
+                item-value="id"
+                label="Select Allowed Hospitals"
+                persistent-hint
+                return-object
+                single-line
+                clearable
+                multiple
+              ></v-select>
+            </div>
           </v-form>
         </template>
       </v-card-text>
@@ -43,10 +58,13 @@ import {
   IUserProfileUpdate,
   IUserProfileCreate,
 } from '@/interfaces';
-import { dispatchGetUsers, dispatchCreateUser } from '@/store/admin/actions';
+
+import { dispatchGetUsers, dispatchCreateUser, dispatchGetHospitals } from '@/store/admin/actions';
+import { readAdminHospital } from '@/store/admin/getters';
 
 @Component
 export default class CreateUser extends Vue {
+  public selectedHospitals = [];
   public valid = false;
   public fullName: string = '';
   public email: string = '';
@@ -58,6 +76,7 @@ export default class CreateUser extends Vue {
 
   public async mounted() {
     await dispatchGetUsers(this.$store);
+    await dispatchGetHospitals(this.$store);
     this.reset();
   }
 
@@ -69,6 +88,10 @@ export default class CreateUser extends Vue {
     this.isActive = true;
     this.isSuperuser = false;
     this.$validator.reset();
+  }
+
+  get hospitals() {
+    return readAdminHospital(this.$store);
   }
 
   public cancel() {
