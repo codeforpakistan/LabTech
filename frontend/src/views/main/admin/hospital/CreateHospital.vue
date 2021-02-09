@@ -33,6 +33,7 @@ import {
   IHospitalCreate,
 } from '@/interfaces';
 import { dispatchGetHospitals, dispatchCreateHospital } from '@/store/admin/actions';
+import { readUserProfile } from '@/store/main/getters';
 
 @Component
 export default class CreateHospital extends Vue {
@@ -43,7 +44,7 @@ export default class CreateHospital extends Vue {
   public lng: string = '';
 
   public async mounted() {
-    await dispatchGetHospitals(this.$store);
+    await dispatchGetHospitals(this.$store, -1);
     this.reset();
   }
 
@@ -67,11 +68,15 @@ export default class CreateHospital extends Vue {
         lat: this.lat,
         lng: this.lng,
         create_date: new Date(),
-        owner_id: 1,
+        owner_id: this.userProfile?.id || -1,
       };
       await dispatchCreateHospital(this.$store, updatedHopital);
       this.$router.push('/main/admin/hospital');
     }
+  }
+
+  get userProfile() {
+    return readUserProfile(this.$store);
   }
 }
 </script>

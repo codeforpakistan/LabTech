@@ -12,6 +12,7 @@ export interface IUserProfileUpdate {
     password?: string;
     is_active?: boolean;
     is_superuser?: boolean;
+    allowed_hospitals?: [];
 }
 
 export interface IUserProfileCreate {
@@ -20,6 +21,7 @@ export interface IUserProfileCreate {
     password?: string;
     is_active?: boolean;
     is_superuser?: boolean;
+    allowed_hospitals?: [];
 }
 
 export interface IHospital {
@@ -36,7 +38,6 @@ export interface IHospital {
 export interface IHospitalUpdate {
     name: string;
     address: string;
-    owner_id: number;
     create_date: Date;
     lat: string;
     lng: string;
@@ -87,7 +88,6 @@ export interface ISurveyCreate {
 export interface ISurveyUpdate {
     id: number;
     name: string;
-    owner_id: number;
     department_id: number;
     create_date: Date;
     questions: {};

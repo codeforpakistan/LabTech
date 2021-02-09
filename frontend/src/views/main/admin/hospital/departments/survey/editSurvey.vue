@@ -76,7 +76,11 @@ export default class CreateHospitalDepartment extends Vue {
   public id: any;
   public name: string = '';
   public questions: any = [];
-  private options: any  = [{ weightage: 2, name: 'HIGH'}, {weightage: 3, name: 'CRITICAL'}, { weightage: 1, name: 'LOW' }];
+  private options: any = [
+    { weightage: 2, name: 'HIGH'},
+    {weightage: 3, name: 'CRITICAL'},
+    { weightage: 1, name: 'LOW' },
+  ];
   private hospitalId: string = '';
   private departmentId: number = -1;
   private sampleQuestion: any = {
@@ -92,17 +96,6 @@ export default class CreateHospitalDepartment extends Vue {
     }],
   };
 
-  getIdsManualy() {
-    let fullPath: any = this.$router.currentRoute.fullPath;
-    fullPath = fullPath.split('/');
-    if (fullPath[4]) {
-      this.hospitalId = fullPath[4];
-    }
-    if (fullPath[6]) {
-      this.departmentId = parseInt(fullPath[6], 10);
-    }
-  }
-
   public async mounted() {
     if (!this.$router.currentRoute.params.departmentId) {
       this.getIdsManualy();
@@ -113,10 +106,21 @@ export default class CreateHospitalDepartment extends Vue {
     this.id = parseInt(this.$router.currentRoute.params.id, 10);
     await dispatchGetDepartmentSurvey(this.$store, this.id);
     this.reset();
-    let surveyResp = <any>this.survey;
+    const surveyResp = <any> this.survey;
     if (surveyResp && surveyResp.questions) {
       this.name = surveyResp.name;
       this.questions = surveyResp.questions;
+    }
+  }
+
+  private getIdsManualy() {
+    let fullPath: any = this.$router.currentRoute.fullPath;
+    fullPath = fullPath.split('/');
+    if (fullPath[4]) {
+      this.hospitalId = fullPath[4];
+    }
+    if (fullPath[6]) {
+      this.departmentId = parseInt(fullPath[6], 10);
     }
   }
 
@@ -155,7 +159,6 @@ export default class CreateHospitalDepartment extends Vue {
     const updatedSurvey: ISurveyUpdate = {
       id: this.id,
       name: this.name,
-      owner_id: 1,
       department_id: this.departmentId,
       create_date: new Date(),
       questions: this.questions,
@@ -164,7 +167,6 @@ export default class CreateHospitalDepartment extends Vue {
     this.$router.push(`/main/admin/hospital/${this.hospitalId}/department/${this.departmentId}/all`);
   }
 
-  
   get survey() {
     return readSurveyById(this.$store);
   }

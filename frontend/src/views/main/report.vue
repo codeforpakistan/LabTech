@@ -117,6 +117,7 @@ import { readOverAllStatistics, readHospitalsStatistics,
         readAdminHospital, readHospitalDepartments } from '@/store/admin/getters';
 import { dispatchGetOverAllStatistics, dispatchGetHospitalStatistics,
         dispatchGetHospitals, dispatchGetHospitalDepartments} from '@/store/admin/actions';
+import { readUserProfile } from '@/store/main/getters';
 
 @Component
 export default class Reporting extends Vue {
@@ -161,7 +162,8 @@ export default class Reporting extends Vue {
   }
 
   private async mounted() {
-    await dispatchGetHospitals(this.$store);
+    // const userProfile = readUserProfile(this.$store);
+    await dispatchGetHospitals(this.$store, this.userProfile);
     this.consturctOverAllStatistics();
   }
 
@@ -231,15 +233,12 @@ export default class Reporting extends Vue {
     const pdata: any = [];
     const ndata: any = [];
     if (hospitalStatistics && hospitalStatistics[0] && hospitalStatistics[0].by_question) {
-        // hospitalStatistics[0].by_question = hospitalStatistics[0].by_question.sort((a, b) => 
-        //   b.answer_true_perc - a.answer_true_perc);
         hospitalStatistics[0].by_question.forEach((each: any) => {
           if (each.question) {
             pdata.push([each.question, each.answer_true_perc, each.color, each.weightage]);
             ndata.push([each.question, -each.answer_false_perc, each.color, each.weightage]);
           }
         });
-        console.log(pdata, 'pd', ndata, 'n')
         Highcharts.chart({
           chart: {
             renderTo: 'container',
@@ -258,8 +257,6 @@ export default class Reporting extends Vue {
             },
           },
           credits: {
-            // href: 'http://www.bcogris.ca/sites/default/files/documents/RA2010-02' +
-            // '_Public_Opinion_Survey_final-report_public_Feb_8_12.pdf',
             text: `<b>Total Survey Submissions  ${this.totalSubmissions}</b>`,
           },
           yAxis: {
@@ -285,10 +282,10 @@ export default class Reporting extends Vue {
               style: {
                 fontSize: '13px',
               },
-              formatter () {
-                const data = pdata.find(each => each[0] === this.value);
-                return `<span style="color: ${data && data[2] ? data[2] : '#000000'}">${this.value.toString().toUpperCase()}</span>`
-              }
+              formatter() {
+                const data = pdata.find((each) => each[0] === this.value);
+                return `<span style="color: ${data && data[2] ? data[2] : '#000000'}">${this.value.toString().toUpperCase()}</span>`;
+              },
             },
             lineWidth: 0,
             tickLength: 0,
@@ -326,5 +323,11 @@ export default class Reporting extends Vue {
       // alert('error');
     }
   }
+
+  get userProfile() {
+    const user = readUserProfile(this.$store);
+    return user?.id;
+  }
+
 }
 </script>

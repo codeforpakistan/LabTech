@@ -53,18 +53,13 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import {
-  IUserProfile,
-  IUserProfileUpdate,
-  IUserProfileCreate,
-} from '@/interfaces';
-
+import { IUserProfileCreate } from '@/interfaces';
 import { dispatchGetUsers, dispatchCreateUser, dispatchGetHospitals } from '@/store/admin/actions';
 import { readAdminHospital } from '@/store/admin/getters';
 
 @Component
 export default class CreateUser extends Vue {
-  public selectedHospitals = [];
+  public selectedHospitals: any = [];
   public valid = false;
   public fullName: string = '';
   public email: string = '';
@@ -76,7 +71,7 @@ export default class CreateUser extends Vue {
 
   public async mounted() {
     await dispatchGetUsers(this.$store);
-    await dispatchGetHospitals(this.$store);
+    await dispatchGetHospitals(this.$store, -1);
     this.reset();
   }
 
@@ -102,6 +97,7 @@ export default class CreateUser extends Vue {
     if (await this.$validator.validateAll()) {
       const updatedProfile: IUserProfileCreate = {
         email: this.email,
+        allowed_hospitals: this.selectedHospitals,
       };
       if (this.fullName) {
         updatedProfile.full_name = this.fullName;
