@@ -19,8 +19,19 @@ def read_hospitals(
     """
     Retrieve Hospitals.
     """
+    # Return all if logged in user is super user
+    if current_user.is_superuser:
+        return crud.hospital.get_multi(db, skip=skip, limit=limit)
+    
+    # Return only those hospitals which are allowed to the logged in user
+    allowed_hospitals_ids = [
+        hospital['id'] for hospital in current_user.allowed_hospitals
+    ]
     hospitals = crud.hospital.get_multi(db, skip=skip, limit=limit)
-    return hospitals
+    allowed_hospitals = [
+        hospital for hospital in hospitals if hospital.id in allowed_hospitals_ids
+    ]
+    return allowed_hospitals
 
 
 @router.post("/", response_model=schemas.Hospital)
