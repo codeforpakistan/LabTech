@@ -256,7 +256,7 @@ $ alembic revision --autogenerate -m "Add column last_name to User model"
 * After creating the revision, run the migration in the database (this is what will actually change the database):
 
 ```console
-$ docker-compose up -d --build --force-recreate upgrade head
+$ alembic upgrade head
 ```
 
 If you don't want to use migrations at all, uncomment the line in the file at `./backend/app/app/db/init_db.py` with:
