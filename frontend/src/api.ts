@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { apiUrl } from '@/env';
 import { IUserProfile, IUserProfileUpdate,
-  IUserProfileCreate, IHospital, IHospitalUpdate, IHospitalCreate, IDepartmentCreate, ISurveyCreate, IDepartment, ISurvey } from './interfaces';
+  IUserProfileCreate, IHospital, IHospitalUpdate, IHospitalCreate,
+  IDepartmentCreate, ISurveyCreate, IDepartment, ISurveyUpdate } from './interfaces';
 
 function authHeaders(token: string) {
   return {
@@ -25,8 +26,8 @@ export const api = {
   async updateMe(token: string, data: IUserProfileUpdate) {
     return axios.put<IUserProfile>(`${apiUrl}/api/v1/users/me`, data, authHeaders(token));
   },
-  async getHospitals(token: string) {
-    return axios.get<IHospital[]>(`${apiUrl}/api/v1/hospitals/`, authHeaders(token));
+  async getHospitals(token: string, ownerId: number = -1) {
+    return axios.get<IHospital[]>(`${apiUrl}/api/v1/hospitals/?owner_id=` + ownerId, authHeaders(token));
   },
   async createHospital(token: string, data: IHospitalCreate) {
     return axios.post(`${apiUrl}/api/v1/hospitals/`, data, authHeaders(token));
@@ -55,7 +56,7 @@ export const api = {
   async CreateDepartmentSurvey(token: string, data: ISurveyCreate) {
     return axios.post(`${apiUrl}/api/v1/surveys/`, data, authHeaders(token));
   },
-  async UpdateDepartmentSurvey(token: string, surveyId: number, data: ISurveyCreate) {
+  async UpdateDepartmentSurvey(token: string, surveyId: number, data: ISurveyUpdate) {
     return axios.put(`${apiUrl}/api/v1/surveys/${surveyId}`, data, authHeaders(token));
   },
   async getDepartmentSurveys(token: string, departmentId: number) {

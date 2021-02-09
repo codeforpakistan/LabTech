@@ -25,11 +25,9 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import {
-  IHospital,
-  IDepartmentCreate,
-} from '@/interfaces';
+import { IDepartmentCreate } from '@/interfaces';
 import { dispatchCreateHospitalDepartment } from '@/store/admin/actions';
+import { readUserProfile } from '@/store/main/getters';
 
 @Component
 export default class CreateHospitalDepartment extends Vue {
@@ -55,11 +53,15 @@ export default class CreateHospitalDepartment extends Vue {
     const updatedDepartment: IDepartmentCreate = {
       name: this.name,
       hospital_id: this.id,
-      owner_id: 1,
+      owner_id: this.userProfile?.id || -1,
     };
     await dispatchCreateHospitalDepartment(this.$store, updatedDepartment);
     this.$router.push('/main/admin/hospital/' + this.id);
     return;
+  }
+
+  get userProfile() {
+    return readUserProfile(this.$store);
   }
 }
 </script>
