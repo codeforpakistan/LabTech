@@ -86,7 +86,10 @@ def read_submissions_report(
                 })
 
             if answer.get('answer'):
-                weightage += answer.get('weightage', 0)
+                try:
+                    weightage += int(answer.get('weightage', 0))
+                except:
+                    print('String in weitage, submission id:', submission.id)
 
             for sub_answer in answer.get('sub_questions', []):
                 if 'answer' in sub_answer.keys():
@@ -100,7 +103,11 @@ def read_submissions_report(
                     })
                 
                 if sub_answer.get('answer'):
-                    weightage += sub_answer.get('weightage', 0)
+                    try:
+                        weightage += int(sub_answer.get('weightage', 0))
+                    except:
+                        print('String in weitage, submission id:', submission.id)
+        
         submissions_list.append({
             'hospital': hospital.name,
             'department': department.name,
@@ -125,7 +132,7 @@ def read_submissions_report(
         .apply(lambda x: round(round(x[0]/x[1], 2)*100) if x[1] != 0 else 0, axis=1)
     aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
         .apply(lambda x: round(round(x[0]/x[1], 2)*100) if x[1] != 0 else 0, axis=1)
-    aggs = aggs.sort_values(by=['weightage'])
+    aggs = aggs.sort_values(by=['weightage'], ascending=False)
     aggs = aggs.to_dict(orient='records')
     for question in aggs:
         question['color'] = weightage_to_color_dict.get(question.get('weightage', '1'))
@@ -199,7 +206,7 @@ def read_submissions_report_by_hospital(
         .apply(lambda x: round(round(x[0]/x[1], 2)*100) if x[1] != 0 else 0, axis=1)
     aggs['answer_false_perc'] = aggs[['answer_false', 'count']] \
         .apply(lambda x: round(round(x[0]/x[1], 2)*100) if x[1] != 0 else 0, axis=1)
-    aggs = aggs.sort_values(by=['weightage'])
+    aggs = aggs.sort_values(by=['weightage'], ascending=False)
     aggs = aggs.to_dict(orient='records')
     for question in aggs:
         question['color'] = weightage_to_color_dict.get(question.get('weightage', '1'))

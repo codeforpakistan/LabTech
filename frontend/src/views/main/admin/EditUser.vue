@@ -147,6 +147,7 @@ export default class EditUser extends Vue {
       this.email = this.user.email;
       this.isActive = this.user.is_active;
       this.isSuperuser = this.user.is_superuser;
+      this.selectedHospitals = this.user?.allowed_hospitals?.map(({ id, name }) => ({ id, name}));
     }
   }
 
