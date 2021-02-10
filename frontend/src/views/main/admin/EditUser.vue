@@ -80,6 +80,21 @@
                 </v-text-field>
               </v-flex>
             </v-layout>
+            <div class="mt-3">
+              <v-label>Allowed Hospitals</v-label>
+              <v-select
+                v-model="selectedHospitals"
+                :items="hospitals"
+                item-text="name"
+                item-value="id"
+                label="Select Allowed Hospitals"
+                persistent-hint
+                return-object
+                single-line
+                clearable
+                multiple
+              ></v-select>
+            </div>
           </v-form>
         </template>
       </v-card-text>
@@ -101,11 +116,12 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { IUserProfile, IUserProfileUpdate } from '@/interfaces';
-import { dispatchGetUsers, dispatchUpdateUser } from '@/store/admin/actions';
-import { readAdminOneUser } from '@/store/admin/getters';
+import { dispatchGetUsers, dispatchUpdateUser, dispatchGetHospitals } from '@/store/admin/actions';
+import { readAdminOneUser, readAdminHospital } from '@/store/admin/getters';
 
 @Component
 export default class EditUser extends Vue {
+  public selectedHospitals: any = [];
   public valid = true;
   public fullName: string = '';
   public email: string = '';
@@ -117,6 +133,7 @@ export default class EditUser extends Vue {
 
   public async mounted() {
     await dispatchGetUsers(this.$store);
+    await dispatchGetHospitals(this.$store, -1);
     this.reset();
   }
 
@@ -143,6 +160,9 @@ export default class EditUser extends Vue {
       if (this.fullName) {
         updatedProfile.full_name = this.fullName;
       }
+      if (this.selectedHospitals && this.selectedHospitals.length > 0) {
+        updatedProfile.allowed_hospitals = this.selectedHospitals;
+      }
       if (this.email) {
         updatedProfile.email = this.email;
       }
@@ -159,5 +179,10 @@ export default class EditUser extends Vue {
   get user() {
     return readAdminOneUser(this.$store)(+this.$router.currentRoute.params.id);
   }
+
+  get hospitals() {
+    return readAdminHospital(this.$store);
+  }
+
 }
 </script>

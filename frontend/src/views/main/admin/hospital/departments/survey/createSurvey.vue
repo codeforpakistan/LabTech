@@ -64,10 +64,9 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import {
-  ISurveyCreate,
-} from '@/interfaces';
+import { ISurveyCreate } from '@/interfaces';
 import { dispatchGetDepartmentSurvey, dispatchCreateDepartmentSurvey } from '@/store/admin/actions';
+import { readUserProfile } from '@/store/main/getters';
 
 @Component
 export default class CreateHospitalDepartment extends Vue {
@@ -91,17 +90,6 @@ export default class CreateHospitalDepartment extends Vue {
     }],
   };
 
-  getIdsManualy() {
-    let fullPath: any = this.$router.currentRoute.fullPath;
-    fullPath = fullPath.split('/');
-    if (fullPath[4]) {
-      this.hospitalId = fullPath[4];
-    }
-    if (fullPath[6]) {
-      this.departmentId = parseInt(fullPath[6], 10);
-    }
-  }
-
   public async mounted() {
     if (!this.$router.currentRoute.params.departmentId) {
       this.getIdsManualy();
@@ -112,6 +100,17 @@ export default class CreateHospitalDepartment extends Vue {
     this.id = this.departmentId;
     await dispatchGetDepartmentSurvey(this.$store, this.id);
     this.reset();
+  }
+
+  private getIdsManualy() {
+    let fullPath: any = this.$router.currentRoute.fullPath;
+    fullPath = fullPath.split('/');
+    if (fullPath[4]) {
+      this.hospitalId = fullPath[4];
+    }
+    if (fullPath[6]) {
+      this.departmentId = parseInt(fullPath[6], 10);
+    }
   }
 
   private reset() {
@@ -146,30 +145,32 @@ export default class CreateHospitalDepartment extends Vue {
   }
 
   private iterate = (obj) => {
-    Object.keys(obj).forEach(key => {
+    Object.keys(obj).forEach((key) => {
       if (key === 'weightage') {
-        obj[key] = obj[key].id
+        obj[key] = obj[key].id;
       }
       if (typeof obj[key] === 'object') {
-          this.iterate(obj[key])
+        this.iterate(obj[key]);
       }
     });
     return obj;
-  } 
-
+  }
 
   private async submit() {
     this.questions = this.iterate(this.questions);
-    console.log(this.questions, 'this.questions')
     const updatedSurvey: ISurveyCreate = {
       name: this.name,
-      owner_id: 1,
+      owner_id: this.userProfile?.id || -1,
       department_id: this.departmentId,
       create_date: new Date(),
       questions: this.questions,
     };
     await dispatchCreateDepartmentSurvey(this.$store, updatedSurvey);
     this.$router.push(`/main/admin/hospital/${this.hospitalId}/department/${this.departmentId}/all`);
+  }
+
+  get userProfile() {
+    return readUserProfile(this.$store);
   }
 }
 </script>

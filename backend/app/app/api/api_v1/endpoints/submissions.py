@@ -174,7 +174,8 @@ def read_submissions_report_by_hospital(
                             'hospital': hospital.name,
                             'department': department.name,
                             'answer': sub_answer['answer'],
-                            'question': answer.get('alias', '') + '-' + sub_answer.get('alias', '') if sub_answer.get('alias', '') != '' else sub_answer.get('question', ''),
+                            'question': answer.get('alias', '') + '-' + 
+                            sub_answer.get('alias', '') if sub_answer.get('alias', '') != '' else sub_answer.get('question', ''),
                             'weightage': str(answer.get('weightage', 0)),
                             'date': submission.created_date
                         })

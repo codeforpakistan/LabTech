@@ -1,7 +1,7 @@
 import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Boolean, Column, Integer, String, DateTime
+from sqlalchemy import Boolean, Column, Integer, String, DateTime, JSON
 from sqlalchemy.orm import relationship
 
 from app.db.base_class import Base
@@ -24,6 +24,7 @@ class User(Base):
     # created_date = Column(DateTime, default=datetime.datetime.utcnow)
     items = relationship("Item", back_populates="owner")
     hospitals = relationship("Hospital", back_populates="owner")
+    allowed_hospitals = Column(JSON)
     surveys = relationship("Survey", back_populates="owner")
     departments = relationship("Department", back_populates="owner")
     submissions = relationship("Submission", back_populates="owner")

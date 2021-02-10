@@ -29,7 +29,7 @@ export const getters = {
     hospitalDepartments: (state: AdminState) => state.hospitalDepartments,
     departmentSurveys: (state: AdminState) => state.departmentSurveys,
     survey : (state: AdminState) => {
-        return { ...state.departmentSurveys }
+        return { ...state.departmentSurveys };
     },
 };
 

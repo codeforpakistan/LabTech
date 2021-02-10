@@ -36,10 +36,9 @@ import { Component, Vue } from 'vue-property-decorator';
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { Store } from 'vuex';
 import { readAdminHospital } from '@/store/admin/getters';
+import { readUserProfile } from '@/store/main/getters';
 import { dispatchGetHospitals } from '@/store/admin/actions';
-import { IHospital } from '@/interfaces';
 
 
 @Component
@@ -85,11 +84,15 @@ export default class AdminHospitals extends Vue {
   ];
 
   public async mounted() {
-    await dispatchGetHospitals(this.$store);
+    await dispatchGetHospitals(this.$store, this.userProfile?.id);
   }
 
   get hospitals() {
     return readAdminHospital(this.$store);
+  }
+
+  get userProfile() {
+    return readUserProfile(this.$store);
   }
 }
 </script>

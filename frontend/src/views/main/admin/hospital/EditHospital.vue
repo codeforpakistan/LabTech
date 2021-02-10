@@ -42,7 +42,7 @@
     public lng: string = '';
 
     public async mounted() {
-      await dispatchGetHospitals(this.$store);
+      await dispatchGetHospitals(this.$store, -1);
       this.id = parseInt(this.$router.currentRoute.params.id, 10);
       this.setData(this.hospital);
       this.reset();
@@ -80,7 +80,6 @@
           lat: this.lat,
           lng: this.lng,
           create_date: new Date(),
-          owner_id: 1,
         };
         await dispatchUpdateHospital(this.$store, {id: this.id, hospital: updatedHopital});
         this.$router.push('/main/admin/hospital');
@@ -90,5 +89,6 @@
     get hospital() {
       return readAdminOneHospital(this.$store)(+this.id);
     }
+
   }
 </script>
