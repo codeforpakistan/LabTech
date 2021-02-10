@@ -165,8 +165,6 @@ export default class CreateHospitalDepartment extends Vue {
 
   private async submit() {
     this.questions = this.iterate(this.questions);
-    console.log(JSON.stringify(this.questions), 'k')
-    return
     const updatedSurvey: ISurveyUpdate = {
       id: this.id,
       name: this.name,
