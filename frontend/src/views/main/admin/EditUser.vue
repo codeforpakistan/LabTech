@@ -161,7 +161,7 @@ export default class EditUser extends Vue {
         updatedProfile.full_name = this.fullName;
       }
       if (this.selectedHospitals && this.selectedHospitals.length > 0) {
-        updatedProfile.allowed_hospitals = this.selectedHospitals;
+        updatedProfile.allowed_hospitals = this.selectedHospitals?.map(({ id, name }) => ({ id, name}));
       }
       if (this.email) {
         updatedProfile.email = this.email;
