@@ -4,6 +4,7 @@ export interface IUserProfile {
     is_superuser: boolean;
     full_name: string;
     id: number;
+    allowed_hospitals?: [];
 }
 
 export interface IUserProfileUpdate {
