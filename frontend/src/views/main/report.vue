@@ -156,7 +156,8 @@ export default class Reporting extends Vue {
     this.totalSubmissions = this.hospitalStatistics && this.hospitalStatistics[0]
     && this.hospitalStatistics[0].total_submissions
     ? this.hospitalStatistics[0].total_submissions
-    : fallback && this.overAllStatistics && this.overAllStatistics[0].total_submissions
+    : fallback && this.overAllStatistics && this.overAllStatistics[0] 
+      && this.overAllStatistics[0].total_submissions
       ? this.overAllStatistics && this.overAllStatistics[0].total_submissions
       : 0;
   }
