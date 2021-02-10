@@ -16,7 +16,7 @@
                   v-model="eachQuestion.weightage"
                   :items="options"
                   item-text="name"
-                  item-value="weightage"
+                  item-value="id"
                   label="Question Weightage"
                   persistent-hint
                   return-object
@@ -31,7 +31,7 @@
                     v-model="eachSubQuestion.weightage"
                     :items="options"
                     item-text="name"
-                    item-value="weightage"
+                    item-value="id"
                     label="Sub Question Weightage"
                     persistent-hint
                     return-object
@@ -76,11 +76,7 @@ export default class CreateHospitalDepartment extends Vue {
   public id: any;
   public name: string = '';
   public questions: any = [];
-  private options: any = [
-    { weightage: 2, name: 'HIGH'},
-    {weightage: 3, name: 'CRITICAL'},
-    { weightage: 1, name: 'LOW' },
-  ];
+  private options: any  = [{ id: 2, name: 'HIGH'}, { id: 3, name: 'CRITICAL'}, { id: 1, name: 'LOW' }];
   private hospitalId: string = '';
   private departmentId: number = -1;
   private sampleQuestion: any = {
@@ -155,7 +151,20 @@ export default class CreateHospitalDepartment extends Vue {
     }
   }
 
+  private iterate = (obj) => {
+    Object.keys(obj).forEach((key) => {
+      if (key === 'weightage') {
+        obj[key] = obj[key].id;
+      }
+      if (typeof obj[key] === 'object') {
+        this.iterate(obj[key]);
+      }
+    });
+    return obj;
+  }
+
   private async submit() {
+    this.questions = this.iterate(this.questions);
     const updatedSurvey: ISurveyUpdate = {
       id: this.id,
       name: this.name,
