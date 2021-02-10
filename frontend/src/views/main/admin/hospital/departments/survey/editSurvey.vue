@@ -154,7 +154,7 @@ export default class CreateHospitalDepartment extends Vue {
   private iterate = (obj) => {
     Object.keys(obj).forEach((key) => {
       if (key === 'weightage') {
-        obj[key] = obj[key].id;
+        obj[key] = obj[key].id ? obj[key].id : obj[key];
       }
       if (typeof obj[key] === 'object') {
         this.iterate(obj[key]);
@@ -165,6 +165,8 @@ export default class CreateHospitalDepartment extends Vue {
 
   private async submit() {
     this.questions = this.iterate(this.questions);
+    console.log(JSON.stringify(this.questions), 'k')
+    return
     const updatedSurvey: ISurveyUpdate = {
       id: this.id,
       name: this.name,
