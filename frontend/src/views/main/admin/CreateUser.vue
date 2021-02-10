@@ -97,7 +97,7 @@ export default class CreateUser extends Vue {
     if (await this.$validator.validateAll()) {
       const updatedProfile: IUserProfileCreate = {
         email: this.email,
-        allowed_hospitals: this.selectedHospitals,
+        allowed_hospitals: this.selectedHospitals?.map(({ id, name }) => ({ id, name})),
       };
       if (this.fullName) {
         updatedProfile.full_name = this.fullName;
