@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 class Hospital(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
+    hospital_type = Column(String, index=True)
     address = Column(String, index=True)
     lat = Column(Float)
     lng = Column(Float)

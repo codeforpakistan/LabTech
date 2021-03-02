@@ -14,9 +14,9 @@ import { commitAddNotification, commitRemoveNotification } from '../main/mutatio
 type MainContext = ActionContext<AdminState, State>;
 
 export const actions = {
-    async actionGetHospitals(context: MainContext, ownerId?: number) {
+    async actionGetHospitals(context: MainContext) {
         try {
-            const response = await api.getHospitals(context.rootState.main.token, ownerId);
+            const response = await api.getHospitals(context.rootState.main.token);
             if (response) {
                await commitSetHospitals(context, response.data);
             }

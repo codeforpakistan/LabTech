@@ -12,9 +12,10 @@ import { Component, Vue } from 'vue-property-decorator';
       <template slot="items" slot-scope="props">
         <td>{{ props.item.name }}</td>
         <td>{{ props.item.address }}</td>
-        <td>{{ props.item.created_date }}</td>
+        <td>{{ dateToString(props.item.created_date) }}</td>
         <td>{{ props.item.lat }}</td>
         <td>{{ props.item.lng }}</td>
+        <td>{{ props.item.hospital_type ?  props.item.hospital_type.toUpperCase() : 'OTHER' }}</td>
         <td class="justify-center layout px-0" colspan="2">
           <v-tooltip top>
             <span>View / Edit Departments</span>
@@ -76,6 +77,12 @@ export default class AdminHospitals extends Vue {
       align: 'left',
     },
     {
+      text: 'Hospital Type',
+      sortable: true,
+      value: 'hospital_type',
+      align: 'left',
+    },
+    {
       text: 'Actions',
       value: 'id',
       colspan: 2,
@@ -84,7 +91,7 @@ export default class AdminHospitals extends Vue {
   ];
 
   public async mounted() {
-    await dispatchGetHospitals(this.$store, this.userProfile?.id);
+    await dispatchGetHospitals(this.$store);
   }
 
   get hospitals() {
@@ -93,6 +100,18 @@ export default class AdminHospitals extends Vue {
 
   get userProfile() {
     return readUserProfile(this.$store);
+  }
+
+  private dateToString(date) {
+   if (!date) {
+     return 'N/A';
+   }
+   date = new Date(date);
+   const month = date.getMonth() + 1;
+   const day = date.getDate();
+   return date.getFullYear() +'-' +
+        (month.toString().length === 1 ? '0' + month : month)  +
+        '-'  + (day.toString().length === 1 ? '0' + day : day);
   }
 }
 </script>

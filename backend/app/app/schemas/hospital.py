@@ -9,6 +9,7 @@ from .user import UserInDB
 class HospitalBase(BaseModel):
     name: Optional[str] = None
     address: Optional[str] = None
+    hospital_type: Optional[str] = ''
     lat: Optional[float] = 0.0
     lng: Optional[float] = 0.0
 
@@ -17,6 +18,7 @@ class HospitalBase(BaseModel):
 class HospitalCreate(HospitalBase):
     name: str
     address: str
+    hospital_type: str
     lat: float
     lng: float
 
@@ -31,6 +33,7 @@ class HospitalInDBBase(HospitalBase):
     id: int
     name: str
     address: str
+    hospital_type: str
     lat: float
     lng: float
     owner_id: int

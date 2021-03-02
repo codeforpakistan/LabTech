@@ -163,8 +163,7 @@ export default class Reporting extends Vue {
   }
 
   private async mounted() {
-    // const userProfile = readUserProfile(this.$store);
-    await dispatchGetHospitals(this.$store, this.userProfile);
+    await dispatchGetHospitals(this.$store);
     this.consturctOverAllStatistics();
   }
 

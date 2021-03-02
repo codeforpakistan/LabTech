@@ -11,6 +11,21 @@
             <v-text-field label="Address" type="text" v-model="address" required></v-text-field>
             <v-text-field label="latitude" type="text" v-model="lat" required></v-text-field>
             <v-text-field label="longitude" type="text" v-model="lng" required></v-text-field>
+            <div class="mt-3">
+              <v-label>Select Type</v-label>
+              <v-select
+                v-model="hospitalType"
+                :items="types"
+                item-text="name"
+                item-value="name"
+                label="Select Hospital type"
+                class="upper"
+                persistent-hint
+                single-line
+                clearable
+              >
+            </v-select>
+            </div>
           </v-form>
         </template>
       </v-card-text>
@@ -40,9 +55,12 @@
     public address: string = '';
     public lat: string = '';
     public lng: string = '';
+    public types = ['BHU', 'OTHER'];
+    public hospitalType: string = '';
+
 
     public async mounted() {
-      await dispatchGetHospitals(this.$store, -1);
+      await dispatchGetHospitals(this.$store);
       this.id = parseInt(this.$router.currentRoute.params.id, 10);
       this.setData(this.hospital);
       this.reset();
@@ -65,6 +83,7 @@
       this.address = hospital?.address;
       this.lat = hospital?.lat;
       this.lng = hospital?.lng;
+      this.hospitalType = hospital?.hospitalType?.toUpperCase();
     }
 
     public cancel() {
@@ -80,6 +99,7 @@
           lat: this.lat,
           lng: this.lng,
           create_date: new Date(),
+          hospital_type: this.hospitalType ? this.hospitalType.toUpperCase() : 'OTHER',
         };
         await dispatchUpdateHospital(this.$store, {id: this.id, hospital: updatedHopital});
         this.$router.push('/main/admin/hospital');

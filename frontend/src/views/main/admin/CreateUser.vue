@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { IUserProfileCreate } from '@/interfaces';
+import { IHospital, IUserProfileCreate } from '@/interfaces';
 import { dispatchGetUsers, dispatchCreateUser, dispatchGetHospitals } from '@/store/admin/actions';
 import { readAdminHospital } from '@/store/admin/getters';
 
@@ -71,7 +71,7 @@ export default class CreateUser extends Vue {
 
   public async mounted() {
     await dispatchGetUsers(this.$store);
-    await dispatchGetHospitals(this.$store, -1);
+    await dispatchGetHospitals(this.$store);
     this.reset();
   }
 
@@ -86,7 +86,20 @@ export default class CreateUser extends Vue {
   }
 
   get hospitals() {
-    return readAdminHospital(this.$store);
+    const allHospitals = readAdminHospital(this.$store);
+    const BHU: IHospital = {
+      name: 'BHU',
+      address: 'BHU',
+      departments: [],
+      create_date: new Date(),
+      lat: '8',
+      lng: '8',
+      id: allHospitals.length,
+      owner_id: -1,
+      hospital_type: 'BHU',
+    };
+    allHospitals.push(BHU);
+    return allHospitals;
   }
 
   public cancel() {
@@ -95,6 +108,10 @@ export default class CreateUser extends Vue {
 
   public async submit() {
     if (await this.$validator.validateAll()) {
+      const BHUHospitals = this.selectedHospitals.findIndex(each => each.name === 'BHU') > -1
+                    ? this.hospitals?.map(({ id, name }) => ({ id, name}))
+                    : [];
+      this.selectedHospitals = [...this.selectedHospitals, ...BHUHospitals];
       const updatedProfile: IUserProfileCreate = {
         email: this.email,
         allowed_hospitals: this.selectedHospitals?.map(({ id, name }) => ({ id, name})),
