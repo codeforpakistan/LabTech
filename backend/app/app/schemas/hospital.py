@@ -1,4 +1,4 @@
-from typing import Optional, Dict
+from typing import Optional, Dict, Any
 from datetime import datetime
 
 from pydantic import BaseModel
@@ -9,7 +9,7 @@ from .user import UserInDB
 class HospitalBase(BaseModel):
     name: Optional[str] = None
     address: Optional[str] = None
-    hospital_type: Optional[str] = ''
+    hospital_type: Optional[str] = None
     lat: Optional[float] = 0.0
     lng: Optional[float] = 0.0
 
@@ -33,7 +33,8 @@ class HospitalInDBBase(HospitalBase):
     id: int
     name: str
     address: str
-    hospital_type: str
+    # Because it is already inheriting validation from HospitalBase
+    # hospital_type: str
     lat: float
     lng: float
     owner_id: int
