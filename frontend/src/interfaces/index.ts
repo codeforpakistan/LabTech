@@ -34,6 +34,7 @@ export interface IHospital {
     lat: string;
     lng: string;
     id: number;
+    hospital_type: string;
 }
 
 export interface IHospitalUpdate {
@@ -43,6 +44,7 @@ export interface IHospitalUpdate {
     lat: string;
     lng: string;
     id: number;
+    hospital_type: string;
 }
 
 export interface IHospitalCreate {
@@ -52,6 +54,7 @@ export interface IHospitalCreate {
     create_date: Date;
     lat: string;
     lng: string;
+    hospital_type: string;
 }
 
 export interface IDepartmentCreate {

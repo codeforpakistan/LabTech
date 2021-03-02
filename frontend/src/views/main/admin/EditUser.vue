@@ -133,7 +133,7 @@ export default class EditUser extends Vue {
 
   public async mounted() {
     await dispatchGetUsers(this.$store);
-    await dispatchGetHospitals(this.$store, -1);
+    await dispatchGetHospitals(this.$store);
     this.reset();
   }
 
@@ -164,6 +164,10 @@ export default class EditUser extends Vue {
       if (this.selectedHospitals && this.selectedHospitals.length > 0) {
         updatedProfile.allowed_hospitals = this.selectedHospitals?.map(({ id, name }) => ({ id, name}));
       }
+      const BHUHospitals = this.selectedHospitals.findIndex(each => each.name === 'BHU') > -1
+                          ? this.hospitals?.map(({ id, name }) => ({ id, name}))
+                          : [];
+      this.selectedHospitals = [...this.selectedHospitals, ...BHUHospitals];
       if (this.email) {
         updatedProfile.email = this.email;
       }

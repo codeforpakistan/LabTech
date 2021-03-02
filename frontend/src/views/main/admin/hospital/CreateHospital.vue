@@ -11,6 +11,20 @@
             <v-text-field label="Address" type="text" v-model="address" required></v-text-field>
             <v-text-field label="latitude" type="text" v-model="lat" required></v-text-field>
             <v-text-field label="longitude" type="text" v-model="lng" required></v-text-field>
+            <div class="mt-3">
+              <v-label>Select Type</v-label>
+              <v-select
+                v-model="hospitalType"
+                :items="types"
+                item-text="name"
+                item-value="name"
+                label="Select Hospital type"
+                persistent-hint
+                single-line
+                clearable
+              >
+            </v-select>
+            </div>
           </v-form>
         </template>
       </v-card-text>
@@ -39,12 +53,14 @@ import { readUserProfile } from '@/store/main/getters';
 export default class CreateHospital extends Vue {
   public valid = false;
   public name: string = '';
+  public hospitalType: string = '';
   public address: string = '';
   public lat: string = '';
   public lng: string = '';
+  public types = ['BHU', 'OTHER'];
 
   public async mounted() {
-    await dispatchGetHospitals(this.$store, -1);
+    await dispatchGetHospitals(this.$store);
     this.reset();
   }
 
@@ -69,6 +85,7 @@ export default class CreateHospital extends Vue {
         lng: this.lng,
         create_date: new Date(),
         owner_id: this.userProfile?.id || -1,
+        hospital_type: this.hospitalType ? this.hospitalType.toUpperCase() : 'OTHER',
       };
       await dispatchCreateHospital(this.$store, updatedHopital);
       this.$router.push('/main/admin/hospital');

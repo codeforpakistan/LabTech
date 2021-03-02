@@ -26,7 +26,7 @@ export const api = {
   async updateMe(token: string, data: IUserProfileUpdate) {
     return axios.put<IUserProfile>(`${apiUrl}/api/v1/users/me`, data, authHeaders(token));
   },
-  async getHospitals(token: string, ownerId: number = -1) {
+  async getHospitals(token: string) {
     return axios.get<IHospital[]>(`${apiUrl}/api/v1/hospitals/`, authHeaders(token));
   },
   async createHospital(token: string, data: IHospitalCreate) {
