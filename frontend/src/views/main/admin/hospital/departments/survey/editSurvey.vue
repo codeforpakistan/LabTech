@@ -81,7 +81,6 @@ import {
 } from '@/interfaces';
 import { dispatchGetDepartmentSurvey, dispatchUpdateDepartmentSurvey } from '@/store/admin/actions';
 import { readSurveyById } from '@/store/admin/getters';
-import { commitAddNotification } from '@/store/main/mutations';
 
 @Component
 export default class CreateHospitalDepartment extends Vue {
@@ -184,7 +183,7 @@ export default class CreateHospitalDepartment extends Vue {
     try {
       this.questions = JSON.parse(this.questions);
     } catch (error) {
-      commitAddNotification(context, { content: 'Invalid JSON Object', color: 'error' });
+      alert('Invalid JSON Object ' + error);
       return;
     }
     const updatedSurvey: ISurveyUpdate = {
