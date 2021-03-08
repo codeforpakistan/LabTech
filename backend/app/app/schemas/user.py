@@ -20,6 +20,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     email: EmailStr
     password: str
+    allowed_hospitals:  Optional[List[Dict]] = []
 
 
 # Properties to receive via API on update
@@ -29,7 +30,7 @@ class UserUpdate(UserBase):
 
 class UserInDBBase(UserBase):
     id: Optional[int] = None
-
+    
     class Config:
         orm_mode = True
 
