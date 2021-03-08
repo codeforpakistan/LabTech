@@ -116,7 +116,7 @@
           @click="submit"
           :disabled="!valid"
         >
-          Save
+          Update
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -163,7 +163,7 @@ export default class EditUser extends Vue {
       this.email = this.user.email;
       this.isActive = this.user.is_active;
       this.isSuperuser = this.user.is_superuser;
-      this.selectedHospitals = this.user?.allowed_hospitals?.map(({ id, name }) => ({ id, name}));
+      this.selectedHospitals = (this.user?.allowed_hospitals?.map(({ id, name }) => ({ id, name}))) || [];
     }
   }
 
@@ -198,6 +198,9 @@ export default class EditUser extends Vue {
       this.selectedHospitals = [...this.selectedHospitals, ...BHUs, ...Hospitals, ...Others];
       this.selectedHospitals = this.selectedHospitals.filter(
                               (v: any, i: any, a: any) => a.findIndex((t: any) => (t.name === v.name)) === i);
+      if (this.selectedHospitals && this.selectedHospitals.length > 0) {
+        updatedProfile.allowed_hospitals = this.selectedHospitals;
+      }                        
       if (this.email) {
         updatedProfile.email = this.email;
       }
