@@ -57,7 +57,7 @@ export default class CreateHospital extends Vue {
   public address: string = '';
   public lat: string = '';
   public lng: string = '';
-  public types = ['BHU', 'OTHER'];
+  public types = ['BHU', 'HOSPITAL', 'OTHER'];
 
   public async mounted() {
     await dispatchGetHospitals(this.$store);

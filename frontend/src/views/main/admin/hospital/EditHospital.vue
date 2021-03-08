@@ -55,7 +55,7 @@
     public address: string = '';
     public lat: string = '';
     public lng: string = '';
-    public types = ['BHU', 'OTHER'];
+    public types = ['BHU', 'HOSPITAL', 'OTHER'];
     public hospitalType: string = '';
 
 
@@ -83,7 +83,7 @@
       this.address = hospital?.address;
       this.lat = hospital?.lat;
       this.lng = hospital?.lng;
-      this.hospitalType = hospital?.hospitalType?.toUpperCase();
+      this.hospitalType = hospital?.hospital_type?.toUpperCase();
     }
 
     public cancel() {
