@@ -222,16 +222,5 @@ export default class EditUser extends Vue {
     return readAdminHospital(this.$store);
   }
 
-  trySpread(object) {
-    let array;
-    try {
-      array = [...object];
-      console.log('No error', array);
-    } catch(error) {
-      console.log('error', error);
-    }
-    return
-  }
-
 }
 </script>
