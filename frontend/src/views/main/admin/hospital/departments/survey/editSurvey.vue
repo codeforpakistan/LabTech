@@ -3,8 +3,10 @@
     <v-card class="ma-3 pa-3">
       <v-card-title primary-title>
         <div class="headline primary--text">Edit Survey</div>
+        <v-spacer></v-spacer>
+        <v-checkbox label="Edit as JSON" v-model="isJSON" class="text-right"></v-checkbox>
       </v-card-title>
-      <v-card-text>
+      <v-card-text v-if="!isJSON">
         <template>
           <v-form v-model="valid" ref="form" lazy-validation>
             <v-text-field label="Name" v-model="name" required></v-text-field>
@@ -50,12 +52,22 @@
           </v-card-actions>
         </template>
       </v-card-text>
+      <v-card-text v-else-if="isJSON">
+        <v-text-field label="Name" v-model="name" required></v-text-field>
+        <v-textarea
+          v-model="json" 
+          solo
+          name="input-7-4"
+          label="Paste Valid JSON here"
+          required
+        ></v-textarea>
+      </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn @click="cancel">Cancel</v-btn>
         <v-btn @click="reset">Reset</v-btn>
         <v-btn @click="submit" :disabled="!valid">
-          Save
+          Update
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -73,9 +85,11 @@ import { readSurveyById } from '@/store/admin/getters';
 @Component
 export default class CreateHospitalDepartment extends Vue {
   public valid = false;
+  public isJSON = false;
   public id: any;
   public name: string = '';
   public questions: any = [];
+  public json: any = [];
   private options: any  = [{ id: 2, name: 'HIGH'}, { id: 3, name: 'CRITICAL'}, { id: 1, name: 'LOW' }];
   private hospitalId: string = '';
   private departmentId: number = -1;
@@ -106,6 +120,7 @@ export default class CreateHospitalDepartment extends Vue {
     if (surveyResp && surveyResp.questions) {
       this.name = surveyResp.name;
       this.questions = surveyResp.questions;
+      this.json = JSON.stringify(surveyResp.questions);
     }
   }
 
@@ -164,7 +179,13 @@ export default class CreateHospitalDepartment extends Vue {
   }
 
   private async submit() {
-    this.questions = this.iterate(this.questions);
+    this.questions = this.iterate(this.isJSON ? this.json : this.questions);
+    try {
+      this.questions = JSON.parse(this.questions);
+    } catch (error) {
+      alert('Invalid JSON Object ' + error);
+      return;
+    }
     const updatedSurvey: ISurveyUpdate = {
       id: this.id,
       name: this.name,
