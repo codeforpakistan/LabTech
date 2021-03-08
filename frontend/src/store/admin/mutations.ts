@@ -12,7 +12,6 @@ export const mutations = {
     },
     setHospital(state: AdminState, payload: IHospital) {
         const hospitals = state.hospitals.filter((user: IHospital) => user.id !== payload.id);
-        hospitals.push(payload);
         state.hospitals = hospitals;
     },
     setHospitalDepartments(state: AdminState, payload: IDepartment[]) {

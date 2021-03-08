@@ -82,6 +82,16 @@
             </v-layout>
             <div class="mt-3">
               <v-label>Allowed Hospitals</v-label>
+              <v-layout row wrap>
+                <v-flex v-for="(category, index) in types" :key="types[index].text" xs6>
+                  <v-checkbox
+                    light
+                    :label="category.text"
+                    v-model="category.selected"
+                  >
+                  </v-checkbox>
+                </v-flex>
+              </v-layout>
               <v-select
                 v-model="selectedHospitals"
                 :items="hospitals"
@@ -130,6 +140,12 @@ export default class EditUser extends Vue {
   public setPassword = false;
   public password1: string = '';
   public password2: string = '';
+  public types = [
+    { text: 'HOSPITAL', value: 'HOSPITAL', selected: false },
+    { text: 'BHU', value: 'BHU', selected: false },
+    { text: 'OTHER', value: 'OTHER', selected: false },
+  ];
+
 
   public async mounted() {
     await dispatchGetUsers(this.$store);
@@ -158,16 +174,30 @@ export default class EditUser extends Vue {
   public async submit() {
     if (await this.$validator.validateAll()) {
       const updatedProfile: IUserProfileUpdate = {};
+      let BHUs: any[] = [];
+      let Hospitals: any[] = [];
+      let Others: any[] = [];
       if (this.fullName) {
         updatedProfile.full_name = this.fullName;
       }
       if (this.selectedHospitals && this.selectedHospitals.length > 0) {
         updatedProfile.allowed_hospitals = this.selectedHospitals?.map(({ id, name }) => ({ id, name}));
       }
-      const BHUHospitals = this.selectedHospitals.findIndex(each => each.name === 'BHU') > -1
-                          ? this.hospitals?.map(({ id, name }) => ({ id, name}))
-                          : [];
-      this.selectedHospitals = [...this.selectedHospitals, ...BHUHospitals];
+      const isBHUSelected = this.types.find((each) => each.text === 'BHU' && each.selected === true);
+      const isHospitalSelected = this.types.find((each) => each.text === 'HOSPITAL' && each.selected === true);
+      const isOtherSelected = this.types.find((each) => each.text === 'OTHER' && each.selected === true);
+      if (isBHUSelected) {
+        BHUs = this.hospitals.filter((each) => each?.hospital_type === 'BHU');
+      }
+      if (isHospitalSelected) {
+        Hospitals = this.hospitals.filter((each) => each?.hospital_type === 'HOSPITAL');
+      }
+      if (isOtherSelected) {
+        Others = this.hospitals.filter((each) => each?.hospital_type === 'OTHER');
+      }
+      this.selectedHospitals = [...this.selectedHospitals, ...BHUs, ...Hospitals, ...Others];
+      this.selectedHospitals = this.selectedHospitals.filter(
+                              (v: any, i: any, a: any) => a.findIndex((t: any) => (t.name === v.name)) === i);
       if (this.email) {
         updatedProfile.email = this.email;
       }
