@@ -5,6 +5,7 @@ services:
     ports:
       - "18080:80"
       - "8090:8080"
+      - "443:443"
     command:
       # Enable Docker in Traefik, so that it reads labels from Docker services
       - --providers.docker
@@ -76,7 +77,7 @@ services:
     build:
       context: ./frontend
       args:
-        FRONTEND_ENV: dev
+        FRONTEND_ENV: production
     labels:
       - traefik.enable=true
       - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
