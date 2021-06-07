@@ -2,16 +2,16 @@
   <v-container fluid>
     <v-card class="ma-3 pa-3">
       <v-card-title primary-title>
-        <div class="headline primary--text">Create Hospital</div>
+        <div class="headline primary--text">Create Module</div>
       </v-card-title>
       <v-card-text>
         <template>
           <v-form v-model="valid" ref="form" lazy-validation>
             <v-text-field label="Name" v-model="name" required></v-text-field>
-            <v-text-field label="Address" type="text" v-model="address" required></v-text-field>
+            <!-- <v-text-field label="Address" type="text" v-model="address" required></v-text-field>
             <v-text-field label="latitude" type="text" v-model="lat" required></v-text-field>
-            <v-text-field label="longitude" type="text" v-model="lng" required></v-text-field>
-            <div class="mt-3">
+            <v-text-field label="longitude" type="text" v-model="lng" required></v-text-field> -->
+            <!-- <div class="mt-3">
               <v-label>Select Type</v-label>
               <v-select
                 v-model="hospitalType"
@@ -24,7 +24,7 @@
                 clearable
               >
             </v-select>
-            </div>
+            </div> -->
           </v-form>
         </template>
       </v-card-text>
@@ -80,9 +80,9 @@ export default class CreateHospital extends Vue {
     if (await this.$validator.validateAll()) {
       const updatedHopital: IHospitalCreate = {
         name: this.name,
-        address: this.address,
-        lat: this.lat,
-        lng: this.lng,
+        address: this.address || 'abc',
+        lat: this.lat || '1.0',
+        lng: this.lng || '1.0',
         create_date: new Date(),
         owner_id: this.userProfile?.id || -1,
         hospital_type: this.hospitalType ? this.hospitalType.toUpperCase() : 'OTHER',

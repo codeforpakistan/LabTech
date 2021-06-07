@@ -3,10 +3,10 @@ import { Component, Vue } from 'vue-property-decorator';
   <div>
     <v-toolbar light>
       <v-toolbar-title>
-        Manage Departments
+        Manage Indicators
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn color="primary" :to="'/main/admin/hospital/' + id + '/department/create'">Create Department</v-btn>
+      <v-btn color="primary" :to="'/main/admin/hospital/' + id + '/department/create'">Create Indicator</v-btn>
     </v-toolbar>
     <v-data-table :headers="headers" :items="departments">
       <template slot="items" slot-scope="props">

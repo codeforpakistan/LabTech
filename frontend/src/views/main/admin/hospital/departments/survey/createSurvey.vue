@@ -83,7 +83,7 @@ import { readUserProfile } from '@/store/main/getters';
 @Component
 export default class CreateHospitalDepartment extends Vue {
   public valid = false;
-  public isJSON = false;
+  public isJSON = true;
   public id: any;
   public name: string = '';
   public questions: any = [];
