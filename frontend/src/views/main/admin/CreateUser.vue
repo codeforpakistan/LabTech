@@ -59,8 +59,8 @@
               </v-flex>
             </v-layout>
             <div class="mt-3">
-              <v-label>Allowed Hospitals</v-label>
-              <v-layout row wrap>
+              <v-label>Allowed Modules</v-label>
+              <!-- <v-layout row wrap>
                 <v-flex v-for="(category, index) in types" :key="types[index].text" xs6>
                   <v-checkbox
                     light
@@ -69,13 +69,13 @@
                   >
                   </v-checkbox>
                 </v-flex>
-              </v-layout>
+              </v-layout> -->
               <v-select
                 v-model="selectedHospitals"
                 :items="hospitals"
                 item-text="name"
                 item-value="id"
-                label="Select Allowed Hospitals"
+                label="Select Allowed Modules"
                 persistent-hint
                 return-object
                 single-line

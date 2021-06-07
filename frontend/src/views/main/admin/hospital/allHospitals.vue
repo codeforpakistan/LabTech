@@ -3,19 +3,19 @@ import { Component, Vue } from 'vue-property-decorator';
   <div>
     <v-toolbar light>
       <v-toolbar-title>
-        Manage Hospital
+        Manage Modules
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn color="primary" to="/main/admin/hospital/create">Create Hospital</v-btn>
+      <v-btn color="primary" to="/main/admin/hospital/create">Create Module</v-btn>
     </v-toolbar>
     <v-data-table :headers="headers" :items="hospitals">
       <template slot="items" slot-scope="props">
         <td>{{ props.item.name }}</td>
-        <td>{{ props.item.address }}</td>
         <td>{{ dateToString(props.item.created_date) }}</td>
+        <!-- <td>{{ props.item.address }}</td>
         <td>{{ props.item.lat }}</td>
         <td>{{ props.item.lng }}</td>
-        <td>{{ props.item.hospital_type ?  props.item.hospital_type.toUpperCase() : 'OTHER' }}</td>
+        <td>{{ props.item.hospital_type ?  props.item.hospital_type.toUpperCase() : 'OTHER' }}</td> -->
         <td class="justify-center layout px-0" colspan="2">
           <v-tooltip top>
             <span>View / Edit Departments</span>
@@ -52,36 +52,36 @@ export default class AdminHospitals extends Vue {
       value: 'name',
       align: 'left',
     },
-    {
-      text: 'Address',
-      sortable: true,
-      value: 'address',
-      align: 'left',
-    },
+    // {
+    //   text: 'Address',
+    //   sortable: true,
+    //   value: 'address',
+    //   align: 'left',
+    // },
     {
       text: 'Created Date',
       sortable: true,
       value: 'create_date',
       align: 'left',
     },
-    {
-      text: 'Lattitue',
-      sortable: true,
-      value: 'lat',
-      align: 'left',
-    },
-    {
-      text: 'Longitude',
-      sortable: true,
-      value: 'lng',
-      align: 'left',
-    },
-    {
-      text: 'Hospital Type',
-      sortable: true,
-      value: 'hospital_type',
-      align: 'left',
-    },
+    // {
+    //   text: 'Lattitue',
+    //   sortable: true,
+    //   value: 'lat',
+    //   align: 'left',
+    // },
+    // {
+    //   text: 'Longitude',
+    //   sortable: true,
+    //   value: 'lng',
+    //   align: 'left',
+    // },
+    // {
+    //   text: 'Hospital Type',
+    //   sortable: true,
+    //   value: 'hospital_type',
+    //   align: 'left',
+    // },
     {
       text: 'Actions',
       value: 'id',

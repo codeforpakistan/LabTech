@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-card class="ma-3 pa-3">
       <v-card-title primary-title>
-        <div class="headline primary--text">Create Department</div>
+        <div class="headline primary--text">Create Indicator</div>
       </v-card-title>
       <v-card-text>
         <template>

@@ -85,7 +85,7 @@ import { readSurveyById } from '@/store/admin/getters';
 @Component
 export default class CreateHospitalDepartment extends Vue {
   public valid = false;
-  public isJSON = false;
+  public isJSON = true;
   public id: any;
   public name: string = '';
   public questions: any = [];
