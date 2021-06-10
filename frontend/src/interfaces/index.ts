@@ -58,6 +58,7 @@ export interface IHospitalCreate {
 }
 
 export interface IDepartmentCreate {
+    module_name: string;
     name: string;
     owner_id: number;
     hospital_id: number;
@@ -66,11 +67,13 @@ export interface IDepartmentCreate {
 export interface IDepartmentUpdate {
     id: number;
     name: string;
+    module_name: string;
 }
 
 export interface IDepartment {
     id: number;
     name: string;
+    module_name: string;
 }
 
 export interface ISurvey {

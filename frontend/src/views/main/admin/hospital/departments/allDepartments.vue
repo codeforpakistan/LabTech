@@ -11,6 +11,7 @@ import { Component, Vue } from 'vue-property-decorator';
     <v-data-table :headers="headers" :items="departments">
       <template slot="items" slot-scope="props">
         <td>{{ props.item.name }}</td>
+        <td>{{ props.item.module_name }}</td>
         <td class="justify-center layout px-0" colspan="2">
           <v-tooltip top>
             <span>View/Add/Edit Survey</span>
@@ -43,6 +44,12 @@ export default class AdminHospitals extends Vue {
   public headers = [
     {
       text: 'Name',
+      sortable: true,
+      value: 'name',
+      align: 'left',
+    },
+    {
+      text: 'Module Name',
       sortable: true,
       value: 'name',
       align: 'left',

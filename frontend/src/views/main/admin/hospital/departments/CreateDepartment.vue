@@ -8,6 +8,7 @@
         <template>
           <v-form v-model="valid" ref="form" lazy-validation>
             <v-text-field label="Name" v-model="name" required></v-text-field>
+            <v-text-field label="Module Name" v-model="module_name" required></v-text-field>
           </v-form>
         </template>
       </v-card-text>
@@ -33,6 +34,7 @@ import { readUserProfile } from '@/store/main/getters';
 export default class CreateHospitalDepartment extends Vue {
   public valid = false;
   public name: string = '';
+  public module_name: string = '';
   private id: number = -1;
 
   public async mounted() {
@@ -51,6 +53,7 @@ export default class CreateHospitalDepartment extends Vue {
 
   public async submit() {
     const updatedDepartment: IDepartmentCreate = {
+      module_name: this.module_name,
       name: this.name,
       hospital_id: this.id,
       owner_id: this.userProfile?.id || -1,
