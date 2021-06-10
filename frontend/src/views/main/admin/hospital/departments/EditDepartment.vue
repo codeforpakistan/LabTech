@@ -56,6 +56,7 @@
 
     public setData(department) {
       this.name = department?.name;
+      this.module_name = department?.module_name;
     }
 
     public cancel() {
