@@ -58,6 +58,7 @@ export default class CreateHospitalDepartment extends Vue {
       hospital_id: this.id,
       owner_id: this.userProfile?.id || -1,
     };
+    console.log(updatedDepartment, 'k')
     await dispatchCreateHospitalDepartment(this.$store, updatedDepartment);
     this.$router.push('/main/admin/hospital/' + this.id);
     return;
