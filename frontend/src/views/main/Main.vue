@@ -69,7 +69,7 @@
               <v-icon>group</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title>Manage Modules</v-list-tile-title>
+              <v-list-tile-title>Manage Labs</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>

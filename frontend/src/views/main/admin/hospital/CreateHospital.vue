@@ -2,14 +2,14 @@
   <v-container fluid>
     <v-card class="ma-3 pa-3">
       <v-card-title primary-title>
-        <div class="headline primary--text">Create Module</div>
+        <div class="headline primary--text">Create Lab</div>
       </v-card-title>
       <v-card-text>
         <template>
           <v-form v-model="valid" ref="form" lazy-validation>
             <v-text-field label="Name" v-model="name" required></v-text-field>
-            <!-- <v-text-field label="Address" type="text" v-model="address" required></v-text-field>
-            <v-text-field label="latitude" type="text" v-model="lat" required></v-text-field>
+            <v-text-field label="Address" type="text" v-model="address" required></v-text-field>
+            <!-- <v-text-field label="latitude" type="text" v-model="lat" required></v-text-field>
             <v-text-field label="longitude" type="text" v-model="lng" required></v-text-field> -->
             <!-- <div class="mt-3">
               <v-label>Select Type</v-label>

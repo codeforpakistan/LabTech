@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 class Department(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
+    module_name = Column(String, index=True)
     owner_id = Column(Integer, ForeignKey("user.id"))
     owner = relationship("User", back_populates="departments")
     hospital_id = Column(Integer, ForeignKey("hospital.id"))
