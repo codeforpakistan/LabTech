@@ -1,3 +1,4 @@
+from backend.app.app.models import submission
 import pandas as pd
 from typing import Any, List
 
@@ -51,6 +52,30 @@ def read_submissions(
         submission.hospital = hospital.name
         submission.department = department.name
     return submissions
+
+
+
+@router.get("/submitted_for_dept_id/{department_id}")
+def have_submission_for_department_id(
+    db: Session = Depends(deps.get_db),
+    department_id: int = 0,
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    return True if department have any submission
+    """
+    surveys = db.query(Survey).filter(Survey.department_id == department_id)
+    for survey in surveys:
+        submissions = db.query(Submission).filter(Submission.survey_id == survey.id)
+        for submission in submissions:
+            return {
+                'department_id': department_id,
+                'have_submission': True
+            }
+    return {
+        'department_id': department_id,
+        'have_submission': False
+    }
 
 
 @router.get("/report/by-questions")
