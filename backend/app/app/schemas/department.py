@@ -6,12 +6,12 @@ from pydantic import BaseModel
 # Shared properties
 class DepartmentBase(BaseModel):
     name: Optional[str] = None
-    module_name: Optional[str] = None
+    # module_name: Optional[str] = None
 
 # Properties to receive on department creation
 class DepartmentCreate(DepartmentBase):
     name: str
-    module_name: str
+    # module_name: str
     hospital_id: int
 
 
@@ -24,9 +24,8 @@ class DepartmentUpdate(DepartmentBase):
 class DepartmentInDBBase(DepartmentBase):
     id: int
     name: str
-    module_name: str
+    # module_name: str
     owner_id: int
-    module_name: str
     # hospital: str
     hospital_id: int
 
