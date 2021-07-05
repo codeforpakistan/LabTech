@@ -4,3 +4,4 @@ docker-stack.yml
 .env
 .DS_Store
 images
+venv3
