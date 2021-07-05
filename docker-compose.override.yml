@@ -5,7 +5,6 @@ services:
     ports:
       - "18080:80"
       - "8090:8080"
-      - "443:443"
     command:
       # Enable Docker in Traefik, so that it reads labels from Docker services
       - --providers.docker
