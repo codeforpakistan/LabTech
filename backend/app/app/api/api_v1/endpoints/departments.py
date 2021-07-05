@@ -2,7 +2,8 @@ from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
+from app.models.submission import Submission
+from app.models.submission import Survey
 from app import crud, models, schemas
 from app.api import deps
 
@@ -26,6 +27,18 @@ def read_departments(
         departments = crud.department.get_multi_by_hospital(
             db=db, hospital_id=hospital_id, skip=skip, limit=limit
         )
+    try:
+        for each_dep in departments:
+            surveys = db.query(Survey).filter(Survey.department_id == each_dep.id)
+            for survey in surveys:
+                submissions = db.query(Submission).filter(Submission.survey_id == survey.id)
+                if not submissions:
+                    each_dep.have_submission =  False
+                else:
+                    each_dep.have_submission =  True
+    except:
+        print("Could not");
+
     return departments
 
 
