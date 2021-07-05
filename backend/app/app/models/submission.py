@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from .survey import Survey  # noqa: F401
 
 
-class `Submission`(Base):
+class Submission(Base):
     id = Column(Integer, primary_key=True, index=True)
     comment = Column(String, index=True)
     answers = Column(JSON)
