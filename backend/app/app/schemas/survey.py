@@ -41,6 +41,7 @@ class SurveyInDBBase(SurveyBase):
 
 # Properties to return to client
 class Survey(SurveyInDBBase):
+    have_submission: bool
     pass
 
 
