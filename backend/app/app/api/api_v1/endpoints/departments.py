@@ -3,7 +3,7 @@ from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.models.submission import Submission
-from app.models.submission import Survey
+from app.models.survey import Survey
 from app import crud, models, schemas
 from app.api import deps
 
