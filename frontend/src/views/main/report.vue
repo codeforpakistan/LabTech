@@ -66,7 +66,10 @@
 </style>
 <template>
   <v-container>
-    <v-container fluid>
+    <template>
+         <vue-excel-editor v-model="jsondata" :localized-label="myLabels"></vue-excel-editor>
+    </template>
+    <!-- <v-container fluid>
       <p style="color: red">{{this.totalSubmissions > 0 ? '' : 'No submissions found to aggregate on.'}}</p>
       <v-row align="center">
         <v-col cols="6">
@@ -100,10 +103,10 @@
           ></v-select>
         </v-col>
       </v-row>
-    </v-container>
-    <figure class="highcharts-figure">
+    </v-container> -->
+    <!-- <figure class="highcharts-figure">
       <div id="container"></div>
-    </figure>
+    </figure> -->
   </v-container>
 </template>
 
@@ -112,6 +115,8 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Store } from 'vuex';
 import Highcharts from 'highcharts';
 import drilldown from 'highcharts/modules/drilldown';
+import VueExcelEditor from 'vue-excel-editor'
+Vue.use(VueExcelEditor);
 drilldown( Highcharts );
 import { readOverAllStatistics, readHospitalsStatistics,
         readAdminHospital, readHospitalDepartments } from '@/store/admin/getters';
@@ -133,6 +138,52 @@ export default class Reporting extends Vue {
     return {
       select: '',
       items: [],
+      jsondata: [
+            {'Blood Culture': 'hc'},
+            {user: 'sm', name: 'Simon Minolta', phone: '1-123-7675682', gender: 'M', age: 20, birth: '1999-11-12'},
+            {user: 'ra', name: 'Raymond Atom',  phone: '1-456-9981212', gender: 'M', age: 19, birth: '2000-06-11'},
+            {user: 'ag', name: 'Mary George',   phone: '1-556-1245684', gender: 'F', age: 22, birth: '2002-08-01'},
+            {user: 'kl', name: 'Kenny Linus',   phone: '1-891-2345685', gender: 'M', age: 29, birth: '1990-09-01'}
+      ],
+      myLabels:  {
+        footerLeft: (top, bottom, total) => `Record ${top} to ${bottom} of ${total}`,
+        first: 'First',
+        previous: 'Previous',
+        next: 'Next',
+        last: 'Last',
+        footerRight: {
+            selected: 'Selected:',
+            filtered: 'Filtered:',
+            loaded: 'Loaded:'
+        },
+        processing: 'Processing',
+        tableSetting: 'Table Setting',
+        exportExcel: 'Export Excel',
+        importExcel: 'Import Excel',
+        back: 'Back',
+        reset: 'Default',
+        sortingAndFiltering: 'Sorting And Filtering',
+        sortAscending: 'Sort Ascending',
+        sortDescending: 'Sort Descending',
+        near: '≒ Near',
+        exactMatch: '= Exact Match',
+        notMatch: '≠ Not Match',
+        greaterThan: '&gt; Greater Than',
+        greaterThanOrEqualTo: '≥ Greater Than or Equal To',
+        lessThan: '&lt; Less Than',
+        lessThanOrEqualTo: '≤ Less Than Or Equal To',
+        regularExpression: '~ Regular Expression',
+        customFilter: 'Custom Filter',
+        listFirstNValuesOnly: n => `List first ${n} values only`,
+        apply: 'Apply',
+        noRecordIsRead: 'No record is read',
+        readonlyColumnDetected: 'Readonly column detected',
+        columnHasValidationError: (name, err) => `Column ${name} has validation error: ${err}`,
+        noMatchedColumnName: 'No matched column name',
+        invalidInputValue: 'Invalid input value',
+        missingKeyColumn: 'Missing key column',
+        noRecordIndicator: 'No record'
+    }
     };
   }
 

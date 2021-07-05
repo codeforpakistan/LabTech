@@ -37,6 +37,7 @@ class DepartmentInDBBase(DepartmentBase):
 
 # Properties to return to client
 class Department(DepartmentInDBBase):
+    have_submission: bool
     pass
 
 
