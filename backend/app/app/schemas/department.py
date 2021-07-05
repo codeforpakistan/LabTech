@@ -6,7 +6,7 @@ from pydantic import BaseModel
 # Shared properties
 class DepartmentBase(BaseModel):
     name: Optional[str] = None
-    # module_name: Optional[str] = None
+    module_name: Optional[str] = None
 
 # Properties to receive on department creation
 class DepartmentCreate(DepartmentBase):
