@@ -1,3 +1,5 @@
+from sqlalchemy.sql.expression import desc
+from backend.app.app.models.department import Department
 from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -110,3 +112,56 @@ def delete_department(
         raise HTTPException(status_code=400, detail="Not enough permissions")
     department = crud.department.remove(db=db, id=id)
     return department
+
+
+## ------ Reporting -------
+
+@router.get("/scores")
+def get_scores_by_department(
+    db: Session = Depends(deps.get_db),
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    return Scores for all departments
+    """
+    departments = db.query(Department).all()
+    module_names = list(set([
+        _row.module_name for _row in departments
+    ]))
+    
+    list_of_module_reports = []
+    for module_name in module_names:
+        
+        # first find a departments for the module
+        departments = db.query(Department).filter(Department.module_name == module_name).all()
+        module_obj = {
+            'moduleName': module_name,
+            'indicators': []
+        }
+        for department in departments:
+            
+            # fetch last submission for the department
+            surveys = db.query(Survey).filter(Survey.department_id == department_id).all()
+            survey_ids = [_row.id for _row in surveys]
+            submission = db.query(Submission).filter(Submission.survey_id.in_(survey_ids)) \
+                .order_by(desc(Submission.id)).first()
+            if submission is None:
+                continue
+            
+            # get scores
+            weigtage_list = []
+            for answer in submission.answers:
+                for option in answer.get('options', []):
+                    if option['text'] == answer['answer']:
+                        weigtage_list.append(option.get('weigtage', 0))
+            
+            # adding score along with name of department in module_obj
+            module_obj['indicators'].append({
+                'name': department.name,
+                'score': sum(weigtage_list)/len(weigtage_list) if len(weigtage_list) > 0 else 0
+            })
+        list_of_module_reports.append(module_obj)
+
+    return {
+        'results': list_of_module_reports
+    }
