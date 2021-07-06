@@ -67,7 +67,9 @@
 <template>
   <v-container>
     <template>
-         <vue-excel-editor v-model="jsondata" :localized-label="myLabels"></vue-excel-editor>
+      <div v-for="(item, index) in jsondata" :key="item.moduleName">
+        <vue-excel-editor v-model="jsondata[index].indicators" :localized-label="myLabels"></vue-excel-editor>
+      </div>
     </template>
     <!-- <v-container fluid>
       <p style="color: red">{{this.totalSubmissions > 0 ? '' : 'No submissions found to aggregate on.'}}</p>
@@ -139,11 +141,46 @@ export default class Reporting extends Vue {
       select: '',
       items: [],
       jsondata: [
-            {'Blood Culture': 'hc'},
-            {user: 'sm', name: 'Simon Minolta', phone: '1-123-7675682', gender: 'M', age: 20, birth: '1999-11-12'},
-            {user: 'ra', name: 'Raymond Atom',  phone: '1-456-9981212', gender: 'M', age: 19, birth: '2000-06-11'},
-            {user: 'ag', name: 'Mary George',   phone: '1-556-1245684', gender: 'F', age: 22, birth: '2002-08-01'},
-            {user: 'kl', name: 'Kenny Linus',   phone: '1-891-2345685', gender: 'M', age: 29, birth: '1990-09-01'}
+        {
+          moduleName: 'Test Menu and culture workload',
+          indicators: [
+            { name: 'Blood Cultures', score: 0 },
+            { name: 'Urine Cultures', score: 0 },
+            { name: 'Stool Cultures', score: 0 },
+            { name: 'Respiratory Cultures (not TB)', score: 0 },
+            { name: 'Wound Cultures', score: 0 },
+            { name: 'Cerebrospinal Fluid Cultures', score: 0 }
+          ],
+          chartType: 'pie' 
+        },
+        {
+          moduleName: 'Analysis AST Workload',
+          indicators: [
+            { name: 'Automated AST instrument', score: 0 },
+            { name: 'Disk Diffusion', score: 0 },
+            { name: 'Gradient Strip (e.g., Etest/Liofilchem)', score: 0 },
+            { name: 'Broth microdilution (96-well tray)', score: 0 },
+            { name: 'Broth microdilution (tube method)', score: 0 },
+            { name: 'Agar dilution', score: 0 }
+          ],
+          chartType: 'pie' 
+        },
+        {
+          moduleName: '1- FACILITY',
+          moduleScore: '73',
+          indicators: [
+            { name: 'Laboratory Facility', score: 75 },
+            { name: 'General Equipment Availability', score: 67 },
+            { name: 'Media Preparation Equipment Availability', score: 75 },
+            { name: 'Equipment Calibration Records', score: 0 },
+            { name: 'Thermometers', score: 0 },
+            { name: 'Temperature And Atmosphere Monitoring', score: 0 },
+            { name: 'Autoclave Management', score: 0 },
+            { name: 'Automated Equipment Availability And Maintenance', score: 0 },
+            { name: 'Inventory & Stock Outs', score: 0 }
+          ],
+          chartType: 'linechart' 
+        }
       ],
       myLabels:  {
         footerLeft: (top, bottom, total) => `Record ${top} to ${bottom} of ${total}`,
