@@ -4,7 +4,7 @@ import RouterComponent from './components/RouterComponent.vue';
 Vue.use(Router);
 
 export default new Router({
-  mode: 'history',
+  mode: 'abstract',
   base: process.env.BASE_URL,
   routes: [
     {
