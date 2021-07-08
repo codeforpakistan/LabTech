@@ -2,7 +2,6 @@ from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.models.submission import Submission
 from app import crud, models, schemas
 from app.api import deps
 
@@ -26,15 +25,6 @@ def read_surveys(
         surveys = crud.survey.get_multi_by_department(
             db=db, department_id=department_id, skip=skip, limit=limit
         )
-    try:
-        for each_survey in surveys:
-            submissions = db.query(Submission).filter(Submission.survey_id == each_survey.id)
-            if not submissions:
-                each_survey.have_submission =  False
-            else:
-                each_survey.have_submission =  True
-    except:
-        print("Could not");
     return surveys
 
 
