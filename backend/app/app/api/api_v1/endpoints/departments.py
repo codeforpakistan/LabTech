@@ -30,14 +30,13 @@ def read_departments(
     try:
         for each_dep in departments:
             surveys = db.query(Survey).filter(Survey.department_id == each_dep.id)
+            each_dep.have_submission =  False
             for survey in surveys:
                 submissions = db.query(Submission).filter(Submission.survey_id == survey.id)
-                if not submissions:
-                    each_dep.have_submission =  False
-                else:
+                if len(submissions) > 0:
                     each_dep.have_submission =  True
     except:
-        print("Could not");
+        print("Could not")
 
     return departments
 
