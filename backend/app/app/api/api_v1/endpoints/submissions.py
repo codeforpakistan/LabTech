@@ -48,8 +48,10 @@ def read_submissions(
         survey = db.query(Survey).filter(Survey.id == submission.survey_id).first()
         department = db.query(Department).filter(Department.id == survey.department_id).first()
         hospital = db.query(Hospital).filter(Hospital.id == department.hospital_id).first()
-        submission.hospital = hospital.name
-        submission.department = department.name
+        if hospital:
+            submission.hospital = hospital.name
+        if department:
+            submission.department = department.name
     return submissions
 
 
