@@ -48,7 +48,8 @@ def save_upload_file(upload_file: UploadFile, destination: Path) -> None:
 
 @router.post("/uploadimage/")
 def create_upload_file(file: UploadFile = File(...)):
-    os.chdir('../../../../')
+    os.chdir('../../../../../')
+    print('DEBUGG-- CURRENT WORKING DIR', os.getcwd())
     filepath = Path(os.getcwd() + '/images') / file.filename
     save_upload_file(file, filepath)
     return {"filename": file.filename}
