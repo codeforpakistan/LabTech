@@ -49,11 +49,11 @@ def save_upload_file(upload_file: UploadFile, destination: Path) -> None:
 
 @router.post("/uploadimage/")
 def create_upload_file(file: UploadFile = File(...)):
-    filepath = Path('images') / file.filename
+    filepath = Path('../../images') / file.filename
     save_upload_file(file, filepath)
     return {"filename": file.filename}
 
 
 @router.get("/image/{image_name}")
 def get_image(image_name: str = None):
-    return FileResponse(f"images/{image_name}")
+    return FileResponse(f"../../images/{image_name}")
