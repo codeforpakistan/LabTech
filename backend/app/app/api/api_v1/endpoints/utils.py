@@ -50,7 +50,7 @@ def save_upload_file(upload_file: UploadFile, destination: Path) -> None:
 def create_upload_file(file: UploadFile = File(...)):
     os.chdir('../../../../../')
     print('DEBUGG-- CURRENT WORKING DIR', os.getcwd())
-    filepath = Path(os.getcwd() + '/images') / file.filename
+    filepath = Path(os.getcwd() + 'images') / file.filename
     save_upload_file(file, filepath)
     return {"filename": file.filename}
 
