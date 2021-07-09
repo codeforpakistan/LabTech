@@ -141,7 +141,7 @@ def get_scores_by_department(
         for department in departments:
             
             # fetch last submission for the department
-            surveys = db.query(Survey).filter(Survey.department_id == department_id).all()
+            surveys = db.query(Survey).filter(Survey.department_id == department.id).all()
             survey_ids = [_row.id for _row in surveys]
             submission = db.query(Submission).filter(Submission.survey_id.in_(survey_ids)) \
                 .order_by(desc(Submission.id)).first()
