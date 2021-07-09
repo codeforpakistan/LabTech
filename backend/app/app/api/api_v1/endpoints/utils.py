@@ -13,6 +13,8 @@ from app.core.celery_app import celery_app
 from app.utils import send_test_email
 
 router = APIRouter()
+import os 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
 @router.post("/test-celery/", response_model=schemas.Msg, status_code=201)
@@ -49,11 +51,12 @@ def save_upload_file(upload_file: UploadFile, destination: Path) -> None:
 
 @router.post("/uploadimage/")
 def create_upload_file(file: UploadFile = File(...)):
-    filepath = Path('../../images') / file.filename
+    print(dir_path)
+    filepath = Path(dir_path + '/images') / file.filename
     save_upload_file(file, filepath)
     return {"filename": file.filename}
 
 
 @router.get("/image/{image_name}")
 def get_image(image_name: str = None):
-    return FileResponse(f"../../images/{image_name}")
+    return FileResponse(f"${dir_path}/images/{image_name}")
