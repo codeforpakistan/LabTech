@@ -29,10 +29,10 @@ def read_departments(
         )
     try:
         for each_dep in departments:
-            surveys = db.query(Survey).filter(Survey.department_id == each_dep.id)
+            surveys = db.query(Survey).filter(Survey.department_id == each_dep.id).all()
             each_dep.have_submission =  False
             for survey in surveys:
-                submissions = db.query(Submission).filter(Submission.survey_id == survey.id)
+                submissions = db.query(Submission).filter(Submission.survey_id == survey.id).all()
                 if len(submissions) > 0:
                     each_dep.have_submission =  True
     except:
