@@ -51,7 +51,7 @@ def save_upload_file(upload_file: UploadFile, destination: Path) -> None:
 def create_upload_file(file: UploadFile = File(...)):
     filepath = Path('images') / file.filename
     save_upload_file(file, filepath)
-    print('File saved successfully.')
+    print('File upload successfull.')
     return {"filename": file.filename}
 
 
