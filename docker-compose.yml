@@ -164,7 +164,7 @@ services:
       dockerfile: backend.dockerfile
       args:
         INSTALL_DEV: ${INSTALL_DEV-false}
-    command: /start-reload.sh
+    command: ./backend/app/start-reload.sh
     deploy:
       labels:
         - traefik.enable=true
