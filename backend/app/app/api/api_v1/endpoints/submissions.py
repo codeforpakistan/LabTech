@@ -55,6 +55,26 @@ def read_submissions(
     return submissions
 
 
+@router.get("/by_department/{department_id}", response_model=List[schemas.Submission])
+def read_submissions_by_department_id(
+    db: Session = Depends(deps.get_db),
+    skip: int = 0,
+    department_id: int = 0,
+    limit: int = 100,
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Retrieve submissions by department id
+    """
+    department = db.query(Department).filter(Department.id == department_id).first()
+    if not department:
+        raise HTTPException(status_code=404, detail="department not found")
+    surveys = db.query(Survey).filter(Survey.department_id == department_id).all()
+    survey_ids = [survey.id for survey in surveys]
+    submissions = db.query(Submission).filter(Submission.survey_id.in_(survey_ids)).all()
+    return submissions
+
+
 @router.get("/report/by-questions")
 def read_submissions_report(
     db: Session = Depends(deps.get_db),
