@@ -1,4 +1,3 @@
-from backend.app.app.models import submission
 from typing import Optional
 from datetime import datetime
 
