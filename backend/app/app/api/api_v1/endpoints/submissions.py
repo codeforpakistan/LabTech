@@ -1,5 +1,4 @@
 from sqlalchemy.sql.expression import desc
-from backend.app.app.models import department, survey
 import pandas as pd
 from typing import Any, List
 
