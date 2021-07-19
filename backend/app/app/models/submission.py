@@ -13,9 +13,11 @@ if TYPE_CHECKING:
 
 class Submission(Base):
     id = Column(Integer, primary_key=True, index=True)
+    submission_no = Column(Integer)
     comment = Column(String, index=True)
     answers = Column(JSON)
     images = Column(JSON)
+    meta = Column(JSON)
     lat = Column(Float)
     lng = Column(Float)
     created_date = Column(DateTime, default=datetime.datetime.utcnow)

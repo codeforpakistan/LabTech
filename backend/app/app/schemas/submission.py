@@ -8,6 +8,8 @@ from typing import List, Dict
 # Shared properties
 class SubmissionBase(BaseModel):
     comment: Optional[str] = ''
+    submission_no: Optional[int] = 0
+    meta: Optional[Dict] = {}
     answers: Optional[List[Dict]] = []
     images: Optional[List[str]] = []
     lat: Optional[float] = 0.0
