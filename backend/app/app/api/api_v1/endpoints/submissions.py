@@ -260,7 +260,7 @@ def get_submissions_by_lab(
             ]
             submissions_by_lab.append({
                 'name': labname,
-                'id': submissions_df_by_labname_by_no.id.iloc[0],
+                'id': int(submissions_df_by_labname_by_no.id.iloc[-1]),
                 'submission_no': submission_no,
                 'submissions': submissions_df_by_labname_by_no.to_dict(orient='records')
             })
