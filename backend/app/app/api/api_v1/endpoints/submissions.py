@@ -248,7 +248,7 @@ def get_submissions_by_lab(
             submissions_df.name == labname
         ]
         submissions_df_by_labname = submissions_df_by_labname.sort_values(by=['submission_no'])
-        submission_nos = list(submissions_df_by_labname.submission_no.unique())
+        submission_nos = list(map(int, list(submissions_df_by_labname.submission_no.unique())))
         submission_nos.sort()
 
         for submission_no in submission_nos:
