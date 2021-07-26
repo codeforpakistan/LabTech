@@ -243,6 +243,9 @@ def get_submissions_by_lab(
             'submission_id': submission.id
         })
 
+    print(submissions_list)
+
+
     submissions_df = pd.DataFrame(submissions_list)
     labnames = list(submissions_df.name.unique())
     submissions_by_lab = []
@@ -260,7 +263,7 @@ def get_submissions_by_lab(
             ]
             submissions_by_lab.append({
                 'name': labname,
-                '_id': int(submissions_df_by_labname_by_no._id.iloc[-1]),
+                '_id': 0,
                 'submission_no': submission_no,
                 'submissions': submissions_df_by_labname_by_no.to_dict(orient='records')
             })
