@@ -235,7 +235,7 @@ def get_submissions_by_lab(
         submissions_list.append({
             'submission_no': submission.submission_no,
             'indicatorId': submission.meta.get('indicatorId', 0),
-            'id': submission.meta.get('id', 0),
+            '_id': submission.meta.get('id', 0),
             'name': submission.meta.get('hospitalName', ''),
             'module_name': submission.meta.get('moduleName', ''),
             'indicator_name': submission.meta.get('indicatorName', ''),
@@ -260,7 +260,7 @@ def get_submissions_by_lab(
             ]
             submissions_by_lab.append({
                 'name': labname,
-                'id': int(submissions_df_by_labname_by_no.id.iloc[-1]),
+                '_id': int(submissions_df_by_labname_by_no._id.iloc[-1]),
                 'submission_no': submission_no,
                 'submissions': submissions_df_by_labname_by_no.to_dict(orient='records')
             })
