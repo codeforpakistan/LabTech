@@ -1,3 +1,6 @@
+import pandas as pd
+from sqlalchemy.sql.expression import asc, desc
+from backend.app.app.models.department import Department
 from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -110,3 +113,134 @@ def delete_department(
         raise HTTPException(status_code=400, detail="Not enough permissions")
     department = crud.department.remove(db=db, id=id)
     return department
+
+
+## ------ Reporting -------
+
+@router.get("/scores")
+def get_scores_by_department(
+    db: Session = Depends(deps.get_db),
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    return Scores for all departments
+    """
+    departments = db.query(Department).all()
+    module_names = list(set([
+        _row.module_name for _row in departments
+    ]))
+    
+    list_of_module_reports = []
+    for module_name in module_names:
+        
+        # first find a departments for the module
+        departments = db.query(Department).filter(Department.module_name == module_name).all()
+        module_obj = {
+            'moduleName': module_name,
+            'indicators': []
+        }
+        for department in departments:
+            
+            # fetch last submission for the department
+            surveys = db.query(Survey).filter(Survey.department_id == department.id).all()
+            survey_ids = [_row.id for _row in surveys]
+            submission = db.query(Submission).filter(Submission.survey_id.in_(survey_ids)) \
+                .order_by(desc(Submission.id)).first()
+            if submission is None:
+                continue
+            
+            # get scores
+            weigtage_list = []
+            for answer in submission.answers:
+                for option in answer.get('options', []):
+                    if option['text'] == answer['answer']:
+                        weigtage_list.append(option.get('weigtage', 0))
+            
+            # adding score along with name of department in module_obj
+            module_obj['indicators'].append({
+                'name': department.name,
+                'score': sum(weigtage_list)/len(weigtage_list) if len(weigtage_list) > 0 else 0
+            })
+        list_of_module_reports.append(module_obj)
+
+    return {
+        'results': list_of_module_reports
+    }
+
+
+@router.get("/scores_by_submissions")
+def get_scores_by_submission(
+    db: Session = Depends(deps.get_db),
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    return Scores for all departments
+    """
+    departments = db.query(Department).all()
+    module_names = list(set([
+        _row.module_name for _row in departments
+    ]))
+    
+    list_of_submissions = []
+    for module_name in module_names:
+        
+        # first find a departments for the module
+        departments = db.query(Department).filter(Department.module_name == module_name).all()
+        for department in departments:
+            
+            # fetch last submission for the department
+            surveys = db.query(Survey).filter(Survey.department_id == department.id).all()
+            survey_ids = [_row.id for _row in surveys]
+            submissions = db.query(Submission).filter(Submission.survey_id.in_(survey_ids)) \
+                .order_by(asc(Submission.id)).all()
+            
+            if len(submissions) == 0:
+                continue
+            
+            for index, submission in enumerate(submissions):
+                # get scores
+                weigtage_list = []
+                for answer in submission.answers:
+                    for option in answer.get('options', []):
+                        if option['text'] == answer['answer']:
+                            weigtage_list.append(option.get('weigtage', 0))
+            
+                # add score for single submission
+                list_of_submissions.append({
+                    'module_name': module_name,
+                    'department_name': department.name,
+                    'submission_no': index,
+                    'score': sum(weigtage_list)/len(weigtage_list) if len(weigtage_list) > 0 else 0
+                })
+        
+
+    df = pd.DataFrame(list_of_submissions)
+    submission_nos = list(df.submission_no.unique())
+    submission_nos.sort()
+
+    submissions_list = {}
+
+    for submission_no in submission_nos:
+        sub_df = df.loc[df.submission_no == submission_no]
+        submissions_list[submission_no] = []
+        
+        for module_name in list(sub_df.module_name.unique()):
+            sub_df_2 = df.loc[
+                df.submission_no == submission_no,
+                df.module_name == module_name
+            ]
+            module_obj = {
+                'moduleName': module_name,
+                'indicators': []
+            }
+            
+            for _, row in sub_df_2.iterrows():
+                module_obj.indicators.append({
+                    'name': row['department_name'],
+                    'score': row['score']
+                })
+            submissions_list[submission_no].append(module_obj)  
+            
+    return {
+        'results': submissions_list
+    }
