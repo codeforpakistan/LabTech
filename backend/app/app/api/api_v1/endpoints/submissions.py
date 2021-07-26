@@ -221,6 +221,44 @@ def read_submissions_report_by_hospital(
     }, 200
 
 
+@router.get("/by-labs")
+def get_submissions_by_lab(
+    db: Session = Depends(deps.get_db),
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Submissions by Lab
+    """
+    submissions = db.query(Submission).all()
+    submissions_list = []
+    for submission in submissions:
+        submissions_list.append({
+            'submission_no': submission.submission_no,
+            'labname': submission.meta.get('hospitalName', ''),
+            'module_name': submission.meta.get('moduleName', ''),
+            'indicator_name': submission.meta.get('indicatorName', ''),
+            'answers': submission.answers
+        })
+
+    submissions_df = pd.DataFrame(submissions_list)
+    labnames = list(submissions_df.labname.unique())
+    submissions_by_lab = []
+    for labname in labnames:
+        submissions_df_by_labname = submissions_df.loc[
+            submissions_df.labname == labname
+        ]
+        submissions_df_by_labname = submissions_df_by_labname.sort_values(by=['submission_no'])
+        submissions_by_lab.append({
+            'labname': labname,
+            'submissions': submissions_df_by_labname.to_dict(orient='records')
+        })
+
+    return {
+        'success': True,
+        'submissions': submissions_by_lab
+    }, 200
+
+
 @router.post("/", response_model=schemas.Submission)
 def create_submission(
     *,
