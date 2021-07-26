@@ -234,10 +234,13 @@ def get_submissions_by_lab(
     for submission in submissions:
         submissions_list.append({
             'submission_no': submission.submission_no,
+            'indicatorId': submission.meta.get('indicatorId', 0),
+            'id': submission.meta.get('id', 0),
             'name': submission.meta.get('hospitalName', ''),
             'module_name': submission.meta.get('moduleName', ''),
             'indicator_name': submission.meta.get('indicatorName', ''),
-            'answers': submission.answers
+            'answers': submission.answers,
+            'submission_id': submission.id
         })
 
     submissions_df = pd.DataFrame(submissions_list)
@@ -257,6 +260,7 @@ def get_submissions_by_lab(
             ]
             submissions_by_lab.append({
                 'name': labname,
+                'id': submissions_df_by_labname_by_no.id.iloc[0],
                 'submission_no': submission_no,
                 'submissions': submissions_df_by_labname_by_no.to_dict(orient='records')
             })
