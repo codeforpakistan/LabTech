@@ -241,11 +241,11 @@ def get_submissions_by_lab(
         })
 
     submissions_df = pd.DataFrame(submissions_list)
-    labnames = list(submissions_df.labname.unique())
+    labnames = list(submissions_df.name.unique())
     submissions_by_lab = []
     for labname in labnames:
         submissions_df_by_labname = submissions_df.loc[
-            submissions_df.labname == labname
+            submissions_df.name == labname
         ]
         submissions_df_by_labname = submissions_df_by_labname.sort_values(by=['submission_no'])
         submissions_by_lab.append({
