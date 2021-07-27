@@ -8,7 +8,7 @@
         <template>
           <v-form v-model="valid" ref="form" lazy-validation>
             <v-text-field label="Name" v-model="name" required></v-text-field>
-            <v-text-field label="Module Name" v-model="module_name" required></v-text-field>
+            <v-text-field label="Module Name" v-model="moduleName" required></v-text-field>
           </v-form>
         </template>
       </v-card-text>
@@ -34,7 +34,7 @@
   export default class EditDepartment extends Vue {
     public valid = false;
     public name: string = '';
-    public module_name: string = '';
+    public moduleName: string = '';
     private id: number = -1;
     private departmentId: number = -1;
 
@@ -56,7 +56,7 @@
 
     public setData(department) {
       this.name = department?.name;
-      this.module_name = department?.module_name;
+      this.moduleName = department?.moduleName;
     }
 
     public cancel() {
@@ -68,7 +68,7 @@
         const updatedDepartment: IDepartmentUpdate = {
           id: this.departmentId,
           name: this.name,
-          module_name: this.module_name,
+          module_name: this.moduleName,
         };
         await dispatchUpdateDepartment(this.$store, {id: this.departmentId, department: updatedDepartment});
         this.$router.push('/main/admin/hospital/' + this.id);

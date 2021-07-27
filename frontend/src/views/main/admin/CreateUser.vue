@@ -97,14 +97,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { IHospital, IUserProfileCreate } from "@/interfaces";
+import { Component, Vue } from 'vue-property-decorator';
+import { IHospital, IUserProfileCreate } from '@/interfaces';
 import {
   dispatchGetUsers,
   dispatchCreateUser,
   dispatchGetHospitals,
-} from "@/store/admin/actions";
-import { readAdminHospital } from "@/store/admin/getters";
+} from '@/store/admin/actions';
+import { readAdminHospital } from '@/store/admin/getters';
 
 @Component
 export default class CreateUser extends Vue {
@@ -184,7 +184,7 @@ export default class CreateUser extends Vue {
       updatedProfile.is_superuser = this.isSuperuser;
       updatedProfile.password = this.password1;
       await dispatchCreateUser(this.$store, updatedProfile);
-      this.$router.push("/main/admin/users");
+      this.$router.push('/main/admin/users');
     }
   }
 }

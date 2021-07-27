@@ -234,12 +234,18 @@ def get_submissions_by_lab(
     for submission in submissions:
         submissions_list.append({
             'submission_no': submission.submission_no,
+            'indicatorId': submission.meta.get('indicatorId', 0),
+            '_id': submission.meta.get('id', 0),
             'name': submission.meta.get('hospitalName', ''),
             'module_name': submission.meta.get('moduleName', ''),
             'indicator_name': submission.meta.get('indicatorName', ''),
-            'answers': submission.answers
+            'answers': submission.answers,
+            'submission_id': submission.id,
+            'created_date': submission.created_date,
+            'comment': submission.comment,
+            'images': submission.images
         })
-
+    
     submissions_df = pd.DataFrame(submissions_list)
     labnames = list(submissions_df.name.unique())
     submissions_by_lab = []
@@ -248,15 +254,21 @@ def get_submissions_by_lab(
             submissions_df.name == labname
         ]
         submissions_df_by_labname = submissions_df_by_labname.sort_values(by=['submission_no'])
-        submissions_by_lab.append({
-            'name': labname,
-            'submissions': submissions_df_by_labname.to_dict(orient='records')
-        })
+        submission_nos = list(map(int, list(submissions_df_by_labname.submission_no.unique())))
+        submission_nos.sort()
 
-    return {
-        'success': True,
-        'submissions': submissions_by_lab
-    }, 200
+        for submission_no in submission_nos:
+            submissions_df_by_labname_by_no = submissions_df_by_labname.loc[
+                submissions_df_by_labname.submission_no == submission_no
+            ]
+            submissions_by_lab.append({
+                'name': labname,
+                '_id': int(submissions_df_by_labname_by_no._id.iloc[-1]),
+                'submission_no': submission_no,
+                'submissions': submissions_df_by_labname_by_no.to_dict(orient='records')
+            })
+
+    return submissions_by_lab
 
 
 @router.post("/", response_model=schemas.Submission)
