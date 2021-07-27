@@ -116,7 +116,7 @@ export default class CreateHospitalDepartment extends Vue {
     this.id = parseInt(this.$router.currentRoute.params.id, 10);
     await dispatchGetDepartmentSurvey(this.$store, this.id);
     this.reset();
-    const surveyResp = <any> this.survey;
+    const surveyResp: any = this.survey;
     if (surveyResp && surveyResp.questions) {
       this.name = surveyResp.name;
       this.questions = surveyResp.questions;
