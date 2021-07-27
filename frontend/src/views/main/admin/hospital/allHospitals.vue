@@ -109,7 +109,7 @@ export default class AdminHospitals extends Vue {
    date = new Date(date);
    const month = date.getMonth() + 1;
    const day = date.getDate();
-   return date.getFullYear() +'-' +
+   return date.getFullYear() + '-' +
         (month.toString().length === 1 ? '0' + month : month)  +
         '-'  + (day.toString().length === 1 ? '0' + day : day);
   }

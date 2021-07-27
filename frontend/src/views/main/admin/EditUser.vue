@@ -200,7 +200,7 @@ export default class EditUser extends Vue {
                               (v: any, i: any, a: any) => a.findIndex((t: any) => (t.name === v.name)) === i);
       if (this.selectedHospitals && this.selectedHospitals.length > 0) {
         updatedProfile.allowed_hospitals = this.selectedHospitals;
-      }                        
+      }
       if (this.email) {
         updatedProfile.email = this.email;
       }

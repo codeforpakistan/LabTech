@@ -117,7 +117,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Store } from 'vuex';
 import Highcharts from 'highcharts';
 import drilldown from 'highcharts/modules/drilldown';
-import VueExcelEditor from 'vue-excel-editor'
+import VueExcelEditor from 'vue-excel-editor';
 Vue.use(VueExcelEditor);
 drilldown( Highcharts );
 import { readOverAllStatistics, readHospitalsStatistics,
@@ -149,9 +149,9 @@ export default class Reporting extends Vue {
             { name: 'Stool Cultures', score: 0 },
             { name: 'Respiratory Cultures (not TB)', score: 0 },
             { name: 'Wound Cultures', score: 0 },
-            { name: 'Cerebrospinal Fluid Cultures', score: 0 }
+            { name: 'Cerebrospinal Fluid Cultures', score: 0 },
           ],
-          chartType: 'pie' 
+          chartType: 'pie',
         },
         {
           moduleName: 'Analysis AST Workload',
@@ -161,9 +161,9 @@ export default class Reporting extends Vue {
             { name: 'Gradient Strip (e.g., Etest/Liofilchem)', score: 0 },
             { name: 'Broth microdilution (96-well tray)', score: 0 },
             { name: 'Broth microdilution (tube method)', score: 0 },
-            { name: 'Agar dilution', score: 0 }
+            { name: 'Agar dilution', score: 0 },
           ],
-          chartType: 'pie' 
+          chartType: 'pie',
         },
         {
           moduleName: '1- FACILITY',
@@ -177,10 +177,10 @@ export default class Reporting extends Vue {
             { name: 'Temperature And Atmosphere Monitoring', score: 0 },
             { name: 'Autoclave Management', score: 0 },
             { name: 'Automated Equipment Availability And Maintenance', score: 0 },
-            { name: 'Inventory & Stock Outs', score: 0 }
+            { name: 'Inventory & Stock Outs', score: 0 },
           ],
-          chartType: 'linechart' 
-        }
+          chartType: 'linechart',
+        },
       ],
       myLabels:  {
         footerLeft: (top, bottom, total) => `Record ${top} to ${bottom} of ${total}`,
@@ -191,7 +191,7 @@ export default class Reporting extends Vue {
         footerRight: {
             selected: 'Selected:',
             filtered: 'Filtered:',
-            loaded: 'Loaded:'
+            loaded: 'Loaded:',
         },
         processing: 'Processing',
         tableSetting: 'Table Setting',
@@ -211,7 +211,7 @@ export default class Reporting extends Vue {
         lessThanOrEqualTo: '≤ Less Than Or Equal To',
         regularExpression: '~ Regular Expression',
         customFilter: 'Custom Filter',
-        listFirstNValuesOnly: n => `List first ${n} values only`,
+        listFirstNValuesOnly: (n) => `List first ${n} values only`,
         apply: 'Apply',
         noRecordIsRead: 'No record is read',
         readonlyColumnDetected: 'Readonly column detected',
@@ -219,8 +219,8 @@ export default class Reporting extends Vue {
         noMatchedColumnName: 'No matched column name',
         invalidInputValue: 'Invalid input value',
         missingKeyColumn: 'Missing key column',
-        noRecordIndicator: 'No record'
-    }
+        noRecordIndicator: 'No record',
+      },
     };
   }
 
@@ -354,7 +354,7 @@ export default class Reporting extends Vue {
             },
             stackLabels: {
               enabled: true,
-              formatter: function() {
+              formatter() {
                 return Math.abs(this.total) + '%';
               },
             },
@@ -387,7 +387,7 @@ export default class Reporting extends Vue {
             + this.selectedDepartment.name : this.select.name ? this.select.name : 'all hospitals'} ${this.selectedDepartment.name ? 'Department' : 'Departments'}</b>`,
           },
           tooltip: {
-            formatter: function() {
+            formatter() {
               return '<span style="font-size: 10px">' + this.key + '</span><br/>' +
                 '<span style="color:' + this.color + '">\u25CF </span>' + this.series.name + ': <b>'
                 + Math.abs(this.y) + '%</b><br/>';
