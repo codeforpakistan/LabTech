@@ -241,7 +241,9 @@ def get_submissions_by_lab(
             'indicator_name': submission.meta.get('indicatorName', ''),
             'answers': submission.answers,
             'submission_id': submission.id,
-            'created_date': submission.created_date
+            'created_date': submission.created_date,
+            'comment': submission.comment,
+            'images': submission.images
         })
     
     submissions_df = pd.DataFrame(submissions_list)
