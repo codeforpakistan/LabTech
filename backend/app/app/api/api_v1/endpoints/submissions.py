@@ -290,20 +290,21 @@ def create_submission(
     """
     print(submission_in.answers)
 
-    # finding submission no
-    survey = db.query(Survey).filter(Survey.id == submission_in.survey_id).first()
-    if survey is None:
-        submission_in.submission_no = 1
-    else:
-        # find via departments
-        surveys = db.query(Survey).filter(Survey.department_id == survey.department_id).all()
-        survey_ids = [_doc.id for _doc in surveys]
-        submission = db.query(Submission).filter(Submission.survey_id.in_(survey_ids)) \
-            .order_by(desc(Submission.submission_no)).first()
-        
-        submission_in.submission_no = 1
-        if submission is not None and submission.submission_no is not None:
-            submission_in.submission_no = submission.submission_no  + 1
+    if submission_in.submission_no == 0:
+        # finding submission no
+        survey = db.query(Survey).filter(Survey.id == submission_in.survey_id).first()
+        if survey is None:
+            submission_in.submission_no = 1
+        else:
+            # find via departments
+            surveys = db.query(Survey).filter(Survey.department_id == survey.department_id).all()
+            survey_ids = [_doc.id for _doc in surveys]
+            submission = db.query(Submission).filter(Submission.survey_id.in_(survey_ids)) \
+                .order_by(desc(Submission.submission_no)).first()
+            
+            submission_in.submission_no = 1
+            if submission is not None and submission.submission_no is not None:
+                submission_in.submission_no = submission.submission_no  + 1
 
     submission = crud.submission.create_with_owner(db=db, obj_in=submission_in, owner_id=current_user.id)
     return submission
