@@ -267,6 +267,7 @@ def get_submissions_by_lab(
                 submissions_df_by_labname.submission_no == submission_no
             ]
             submissions_by_lab.append({
+                'user': current_user.full_name,
                 'name': labname,
                 '_id': int(submissions_df_by_labname_by_no._id.iloc[-1]),
                 'submission_no': submission_no,
