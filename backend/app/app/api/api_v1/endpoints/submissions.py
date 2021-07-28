@@ -229,7 +229,12 @@ def get_submissions_by_lab(
     """
     Submissions by Lab
     """
-    submissions = db.query(Submission).all()
+
+    if crud.user.is_superuser(current_user):
+        submissions = db.query(Submission).all()
+    else:
+        submissions = db.query(Submission).filter(Submission.owner_id == current_user.id).all()
+    
     submissions_list = []
     for submission in submissions:
         submissions_list.append({
