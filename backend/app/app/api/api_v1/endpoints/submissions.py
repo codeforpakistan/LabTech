@@ -229,7 +229,12 @@ def get_submissions_by_lab(
     """
     Submissions by Lab
     """
-    submissions = db.query(Submission).all()
+
+    if crud.user.is_superuser(current_user):
+        submissions = db.query(Submission).all()
+    else:
+        submissions = db.query(Submission).filter(Submission.owner_id == current_user.id).all()
+    
     submissions_list = []
     for submission in submissions:
         submissions_list.append({
@@ -243,7 +248,8 @@ def get_submissions_by_lab(
             'submission_id': submission.id,
             'created_date': submission.created_date,
             'comment': submission.comment,
-            'images': submission.images
+            'images': submission.images,
+            'user': current_user.full_name
         })
     
     submissions_df = pd.DataFrame(submissions_list)
@@ -262,6 +268,7 @@ def get_submissions_by_lab(
                 submissions_df_by_labname.submission_no == submission_no
             ]
             submissions_by_lab.append({
+                'user': current_user.full_name,
                 'name': labname,
                 '_id': int(submissions_df_by_labname_by_no._id.iloc[-1]),
                 'submission_no': submission_no,
