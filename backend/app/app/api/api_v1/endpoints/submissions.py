@@ -248,7 +248,8 @@ def get_submissions_by_lab(
             'submission_id': submission.id,
             'created_date': submission.created_date,
             'comment': submission.comment,
-            'images': submission.images
+            'images': submission.images,
+            'user': current_user.full_name
         })
     
     submissions_df = pd.DataFrame(submissions_list)
