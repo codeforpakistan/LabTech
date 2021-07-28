@@ -9,7 +9,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: () => import(/* webpackChunkName: 'start' */ './views/Login.vue'),
+      component: () => import(/* webpackChunkName: 'start' */ './views/main/Start.vue'),
       children: [
         {
           path: 'login',
@@ -89,9 +89,9 @@ export default new Router({
                   ],
                 },
                 {
-                  path: 'hospital',
+                  path: 'lab',
                   component: RouterComponent,
-                  redirect: 'hospital/all',
+                  redirect: 'lab/all',
                   children: [
                     {
                       path: 'all',
@@ -125,7 +125,7 @@ export default new Router({
                   ],
                 },
                 {
-                  path: 'hospital/:id',
+                  path: 'lab/:id',
                   component: RouterComponent,
                   props: true,
                   children: [

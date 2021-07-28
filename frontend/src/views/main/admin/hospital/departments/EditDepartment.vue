@@ -71,7 +71,7 @@
           module_name: this.moduleName,
         };
         await dispatchUpdateDepartment(this.$store, {id: this.departmentId, department: updatedDepartment});
-        this.$router.push('/main/admin/hospital/' + this.id);
+        this.$router.push('/main/admin/lab/' + this.id);
       }
     }
 
