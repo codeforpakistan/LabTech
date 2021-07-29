@@ -279,7 +279,7 @@ def get_submissions_by_lab(
                 '_id': int(submissions_df_by_labname_by_no._id.iloc[-1]),
                 'submission_no': submission_no,
                 'submissions': submissions_df_by_labname_by_no.to_dict(orient='records'),
-                'completed': len(_departments) == len(submissions_df_by_labname_by_no),
+                'completed': int(len(_departments)) == int(len(submissions_df_by_labname_by_no)),
                 'start_date': start_date,
                 'end_date': end_date
             })
