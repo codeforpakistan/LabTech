@@ -262,7 +262,9 @@ def get_submissions_by_lab(
         submissions_df_by_labname = submissions_df_by_labname.sort_values(by=['submission_no'])
         submission_nos = list(map(int, list(submissions_df_by_labname.submission_no.unique())))
         submission_nos.sort()
-
+        lab_id = submissions_df_by_labname._id.iloc[0]
+        _departments = db.query(Department).filter(Department.hospital_id == lab_id).all()
+        
         for submission_no in submission_nos:
             submissions_df_by_labname_by_no = submissions_df_by_labname.loc[
                 submissions_df_by_labname.submission_no == submission_no
@@ -272,7 +274,8 @@ def get_submissions_by_lab(
                 'name': labname,
                 '_id': int(submissions_df_by_labname_by_no._id.iloc[-1]),
                 'submission_no': submission_no,
-                'submissions': submissions_df_by_labname_by_no.to_dict(orient='records')
+                'submissions': submissions_df_by_labname_by_no.to_dict(orient='records'),
+                'completed': len(_departments) == len(submissions_df_by_labname_by_no)
             })
 
     return submissions_by_lab
