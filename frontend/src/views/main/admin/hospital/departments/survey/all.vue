@@ -6,7 +6,7 @@ import { Component, Vue } from 'vue-property-decorator';
         Manage Survey
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn color="primary" to="/main/admin/hospital/create">Create Survey</v-btn>
+      <v-btn color="primary" to="/main/admin/lab/create">Create Survey</v-btn>
     </v-toolbar>
     <v-data-table :headers="headers" :items="hospitals">
       <template slot="items" slot-scope="props">

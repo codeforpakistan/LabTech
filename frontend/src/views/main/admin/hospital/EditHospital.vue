@@ -102,7 +102,7 @@
           hospital_type: this.hospitalType ? this.hospitalType.toUpperCase() : 'OTHER',
         };
         await dispatchUpdateHospital(this.$store, {id: this.id, hospital: updatedHopital});
-        this.$router.push('/main/admin/hospital');
+        this.$router.push('/main/admin/lab');
       }
     }
 

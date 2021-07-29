@@ -6,7 +6,7 @@ import { Component, Vue } from 'vue-property-decorator';
         Manage Indicators
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn color="primary" :to="'/main/admin/hospital/' + id + '/department/create'">Create Indicator</v-btn>
+      <v-btn color="primary" :to="'/main/admin/lab/' + id + '/department/create'">Create Indicator</v-btn>
     </v-toolbar>
     <v-data-table :headers="headers" :items="departments">
       <template slot="items" slot-scope="props">
@@ -15,13 +15,13 @@ import { Component, Vue } from 'vue-property-decorator';
         <td class="justify-center layout px-0" colspan="2">
           <v-tooltip top>
             <span>View/Add/Edit Survey</span>
-            <v-btn slot="activator" flat :to="{path: `/main/admin/hospital/${id}/department/${props.item.id}`, params: {departmentId: props.item.id}}">
+            <v-btn slot="activator" flat :to="{path: `/main/admin/lab/${id}/department/${props.item.id}`, params: {departmentId: props.item.id}}">
               <v-icon>home</v-icon>
             </v-btn>
           </v-tooltip>
           <v-tooltip top>
             <span>Edit</span>
-            <v-btn slot="activator" flat :to="{path: `/main/admin/hospital/${id}/department/edit/${props.item.id}`, params: {departmentId: props.item.id}}">
+            <v-btn slot="activator" flat :to="{path: `/main/admin/lab/${id}/department/edit/${props.item.id}`, params: {departmentId: props.item.id}}">
               <v-icon>edit</v-icon>
             </v-btn>
           </v-tooltip>

@@ -88,7 +88,7 @@ export default class CreateHospital extends Vue {
         hospital_type: this.hospitalType ? this.hospitalType.toUpperCase() : 'OTHER',
       };
       await dispatchCreateHospital(this.$store, updatedHopital);
-      this.$router.push('/main/admin/hospital');
+      this.$router.push('/main/admin/lab');
     }
   }
 

@@ -194,7 +194,7 @@ export default class CreateHospitalDepartment extends Vue {
       questions: this.questions,
     };
     await dispatchUpdateDepartmentSurvey(this.$store, { surveyId: this.id, survey: updatedSurvey });
-    this.$router.push(`/main/admin/hospital/${this.hospitalId}/department/${this.departmentId}/all`);
+    this.$router.push(`/main/admin/lab/${this.hospitalId}/department/${this.departmentId}/all`);
   }
 
   get survey() {
