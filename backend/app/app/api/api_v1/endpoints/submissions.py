@@ -269,13 +269,19 @@ def get_submissions_by_lab(
             submissions_df_by_labname_by_no = submissions_df_by_labname.loc[
                 submissions_df_by_labname.submission_no == submission_no
             ]
+            submissions_df_by_labname_by_no = submissions_df_by_labname_by_no.sort_values(by=['created_date'])
+            start_date = submissions_df_by_labname_by_no['created_date'].iloc[0]
+            end_date = submissions_df_by_labname_by_no['created_date'].iloc[-1]
+            
             submissions_by_lab.append({
                 'user': current_user.full_name,
                 'name': labname,
                 '_id': int(submissions_df_by_labname_by_no._id.iloc[-1]),
                 'submission_no': submission_no,
                 'submissions': submissions_df_by_labname_by_no.to_dict(orient='records'),
-                'completed': len(_departments) == len(submissions_df_by_labname_by_no)
+                'completed': len(_departments) == len(submissions_df_by_labname_by_no),
+                'start_date': start_date,
+                'end_date': end_date
             })
 
     return submissions_by_lab
