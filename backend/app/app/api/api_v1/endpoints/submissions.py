@@ -273,12 +273,25 @@ def get_submissions_by_lab(
             start_date = submissions_df_by_labname_by_no['created_date'].iloc[0]
             end_date = submissions_df_by_labname_by_no['created_date'].iloc[-1]
             
+            # converting df into json
+            # find scores per submission
+            _submissions = submissions_df_by_labname_by_no.to_dict(orient='records')
+            for index, submission in enumerate(_submissions):
+                # get scores
+                weigtage_list = []
+                for answer in submission.get('answers', []):
+                    for option in answer.get('options', []):
+                        if option['text'] == answer['answer']:
+                            weigtage_list.append(option.get('weigtage', 0))
+                _submissions['score'] = sum(weigtage_list)/len(weigtage_list) if len(weigtage_list) > 0 else 0
+            
+            # append list of submissions by submission no
             submissions_by_lab.append({
                 'user': current_user.full_name,
                 'name': labname,
                 '_id': int(submissions_df_by_labname_by_no._id.iloc[-1]),
                 'submission_no': submission_no,
-                'submissions': submissions_df_by_labname_by_no.to_dict(orient='records'),
+                'submissions': _submissions,
                 'completed': int(len(_departments)) == int(len(submissions_df_by_labname_by_no)),
                 'start_date': start_date,
                 'end_date': end_date
