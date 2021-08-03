@@ -279,7 +279,7 @@ def get_submissions_by_lab(
             for index, submission in enumerate(_submissions):
                 # get scores
                 weigtage_list = []
-                for answer in submission.answers:
+                for answer in submission.get('answers', []):
                     for option in answer.get('options', []):
                         if option['text'] == answer['answer']:
                             weigtage_list.append(option.get('weigtage', 0))
