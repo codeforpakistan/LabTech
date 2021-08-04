@@ -272,7 +272,7 @@ export default class Reporting extends Vue {
 
    private async fetchByLabReport() {
     await dispatchGetByLabReport(this.$store);
-    this.refactorByLabReport()
+    this.refactorByLabReport();
   }
 
   private async constructSelectedHospitalStatistics(hospital) {
