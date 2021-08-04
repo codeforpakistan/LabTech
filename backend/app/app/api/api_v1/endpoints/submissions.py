@@ -282,7 +282,12 @@ def get_submissions_by_lab(
                 for answer in submission.get('answers', []):
                     for option in answer.get('options', []):
                         if option['text'] == answer['answer']:
-                            weigtage_list.append(option.get('weigtage', 0))
+                            try:
+                                _w = int(option.get('weigtage', 0))
+                            except:
+                                _w = 0
+                            weigtage_list.append(_w)
+            
                 _submissions['score'] = sum(weigtage_list)/len(weigtage_list) if len(weigtage_list) > 0 else 0
             
             # append list of submissions by submission no
