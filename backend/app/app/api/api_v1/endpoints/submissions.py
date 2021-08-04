@@ -287,9 +287,11 @@ def get_submissions_by_lab(
                             except:
                                 _w = 0
                             weigtage_list.append(_w)
-            
-                _submissions['score'] = sum(weigtage_list)/len(weigtage_list) if len(weigtage_list) > 0 else 0
-            
+                try:
+                    _submissions['score'] = sum(weigtage_list)/len(weigtage_list) if len(weigtage_list) > 0 else 0
+                except:
+                    print(weigtage_list)
+                
             # append list of submissions by submission no
             submissions_by_lab.append({
                 'user': current_user.full_name,
