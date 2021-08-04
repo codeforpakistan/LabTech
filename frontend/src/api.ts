@@ -81,4 +81,7 @@ export const api = {
     return axios.get(`${apiUrl}/api/v1/submissions/report/by-questions/`
     + hospitalId + '/' + (departmentId ? departmentId : 0), authHeaders(token));
   },
+  async getByLabReport(token: string) {
+    return axios.get(`${apiUrl}/api/v1/submissions/by-labs`, authHeaders(token));
+  },
 };

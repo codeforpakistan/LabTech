@@ -7,7 +7,7 @@ import { AdminState } from './state';
 import { getStoreAccessors } from 'typesafe-vuex';
 import { commitSetUsers, commitSetUser, commitOverAllStatistics, commitHospitalStatistics } from './mutations';
 import {  commitSetHospital} from './mutations';
-import { commitSetHospitals, commitSetHospitalDepartments, commitSetSurveys} from './mutations';
+import { commitSetHospitals, commitSetHospitalDepartments, commitSetSurveys, commitByLabReport} from './mutations';
 import { dispatchCheckApiError } from '../main/actions';
 import { commitAddNotification, commitRemoveNotification } from '../main/mutations';
 
@@ -189,6 +189,16 @@ export const actions = {
             await dispatchCheckApiError(context, error);
         }
     },
+    async actionGetByLabReport(context: MainContext) {
+        try {
+            const response = await api.getByLabReport(context.rootState.main.token);
+            if (response) {
+                commitByLabReport(context, response.data);
+            }
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
 };
 
 const { dispatch } = getStoreAccessors<AdminState, State>('');
@@ -211,4 +221,4 @@ export const dispatchGetDepartmentSurveys = dispatch(actions.actionGetDepartment
 export const dispatchCreateDepartmentSurvey = dispatch(actions.actionCreateDepartmentSurvey);
 export const dispatchUpdateDepartmentSurvey = dispatch(actions.actionUpdateDepartmentSurvey);
 export const dispatchGetDepartmentSurvey = dispatch(actions.actionGetDepartmentSurvey);
-
+export const dispatchGetByLabReport = dispatch(actions.actionGetByLabReport);

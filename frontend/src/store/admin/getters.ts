@@ -31,6 +31,7 @@ export const getters = {
     survey : (state: AdminState) => {
         return { ...state.departmentSurveys };
     },
+    byLabReport: (state: AdminState) => state.byLabReport,
 };
 
 const { read } = getStoreAccessors<AdminState, State>('');
@@ -48,3 +49,4 @@ export const readHospitalDepartments = read(getters.hospitalDepartments);
 export const readDepartmentSurveys = read(getters.departmentSurveys);
 export const readSurveyById = read(getters.survey);
 export const readAdminOneDepartment = read(getters.adminOneDepartment);
+export const readByLabReport = read(getters.byLabReport);

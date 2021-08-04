@@ -7,4 +7,5 @@ export interface AdminState {
     hospitals: IHospital[];
     hospitalDepartments: IDepartment[];
     departmentSurveys: ISurvey[];
+    byLabReport: any;
 }

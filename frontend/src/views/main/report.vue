@@ -68,7 +68,7 @@
   <v-container>
     <template>
       <div v-for="(item, index) in jsondata" :key="item.moduleName">
-        <vue-excel-editor v-model="jsondata[index].indicators" :localized-label="myLabels"></vue-excel-editor>
+        <vue-excel-editor :readonly="true" v-model="jsondata[index].indicators" :localized-label="myLabels"></vue-excel-editor>
       </div>
     </template>
     <!-- <v-container fluid>
@@ -121,8 +121,8 @@ import VueExcelEditor from 'vue-excel-editor';
 Vue.use(VueExcelEditor);
 drilldown( Highcharts );
 import { readOverAllStatistics, readHospitalsStatistics,
-        readAdminHospital, readHospitalDepartments } from '@/store/admin/getters';
-import { dispatchGetOverAllStatistics, dispatchGetHospitalStatistics,
+        readAdminHospital, readHospitalDepartments, readByLabReport } from '@/store/admin/getters';
+import { dispatchGetOverAllStatistics, dispatchGetHospitalStatistics, dispatchGetByLabReport,
         dispatchGetHospitals, dispatchGetHospitalDepartments} from '@/store/admin/actions';
 import { readUserProfile } from '@/store/main/getters';
 
@@ -240,6 +240,10 @@ export default class Reporting extends Vue {
     return readHospitalDepartments(this.$store);
   }
 
+  get byLabReport() {
+    return readByLabReport(this.$store);
+  }
+
   private calculateTotalSubmissions(fallback) {
     this.totalSubmissions = this.hospitalStatistics && this.hospitalStatistics[0]
     && this.hospitalStatistics[0].total_submissions
@@ -250,15 +254,25 @@ export default class Reporting extends Vue {
       : 0;
   }
 
+  private refactorByLabReport() {
+    console.log('this.byLabReport', this.byLabReport);
+  }
+
   private async mounted() {
     await dispatchGetHospitals(this.$store);
     this.consturctOverAllStatistics();
+    this.fetchByLabReport();
   }
 
   private async consturctOverAllStatistics() {
     await dispatchGetOverAllStatistics(this.$store);
     this.calculateTotalSubmissions(true);
     this.constructSurveyChart(this.overAllStatistics);
+  }
+
+   private async fetchByLabReport() {
+    await dispatchGetByLabReport(this.$store);
+    this.refactorByLabReport()
   }
 
   private async constructSelectedHospitalStatistics(hospital) {
