@@ -291,6 +291,7 @@ def get_submissions_by_lab(
                     _submissions['score'] = sum(weigtage_list)/len(weigtage_list) if len(weigtage_list) > 0 else 0
                 except Exception as e:
                     print('ERROR', str(e))
+                    print('type', type(weigtage_list))
                     print(weigtage_list)
                 
             # append list of submissions by submission no
