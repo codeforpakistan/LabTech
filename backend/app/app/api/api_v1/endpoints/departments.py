@@ -110,3 +110,18 @@ def delete_department(
         raise HTTPException(status_code=400, detail="Not enough permissions")
     department = crud.department.remove(db=db, id=id)
     return department
+
+
+@router.get("/modules")
+def get_all_modules(
+    db: Session = Depends(deps.get_db),
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Get all module names
+    """
+    departments = db.query(Department).all()
+    _module_names = [department.module_name for department in departments]
+    return {
+        'modules': _module_names
+    }
