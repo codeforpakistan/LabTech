@@ -123,6 +123,7 @@ def get_all_modules(
     """
     departments = db.query(Department).all()
     _module_names = [department.module_name for department in departments]
+    print('MODULES', _module_names)
     return {
         'modules': _module_names
     }
