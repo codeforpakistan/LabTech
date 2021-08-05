@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.models.submission import Submission
 from app.models.survey import Survey
+from app.models.department import Department
 from app import crud, models, schemas
 from app.api import deps
 
