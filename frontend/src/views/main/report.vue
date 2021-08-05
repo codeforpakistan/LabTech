@@ -67,8 +67,12 @@
 <template>
   <v-container>
     <template>
-      <div v-for="(item, index) in jsondata" :key="item.moduleName">
-        <vue-excel-editor :readonly="true" v-model="jsondata[index].indicators" :localized-label="myLabels"></vue-excel-editor>
+      <div v-for="(item, index) in jsondata[0].modules" :key="item.moduleName">
+        <div st>
+          <label><b>{{item.moduleName}}</b></label>
+          <label style="margin-left: 18rem;">{{item.moduleScore}}</label>
+        </div>
+        <vue-excel-editor :readonly="true" v-model="item.indicators" :localized-label="myLabels"></vue-excel-editor>
       </div>
     </template>
     <!-- <v-container fluid>
@@ -136,52 +140,54 @@ export default class Reporting extends Vue {
   private total: any;
   private selectedDepartment: any = '';
   private totalSubmissions: number = 0;
+  private labs: any = [];
+  private jsondata: any = [];
   private data() {
     return {
       select: '',
       items: [],
-      jsondata: [
-        {
-          moduleName: 'Test Menu and culture workload',
-          indicators: [
-            { name: 'Blood Cultures', score: 0 },
-            { name: 'Urine Cultures', score: 0 },
-            { name: 'Stool Cultures', score: 0 },
-            { name: 'Respiratory Cultures (not TB)', score: 0 },
-            { name: 'Wound Cultures', score: 0 },
-            { name: 'Cerebrospinal Fluid Cultures', score: 0 },
-          ],
-          chartType: 'pie',
-        },
-        {
-          moduleName: 'Analysis AST Workload',
-          indicators: [
-            { name: 'Automated AST instrument', score: 0 },
-            { name: 'Disk Diffusion', score: 0 },
-            { name: 'Gradient Strip (e.g., Etest/Liofilchem)', score: 0 },
-            { name: 'Broth microdilution (96-well tray)', score: 0 },
-            { name: 'Broth microdilution (tube method)', score: 0 },
-            { name: 'Agar dilution', score: 0 },
-          ],
-          chartType: 'pie',
-        },
-        {
-          moduleName: '1- FACILITY',
-          moduleScore: '73',
-          indicators: [
-            { name: 'Laboratory Facility', score: 75 },
-            { name: 'General Equipment Availability', score: 67 },
-            { name: 'Media Preparation Equipment Availability', score: 75 },
-            { name: 'Equipment Calibration Records', score: 0 },
-            { name: 'Thermometers', score: 0 },
-            { name: 'Temperature And Atmosphere Monitoring', score: 0 },
-            { name: 'Autoclave Management', score: 0 },
-            { name: 'Automated Equipment Availability And Maintenance', score: 0 },
-            { name: 'Inventory & Stock Outs', score: 0 },
-          ],
-          chartType: 'linechart',
-        },
-      ],
+      // jsondata: [
+        // {
+        //   moduleName: 'Test Menu and culture workload',
+        //   indicators: [
+        //     { name: 'Blood Cultures', score: 0 },
+        //     { name: 'Urine Cultures', score: 0 },
+        //     { name: 'Stool Cultures', score: 0 },
+        //     { name: 'Respiratory Cultures (not TB)', score: 0 },
+        //     { name: 'Wound Cultures', score: 0 },
+        //     { name: 'Cerebrospinal Fluid Cultures', score: 0 },
+        //   ],
+        //   chartType: 'pie',
+        // },
+        // {
+        //   moduleName: 'Analysis AST Workload',
+        //   indicators: [
+        //     { name: 'Automated AST instrument', score: 0 },
+        //     { name: 'Disk Diffusion', score: 0 },
+        //     { name: 'Gradient Strip (e.g., Etest/Liofilchem)', score: 0 },
+        //     { name: 'Broth microdilution (96-well tray)', score: 0 },
+        //     { name: 'Broth microdilution (tube method)', score: 0 },
+        //     { name: 'Agar dilution', score: 0 },
+        //   ],
+        //   chartType: 'pie',
+        // },
+        // {
+        //   moduleName: '1- FACILITY',
+        //   moduleScore: '73',
+        //   indicators: [
+        //     { name: 'Laboratory Facility', score: 75 },
+        //     { name: 'General Equipment Availability', score: 67 },
+        //     { name: 'Media Preparation Equipment Availability', score: 75 },
+        //     { name: 'Equipment Calibration Records', score: 0 },
+        //     { name: 'Thermometers', score: 0 },
+        //     { name: 'Temperature And Atmosphere Monitoring', score: 0 },
+        //     { name: 'Autoclave Management', score: 0 },
+        //     { name: 'Automated Equipment Availability And Maintenance', score: 0 },
+        //     { name: 'Inventory & Stock Outs', score: 0 },
+        //   ],
+        //   chartType: 'linechart',
+        // },
+      // ],
       myLabels:  {
         footerLeft: (top, bottom, total) => `Record ${top} to ${bottom} of ${total}`,
         first: 'First',
@@ -256,6 +262,45 @@ export default class Reporting extends Vue {
 
   private refactorByLabReport() {
     console.log('this.byLabReport', this.byLabReport);
+    const labs: any = [];
+    this.byLabReport.forEach(r => {
+      const indicators: any = [];
+      let totalScore = 0;
+      let moduleScore: any = 0;
+      let moduleName = '';
+      let chartType = 'linechart';
+      r.submissions.forEach(sub => {
+        totalScore += sub.score;
+        indicators.push({ name: sub.indicator_name, score: parseFloat(sub.score).toFixed(2) });
+      });
+      if (r.submissions.length > 0) {
+        moduleName = r.submissions[0].module_name;
+        moduleScore = totalScore / r.submissions.length;
+        moduleScore = parseFloat(moduleScore).toFixed(2);
+      }
+      // if (this.labs.indexOf())
+      // this.labs.push(
+      //   { name: r.name, submissions: [ r.submission_no ] }
+      // )
+      labs.push({
+        name: r.name,
+        submissionNo: r.submission_no,
+        modules: [{
+          moduleName,
+          moduleScore,
+          indicators,
+          chartType,
+        }]
+      });
+    });
+    // this.labs = this.getUniqueLabsandSumbissions(labs);
+    this.jsondata = labs;
+    console.log('labslabs', this.jsondata);
+    
+  }
+
+  private getUniqueLabsandSumbissions(labs) {
+    
   }
 
   private async mounted() {
