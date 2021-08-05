@@ -113,17 +113,18 @@ def delete_department(
     return department
 
 
-@router.get("/modules")
-def get_all_modules(
+@router.get("/module_names")
+def get_all_module_names(
     db: Session = Depends(deps.get_db),
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
     Get all module names
     """
-    departments = db.query(Department).all()
-    _module_names = [department.module_name for department in departments]
-    print('MODULES', _module_names)
+    # departments = db.query(Department).all()
+    # _module_names = [department.module_name for department in departments]
+    # print('MODULES', _module_names)
     return {
-        'modules': _module_names
+        'modules': "success!"
     }
+
