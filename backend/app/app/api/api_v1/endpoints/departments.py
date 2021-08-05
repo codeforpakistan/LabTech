@@ -128,3 +128,15 @@ def get_all_module_names(
         'modules': "success!"
     }
 
+
+@router.get("/by-labs")
+def get_submissions_by_lab_in_dept(
+    db: Session = Depends(deps.get_db),
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Submissions by Lab
+    """
+    return {
+        'test': True
+    }
