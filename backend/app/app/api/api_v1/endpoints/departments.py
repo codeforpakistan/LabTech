@@ -121,22 +121,8 @@ def get_all_module_names(
     """
     Get all module names
     """
-    # departments = db.query(Department).all()
-    # _module_names = [department.module_name for department in departments]
-    # print('MODULES', _module_names)
+    departments = db.query(Department).all()
+    _module_names = [department.module_name for department in departments]
     return {
-        'modules': "success!"
-    }
-
-
-@router.get("/by-labs")
-def get_submissions_by_lab_in_dept(
-    db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(deps.get_current_active_user),
-) -> Any:
-    """
-    Submissions by Lab
-    """
-    return {
-        'test': True
+        'modules': _module_names
     }
