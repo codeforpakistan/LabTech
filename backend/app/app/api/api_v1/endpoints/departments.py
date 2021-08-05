@@ -122,7 +122,9 @@ def get_all_module_names(
     Get all module names
     """
     departments = db.query(Department).all()
-    _module_names = list(set([department.module_name for department in departments]))
+    _module_names = list(set([
+        department.module_name for department in departments if department.module_name  is not None
+    ]))
     return {
         'modules': _module_names
     }
