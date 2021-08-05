@@ -113,7 +113,7 @@ def delete_department(
     return department
 
 
-@router.get("/module_names")
+@router.get("/module_names/all")
 def get_all_module_names(
     db: Session = Depends(deps.get_db),
     current_user: models.User = Depends(deps.get_current_active_user),
