@@ -44,6 +44,7 @@ def create_hospital(
     *,
     db: Session = Depends(deps.get_db),
     hospital_in: schemas.HospitalCreate,
+    create_indicators: int = 0,
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
@@ -53,8 +54,8 @@ def create_hospital(
     hospital = crud.hospital.create_with_owner(
         db=db, obj_in=hospital_in, owner_id=current_user.id
     )
-
-    if current_user.is_superuser:
+    
+    if create_indicators:
         # find the example lab/hospital for the prefil data
         example_hospital = db.query(Hospital).filter(Hospital.name == "Islamabad Diagnostic Centre").first()
         example_departments = db.query(Department).filter(Department.hospital_id == example_hospital.id)
