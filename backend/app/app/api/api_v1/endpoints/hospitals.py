@@ -55,7 +55,7 @@ def create_hospital(
         db=db, obj_in=hospital_in, owner_id=current_user.id
     )
     
-    if create_indicators:
+    if create_indicators and current_user.is_superuser:
         # find the example lab/hospital for the prefil data
         example_hospital = db.query(Hospital).filter(Hospital.name == "Islamabad Diagnostic Centre").first()
         example_departments = db.query(Department).filter(Department.hospital_id == example_hospital.id)
