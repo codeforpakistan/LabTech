@@ -1,4 +1,3 @@
-from backend.app.app.models import department, hospital, survey
 from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException
