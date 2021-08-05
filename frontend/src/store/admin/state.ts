@@ -3,6 +3,7 @@ import { IUserProfile, IHospital, IDepartment, ISurvey, IStatistics} from '@/int
 export interface AdminState {
     users: IUserProfile[];
     overAllStatistics: any;
+    moduleNames: any;
     hospitalStatistics: any;
     hospitals: IHospital[];
     hospitalDepartments: IDepartment[];

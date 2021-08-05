@@ -5,7 +5,7 @@ import { IUserProfileCreate, IUserProfileUpdate, IHospitalCreate } from '@/inter
 import { State } from '../state';
 import { AdminState } from './state';
 import { getStoreAccessors } from 'typesafe-vuex';
-import { commitSetUsers, commitSetUser, commitOverAllStatistics, commitHospitalStatistics } from './mutations';
+import { commitSetUsers, commitSetUser, commitOverAllStatistics, commitHospitalStatistics, commitModuleNames } from './mutations';
 import {  commitSetHospital} from './mutations';
 import { commitSetHospitals, commitSetHospitalDepartments, commitSetSurveys} from './mutations';
 import { dispatchCheckApiError } from '../main/actions';
@@ -44,6 +44,16 @@ export const actions = {
             const response = await api.getHospitalDepartments(context.rootState.main.token, hospitalId);
             if (response) {
                 commitSetHospitalDepartments(context, response.data);
+            }
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
+    async actionGetModuleNames(context: MainContext) {
+        try {
+            const response = await api.getModuleNames(context.rootState.main.token);
+            if (response) {
+                commitModuleNames(context, response.data);
             }
         } catch (error) {
             await dispatchCheckApiError(context, error);
@@ -206,9 +216,13 @@ export const dispatchUpdateHospital = dispatch(actions.actionUpdateHospital);
 export const dispatchGetHospitalDepartments = dispatch(actions.actionGetHospitalDepartments);
 export const dispatchCreateHospitalDepartment = dispatch(actions.actionCreateHospitalDepartment);
 export const dispatchUpdateDepartment = dispatch(actions.actionUpdateDepartment);
+export const dispatchGetModuleNames = dispatch(actions.actionGetModuleNames);
+
 
 export const dispatchGetDepartmentSurveys = dispatch(actions.actionGetDepartmentSurveys);
 export const dispatchCreateDepartmentSurvey = dispatch(actions.actionCreateDepartmentSurvey);
 export const dispatchUpdateDepartmentSurvey = dispatch(actions.actionUpdateDepartmentSurvey);
 export const dispatchGetDepartmentSurvey = dispatch(actions.actionGetDepartmentSurvey);
+
+
 

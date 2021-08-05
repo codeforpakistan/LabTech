@@ -27,6 +27,7 @@ export const getters = {
         }
     },
     hospitalDepartments: (state: AdminState) => state.hospitalDepartments,
+    moduleNames: (state: AdminState) => state.moduleNames,
     departmentSurveys: (state: AdminState) => state.departmentSurveys,
     survey : (state: AdminState) => {
         return { ...state.departmentSurveys };
@@ -48,3 +49,5 @@ export const readHospitalDepartments = read(getters.hospitalDepartments);
 export const readDepartmentSurveys = read(getters.departmentSurveys);
 export const readSurveyById = read(getters.survey);
 export const readAdminOneDepartment = read(getters.adminOneDepartment);
+export const readModuleNames = read(getters.moduleNames);
+
