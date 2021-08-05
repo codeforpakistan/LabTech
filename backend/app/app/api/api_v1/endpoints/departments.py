@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.models.submission import Submission
 from app.models.survey import Survey
+from app.models.department import Department
 from app import crud, models, schemas
 from app.api import deps
 
@@ -112,8 +113,8 @@ def delete_department(
     return department
 
 
-@router.get("/modules")
-def get_all_modules(
+@router.get("/module_names/all")
+def get_all_module_names(
     db: Session = Depends(deps.get_db),
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
@@ -121,7 +122,9 @@ def get_all_modules(
     Get all module names
     """
     departments = db.query(Department).all()
-    _module_names = [department.module_name for department in departments]
+    _module_names = list(set([
+        department.module_name for department in departments if department.module_name  is not None
+    ]))
     return {
         'modules': _module_names
     }
