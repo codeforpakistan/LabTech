@@ -1,115 +1,91 @@
  <style>
-    #container {
-      height: 850px;
-    }
+  #container {
+    height: 850px;
+  }
+  .highcharts-data-table table {
+    font-family: Verdana, sans-serif;
+    border-collapse: collapse;
+    border: 1px solid #EBEBEB;
+    margin: 10px auto;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+  }
+  .highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;
+  }
+  .highcharts-data-table th {
+    font-weight: 600;
+    padding: 0.5em;
+  }
+  .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+    padding: 0.5em;
+  }
+  .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+  }
+  .highcharts-data-table tr:hover {
+    background: #f1f7ff;
+  }
+  .highcharts-figure, .highcharts-data-table table {
+    min-width: 700px; 
+    max-width: 1900px;
+    margin: 1em auto;
+  }
 
-    .highcharts-data-table table {
-      font-family: Verdana, sans-serif;
-      border-collapse: collapse;
-      border: 1px solid #EBEBEB;
-      margin: 10px auto;
-      text-align: center;
-      width: 100%;
-      max-width: 500px;
-    }
-    .highcharts-data-table caption {
-      padding: 1em 0;
-      font-size: 1.2em;
-      color: #555;
-    }
-    .highcharts-data-table th {
-      font-weight: 600;
-      padding: 0.5em;
-    }
-    .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
-      padding: 0.5em;
-    }
-    .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
-      background: #f8f8f8;
-    }
-    .highcharts-data-table tr:hover {
-      background: #f1f7ff;
-    }
-    .highcharts-figure, .highcharts-data-table table {
-      min-width: 700px; 
-      max-width: 1900px;
-      margin: 1em auto;
-    }
-
-    .highcharts-data-table table {
-      font-family: Verdana, sans-serif;
-      border-collapse: collapse;
-      border: 1px solid #EBEBEB;
-      margin: 10px auto;
-      text-align: center;
-      width: 100%;
-      max-width: 500px;
-    }
-    .highcharts-data-table caption {
-      padding: 1em 0;
-      font-size: 1.2em;
-      color: #555;
-    }
-    .highcharts-data-table th {
-      font-weight: 700;
-      padding: 0.5em;
-    }
-    .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
-      padding: 0.5em;
-    }
-    .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
-      background: #f8f8f8;
-    }
-    .highcharts-data-table tr:hover {
-      background: #f1f7ff;
-    }
+  .highcharts-data-table table {
+    font-family: Verdana, sans-serif;
+    border-collapse: collapse;
+    border: 1px solid #EBEBEB;
+    margin: 10px auto;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+  }
+  .highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;
+  }
+  .highcharts-data-table th {
+    font-weight: 700;
+    padding: 0.5em;
+  }
+  .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+    padding: 0.5em;
+  }
+  .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+  }
+  .highcharts-data-table tr:hover {
+    background: #f1f7ff;
+  }
 </style>
 <template>
   <v-container>
     <template>
-      <div v-for="(item, index) in jsondata[0].modules" :key="item.moduleName">
-        <div st>
-          <label><b>{{item.moduleName}}</b></label>
-          <label style="margin-left: 18rem;">{{item.moduleScore}}</label>
+      <v-container fluid style="padding: 10px 0px;">
+      <v-layout row xs12>
+        <v-flex md6 style="padding-right: 10px">
+          <v-select :items="labOpts" v-model="selectedLab" label="Lab Name" dense></v-select>
+        </v-flex>
+        <v-flex md6 style="padding-left: 10px">
+          <v-select :items="submissionNumbers(selectedLab)" v-model="selectedSubmission"  filled label="Submission Number" dense></v-select>
+        </v-flex>
+      </v-layout>
+      </v-container>
+      <div  v-if="jsondata && getSelectedReportIndex > -1">
+        <div v-for="item in jsondata[getSelectedReportIndex].modules" :key="item.moduleName">
+          <div>
+            <label><b>{{item.moduleName}}</b></label>
+            <label style="margin-left: 18rem;">{{item.moduleScore}}</label>
+          </div>
+          <vue-excel-editor :readonly="true" v-model="item.indicators" :localized-label="myLabels"></vue-excel-editor>
         </div>
-        <vue-excel-editor :readonly="true" v-model="item.indicators" :localized-label="myLabels"></vue-excel-editor>
       </div>
     </template>
-    <!-- <v-container fluid>
-      <p style="color: red">{{this.totalSubmissions > 0 ? '' : 'No submissions found to aggregate on.'}}</p>
-      <v-row align="center">
-        <v-col cols="6">
-          <v-select
-            v-model="select"
-            v-on:change="changeValue"
-            :items="hospitals"
-            item-text="name"
-            item-value="id"
-            label="Select"
-            persistent-hint
-            return-object
-            single-line
-            clearable
-          ></v-select>
-        </v-col>
-      </v-row>
-      <v-row align="center">
-        <v-col cols="6">
-          <v-select
-            v-model="selectedDepartment"
-            v-on:change="changeDepartment"
-            :items="departments"
-            item-text="name"
-            item-value="id"
-            label="Select"
-            persistent-hint
-            return-object
-            single-line
-            clearable
-          ></v-select>
-        </v-col>
-      </v-row>
-    </v-container> -->
     <!-- <figure class="highcharts-figure">
       <div id="container"></div>
     </figure> -->
@@ -140,54 +116,14 @@ export default class Reporting extends Vue {
   private total: any;
   private selectedDepartment: any = '';
   private totalSubmissions: number = 0;
-  private labs: any = [];
+  private submissionOptions: any = [];
+  private selectedLab: any = '';
+  private selectedSubmission: any = 0;
   private jsondata: any = [];
   private data() {
     return {
       select: '',
       items: [],
-      // jsondata: [
-        // {
-        //   moduleName: 'Test Menu and culture workload',
-        //   indicators: [
-        //     { name: 'Blood Cultures', score: 0 },
-        //     { name: 'Urine Cultures', score: 0 },
-        //     { name: 'Stool Cultures', score: 0 },
-        //     { name: 'Respiratory Cultures (not TB)', score: 0 },
-        //     { name: 'Wound Cultures', score: 0 },
-        //     { name: 'Cerebrospinal Fluid Cultures', score: 0 },
-        //   ],
-        //   chartType: 'pie',
-        // },
-        // {
-        //   moduleName: 'Analysis AST Workload',
-        //   indicators: [
-        //     { name: 'Automated AST instrument', score: 0 },
-        //     { name: 'Disk Diffusion', score: 0 },
-        //     { name: 'Gradient Strip (e.g., Etest/Liofilchem)', score: 0 },
-        //     { name: 'Broth microdilution (96-well tray)', score: 0 },
-        //     { name: 'Broth microdilution (tube method)', score: 0 },
-        //     { name: 'Agar dilution', score: 0 },
-        //   ],
-        //   chartType: 'pie',
-        // },
-        // {
-        //   moduleName: '1- FACILITY',
-        //   moduleScore: '73',
-        //   indicators: [
-        //     { name: 'Laboratory Facility', score: 75 },
-        //     { name: 'General Equipment Availability', score: 67 },
-        //     { name: 'Media Preparation Equipment Availability', score: 75 },
-        //     { name: 'Equipment Calibration Records', score: 0 },
-        //     { name: 'Thermometers', score: 0 },
-        //     { name: 'Temperature And Atmosphere Monitoring', score: 0 },
-        //     { name: 'Autoclave Management', score: 0 },
-        //     { name: 'Automated Equipment Availability And Maintenance', score: 0 },
-        //     { name: 'Inventory & Stock Outs', score: 0 },
-        //   ],
-        //   chartType: 'linechart',
-        // },
-      // ],
       myLabels:  {
         footerLeft: (top, bottom, total) => `Record ${top} to ${bottom} of ${total}`,
         first: 'First',
@@ -263,6 +199,7 @@ export default class Reporting extends Vue {
   private refactorByLabReport() {
     console.log('this.byLabReport', this.byLabReport);
     const labs: any = [];
+    const submissionOptions = {};
     this.byLabReport.forEach(r => {
       const indicators: any = [];
       let totalScore = 0;
@@ -278,10 +215,13 @@ export default class Reporting extends Vue {
         moduleScore = totalScore / r.submissions.length;
         moduleScore = parseFloat(moduleScore).toFixed(2);
       }
-      // if (this.labs.indexOf())
-      // this.labs.push(
-      //   { name: r.name, submissions: [ r.submission_no ] }
-      // )
+      if (submissionOptions[r.name]) {
+        if (submissionOptions[r.name].indexOf(r.submission_no) < 0) {
+          submissionOptions[r.name].push(r.submission_no);
+        };
+      } else {
+        submissionOptions[r.name] = [r.submission_no];
+      }
       labs.push({
         name: r.name,
         submissionNo: r.submission_no,
@@ -293,14 +233,41 @@ export default class Reporting extends Vue {
         }]
       });
     });
-    // this.labs = this.getUniqueLabsandSumbissions(labs);
     this.jsondata = labs;
+    Object.keys(submissionOptions).forEach(x => {
+      this.submissionOptions.push({name: x, submissions: submissionOptions[x]})
+    })
+    if (this.submissionOptions.length > 0) {
+      this.selectedLab =  this.submissionOptions[0].name;
+      this.selectedSubmission =  this.submissionOptions[0].submissions.length > 0 ? this.submissionOptions[0].submissions[0] : 0;
+    }
     console.log('labslabs', this.jsondata);
-    
   }
 
-  private getUniqueLabsandSumbissions(labs) {
-    
+  get labOpts() {
+    return this.submissionOptions.map(x => x.name);
+  }
+
+  submissionNumbers(idx) {
+    const found = this.submissionOptions.find((x) => x.name);
+    if (found) {
+      return found.submissions;
+    } else if (this.submissionOptions.length > 0) {
+      return this.submissionOptions[0].submissionOptions;
+    } else {
+      return [];
+    }
+  }
+
+  get getSelectedReportIndex() {
+    if (this.selectedLab && this.selectedSubmission) {
+      const x = this.jsondata.findIndex((y) => {
+        return y.name === this.selectedLab && y.submissionNo === this.selectedSubmission;
+      });
+      return x;
+    } else {
+      return -1;
+    }
   }
 
   private async mounted() {
@@ -315,7 +282,7 @@ export default class Reporting extends Vue {
     this.constructSurveyChart(this.overAllStatistics);
   }
 
-   private async fetchByLabReport() {
+  private async fetchByLabReport() {
     await dispatchGetByLabReport(this.$store);
     this.refactorByLabReport();
   }
