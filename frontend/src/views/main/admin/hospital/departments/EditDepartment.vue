@@ -9,7 +9,6 @@
           <v-form v-model="valid" ref="form" lazy-validation>
             <v-text-field label="Name" v-model="name" required></v-text-field>
             <v-select
-            v-if="!addNewModule"
                 v-model="moduleName"
                 :items="options"
                 label="Select Module Name"
@@ -21,12 +20,11 @@
               >
               </v-select>
           </v-form>
-          <v-text-field v-if="addNewModule" label="Module Name" v-model="moduleName" required></v-text-field>
+          <v-text-field v-if="addNewModule" label="Module Name" v-model="newModuleName" required></v-text-field>
         </template>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <!-- <v-btn @click="addNewModule=!addNewModule">Add New Module Name</v-btn> -->
         <v-btn @click="cancel">Cancel</v-btn>
         <v-btn @click="reset">Reset</v-btn>
         <v-btn @click="submit" :disabled="!valid">
@@ -52,11 +50,12 @@
     public addNewModule: boolean = false
     private id: number = -1;
     private departmentId: number = -1;
-
+    public newModuleName: string = '';
+    
     public async mounted() {
       await dispatchGetModuleNames(this.$store);
       this.options = this.moduleNames?.modules;
-      this.options.push('Add New');
+      this.options.push('+ Add New');
       console.log(this.moduleNames?.modules, 'this.moduleNames?.modules')
       this.id = parseInt(this.$router.currentRoute.params.id, 10);
       this.departmentId = parseInt(this.$router.currentRoute.params.departmentId, 10);
@@ -72,10 +71,9 @@
       }
     }
 
-    onModuleChange(select) {
-      if (select === 'Add New') {
+    public onModuleChange(select) {
+      if (select === '+ Add New') {
         this.addNewModule = true;
-        this.moduleName = '';
       }
     }
 
@@ -93,7 +91,7 @@
         const updatedDepartment: IDepartmentUpdate = {
           id: this.departmentId,
           name: this.name,
-          module_name: this.moduleName,
+          module_name: this.newModuleName || this.moduleName,
         };
         await dispatchUpdateDepartment(this.$store, {id: this.departmentId, department: updatedDepartment});
         this.$router.push('/main/admin/lab/' + this.id);

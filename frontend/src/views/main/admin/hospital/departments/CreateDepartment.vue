@@ -9,7 +9,6 @@
           <v-form v-model="valid" ref="form" lazy-validation>
             <v-text-field label="Name" v-model="name" required></v-text-field>
             <v-select
-            v-if="!addNewModule"
                 v-model="moduleName"
                 :items="options"
                 label="Select Module Name"
@@ -21,7 +20,7 @@
               >
               </v-select>
           </v-form>
-          <v-text-field v-if="addNewModule" label="Module Name" v-model="moduleName" required></v-text-field>
+          <v-text-field v-if="addNewModule" label="Module Name" v-model="newModuleName" required></v-text-field>
           </v-form>
         </template>
       </v-card-text>
@@ -51,20 +50,20 @@ export default class CreateHospitalDepartment extends Vue {
   public name: string = '';
   public options:any = [];
   public moduleName: string = '';
+  public newModuleName: string = '';
   private id: number = -1;
 
   public async mounted() {
     await dispatchGetModuleNames(this.$store);
     this.options = this.moduleNames?.modules;
-    this.options.push('Add New');
+    this.options.push('+ Add New');
     this.id = parseInt(this.$router.currentRoute.params.id, 10);
     this.reset();
   }
 
-  onModuleChange(select) {
-    if (select === 'Add New') {
+  public onModuleChange(select) {
+    if (select === '+ Add New') {
       this.addNewModule = true;
-      this.moduleName = '';
     }
   }
 
@@ -79,7 +78,7 @@ export default class CreateHospitalDepartment extends Vue {
 
   public async submit() {
     const updatedDepartment: IDepartmentCreate = {
-      module_name: this.moduleName,
+      module_name: this.newModuleName || this.moduleName,
       name: this.name,
       hospital_id: this.id,
       owner_id: this.userProfile?.id || -1,
