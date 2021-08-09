@@ -60,7 +60,7 @@ def create_hospital(
         example_hospital = db.query(Hospital).filter(Hospital.name == "Islamabad Diagnostic Centre").first()
         example_departments = db.query(Department).filter(Department.hospital_id == example_hospital.id)
         for department in example_departments:
-            d_in = schemas.DepartmentCreate()
+            d_in = schemas.DepartmentCreate(name=department.name,hospital_id=hospital.id)
             d_in.hospital_id = hospital.id
             d_in.name = department.name
             d_in.module_name = department.module_name
