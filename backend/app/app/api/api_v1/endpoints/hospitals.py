@@ -68,7 +68,7 @@ def create_hospital(
 
             example_surveys = db.query(Survey).filter(Survey.department_id == department.id)
             for survey in example_surveys:
-                s_in = schemas.SurveyCreate()
+                s_in = schemas.SurveyCreate(name=survey.name, questions=survey.questions, department_id=new_depart.id)
                 s_in.department_id = new_depart.id
                 s_in.name = survey.name
                 s_in.questions = survey.questions
