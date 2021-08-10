@@ -90,7 +90,7 @@ export default class CreateHospital extends Vue {
         create_date: new Date(),
         owner_id: this.userProfile?.id || -1,
         hospital_type: this.hospitalType ? this.hospitalType.toUpperCase() : 'OTHER',
-        isCreateWithDefault: this.isCreateWithDefault
+        isCreateWithDefault: this.isCreateWithDefault,
       };
       await dispatchCreateHospital(this.$store, updatedHopital);
       this.$router.push('/main/admin/lab');

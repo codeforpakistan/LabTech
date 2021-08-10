@@ -30,7 +30,8 @@ export const api = {
     return axios.get<IHospital[]>(`${apiUrl}/api/v1/hospitals/`, authHeaders(token));
   },
   async createHospital(token: string, data: IHospitalCreate) {
-    return axios.post(`${apiUrl}/api/v1/hospitals/?create_indicators=` + data.isCreateWithDefault ? '1' : '0', data, authHeaders(token));
+    return axios.post(`${apiUrl}/api/v1/hospitals/?create_indicators=`
+     + data.isCreateWithDefault ? '1' : '0', data, authHeaders(token));
   },
   async updateHospital(token: string, hospitalId: number, data: IHospitalUpdate) {
     return axios.put(`${apiUrl}/api/v1/hospitals/${hospitalId}`, data, authHeaders(token));

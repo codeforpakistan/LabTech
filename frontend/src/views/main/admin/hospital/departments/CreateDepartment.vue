@@ -46,9 +46,9 @@ import { readModuleNames } from '@/store/admin/getters';
 @Component
 export default class CreateHospitalDepartment extends Vue {
   public valid = false;
-  public addNewModule: boolean = false
+  public addNewModule: boolean = false;
   public name: string = '';
-  public options:any = [];
+  public options: any = [];
   public moduleName: string = '';
   public newModuleName: string = '';
   private id: number = -1;

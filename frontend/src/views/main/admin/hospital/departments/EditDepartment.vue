@@ -46,17 +46,16 @@
     public valid = false;
     public name: string = '';
     public moduleName: string = '';
-    public options:any = [];
-    public addNewModule: boolean = false
+    public options: any = [];
+    public addNewModule: boolean = false;
+    public newModuleName: string = '';
     private id: number = -1;
     private departmentId: number = -1;
-    public newModuleName: string = '';
-    
+
     public async mounted() {
       await dispatchGetModuleNames(this.$store);
       this.options = this.moduleNames?.modules;
       this.options.push('+ Add New');
-      console.log(this.moduleNames?.modules, 'this.moduleNames?.modules')
       this.id = parseInt(this.$router.currentRoute.params.id, 10);
       this.departmentId = parseInt(this.$router.currentRoute.params.departmentId, 10);
       this.setData(this.department);
