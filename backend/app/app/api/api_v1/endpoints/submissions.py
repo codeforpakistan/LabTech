@@ -1,3 +1,4 @@
+from backend.app.app.models import department, submission, survey
 from sqlalchemy.sql.expression import desc
 import pandas as pd
 from typing import Any, List
@@ -329,6 +330,26 @@ def get_submissions_by_lab(
             })
 
     return submissions_by_lab
+
+
+@router.get("/submission_nos/by-lab")
+def get_submission_nos_by_lab(
+    db: Session = Depends(deps.get_db),
+    current_user: models.User = Depends(deps.get_current_active_user),
+    lab_id: int = 0,
+) -> Any:
+    """
+    Submissions by Lab
+    """
+    departments = db.query(Department).filter(Department.hospital_id == lab_id).all()
+    _department_ids = [department.id for department in departments]
+    _survey_ids = [
+        survey.id for survey in db.query(Survey).filter(Survey.department_id.in_(_department_ids)).all()
+    ]
+    submission_nos = [
+        submission.submission_no for submission in db.query(Submission).filter(Submission.survey_id.in_(_survey_ids)).all()
+    ]
+    return {'lab_id': lab_id, 'submission_nos': submission_nos}
 
 
 @router.post("/", response_model=schemas.Submission)
