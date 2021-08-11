@@ -2,6 +2,14 @@
   #container {
     height: 850px;
   }
+  .highcharts-credits {
+    display: none;
+  }
+  text.highcharts-subtitle {
+    color: #666666 !important;
+    font-weight: bold !important;
+    fill: #383131 !important;
+  }
   .highcharts-data-table table {
     font-family: Verdana, sans-serif;
     border-collapse: collapse;
@@ -78,17 +86,17 @@
       </v-container>
       <div  v-if="jsondata && getSelectedReportIndex > -1">
         <div v-for="item in jsondata[getSelectedReportIndex].modules" :key="item.moduleName">
-          <div>
-            <label><b>{{item.moduleName}}</b></label>
-            <label style="margin-left: 18rem;">{{item.moduleScore}}</label>
+          <div class="mt-2" style="display: flex; justify-content: space-between; width: 340px;">
+            <div><b>{{item.moduleName}}</b></div>
+            <div>{{item.moduleScore}}</div>
           </div>
-          <vue-excel-editor :readonly="true" v-model="item.indicators" :localized-label="myLabels"></vue-excel-editor>
+          <div style="display: flex; justify-content: space-between;">
+            <vue-excel-editor ref="editor" width="400px" :readonly="true" v-model="item.indicators" :localized-label="myLabels"></vue-excel-editor>
+            <highcharts style="margin-top: -20px;" :options="item.chartData"></highcharts>
+          </div>
         </div>
       </div>
     </template>
-    <!-- <figure class="highcharts-figure">
-      <div id="container"></div>
-    </figure> -->
   </v-container>
 </template>
 
@@ -120,6 +128,40 @@ export default class Reporting extends Vue {
   private selectedLab: any = '';
   private selectedSubmission: any = 0;
   private jsondata: any = [];
+  private barChartOptionsTemplate: any = {
+    chart: {
+      type: 'bar',
+      height: 170,
+    },
+    subtitle: {
+      text: '',
+    },
+    title: {
+      text: ''
+    },
+    series: [{
+      showInLegend: false,
+      data: []
+    }],
+    xAxis: {
+      categories: [],
+      title: {
+        text: 'Categories'
+      }
+    },
+    tooltip: {
+      shared: true,
+      enabled: true,
+      valueDecimals: 2,
+    },
+    yAxis: {
+      min: 0,
+      max: 100,
+      title: {
+        text: 'Score',
+      },
+    },
+  };
   private data() {
     return {
       select: '',
@@ -201,39 +243,52 @@ export default class Reporting extends Vue {
     const labs: any = [];
     const submissionOptions = {};
     this.byLabReport.forEach(r => {
-      const indicators: any = [];
-      let totalScore = 0;
-      let moduleScore: any = 0;
-      let moduleName = '';
-      let chartType = 'linechart';
+      const modules:any = [];
+      let submissionPerModule = {};
+      
       r.submissions.forEach(sub => {
-        totalScore += sub.score;
-        indicators.push({ name: sub.indicator_name, score: parseFloat(sub.score).toFixed(2) });
+        if (submissionPerModule[sub.module_name.trim()] && submissionPerModule[sub.module_name.trim()].length > 0) {
+          submissionPerModule[sub.module_name.trim()].push(sub);
+        } else {
+          submissionPerModule[sub.module_name.trim()] = [sub];
+        }
       });
-      if (r.submissions.length > 0) {
-        moduleName = r.submissions[0].module_name;
-        moduleScore = totalScore / r.submissions.length;
+      Object.keys(submissionPerModule).forEach((mod:any) => {
+        console.log('modk', mod, submissionPerModule);
+        let totalScore = 0;
+        let chartData: any = JSON.parse(JSON.stringify(this.barChartOptionsTemplate))
+        const indicators: any = [];
+        submissionPerModule[mod].forEach(sub => {
+          totalScore += sub.score;
+          indicators.push({ name: sub.indicator_name, score: parseFloat(sub.score).toFixed(2) });
+          chartData.series[0].data.push(parseFloat(sub.score));
+          chartData.xAxis.categories.push(sub.indicator_name);
+        });
+        let moduleScore: any = totalScore / submissionPerModule[mod].length;
         moduleScore = parseFloat(moduleScore).toFixed(2);
-      }
+        chartData.subtitle.text = mod;
+        modules.push({
+          moduleName: mod,
+          moduleScore,
+          indicators,
+          chartData,
+        });
+      });
       if (submissionOptions[r.name]) {
         if (submissionOptions[r.name].indexOf(r.submission_no) < 0) {
           submissionOptions[r.name].push(r.submission_no);
         };
       } else {
-        submissionOptions[r.name] = [r.submission_no];
+        submissionOptions[r.name] = [ r.submission_no ];
       }
       labs.push({
         name: r.name,
         submissionNo: r.submission_no,
-        modules: [{
-          moduleName,
-          moduleScore,
-          indicators,
-          chartType,
-        }]
+        modules,
       });
     });
     this.jsondata = labs;
+    // set drop down filter options. submission and submission number
     Object.keys(submissionOptions).forEach(x => {
       this.submissionOptions.push({name: x, submissions: submissionOptions[x]})
     })
