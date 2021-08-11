@@ -1,3 +1,4 @@
+from backend.app import app
 from sqlalchemy.sql.expression import desc
 import pandas as pd
 from typing import Any, List
@@ -225,18 +226,31 @@ def read_submissions_report_by_hospital(
 def get_submissions_by_lab(
     db: Session = Depends(deps.get_db),
     current_user: models.User = Depends(deps.get_current_active_user),
+    apply_filter: int = 0,
+    lab_id: int = 0,
+    submission_no: int = 0
 ) -> Any:
     """
     Submissions by Lab
     """
 
-    if crud.user.is_superuser(current_user):
+    if crud.user.is_superuser(current_user) and apply_filter == 0:
         submissions = db.query(Submission).all()
-    else:
+    elif crud.user.is_superuser(current_user) and apply_filter == 1:
+        submissions = db.query(Submission).filter(Submission.submission_no == submission_no).all()
+    elif apply_filter == 0:
         submissions = db.query(Submission).filter(Submission.owner_id == current_user.id).all()
+    else:
+        submissions = db.query(Submission).filter(
+            Submission.owner_id == current_user.id,
+            Submission.submission_no == submission_no
+        ).all()
     
     submissions_list = []
     for submission in submissions:
+        if apply_filter == 1:
+            if submission.meta.get('id', 0) != lab_id:
+                continue
         submissions_list.append({
             'submission_no': submission.submission_no,
             'indicatorId': submission.meta.get('indicatorId', 0),
@@ -252,6 +266,12 @@ def get_submissions_by_lab(
             'user': current_user.full_name
         })
     
+    if len(submissions_list) == 0:
+        return {
+            'success': False,
+            'message': 'no submissions found for the filters'
+        }
+
     submissions_df = pd.DataFrame(submissions_list)
     labnames = list(submissions_df.name.unique())
     submissions_by_lab = []
