@@ -1,114 +1,102 @@
  <style>
-    #container {
-      height: 850px;
-    }
+  #container {
+    height: 850px;
+  }
+  .highcharts-credits {
+    display: none;
+  }
+  text.highcharts-subtitle {
+    color: #666666 !important;
+    font-weight: bold !important;
+    fill: #383131 !important;
+  }
+  .highcharts-data-table table {
+    font-family: Verdana, sans-serif;
+    border-collapse: collapse;
+    border: 1px solid #EBEBEB;
+    margin: 10px auto;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+  }
+  .highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;
+  }
+  .highcharts-data-table th {
+    font-weight: 600;
+    padding: 0.5em;
+  }
+  .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+    padding: 0.5em;
+  }
+  .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+  }
+  .highcharts-data-table tr:hover {
+    background: #f1f7ff;
+  }
+  .highcharts-figure, .highcharts-data-table table {
+    min-width: 700px; 
+    max-width: 1900px;
+    margin: 1em auto;
+  }
 
-    .highcharts-data-table table {
-      font-family: Verdana, sans-serif;
-      border-collapse: collapse;
-      border: 1px solid #EBEBEB;
-      margin: 10px auto;
-      text-align: center;
-      width: 100%;
-      max-width: 500px;
-    }
-    .highcharts-data-table caption {
-      padding: 1em 0;
-      font-size: 1.2em;
-      color: #555;
-    }
-    .highcharts-data-table th {
-      font-weight: 600;
-      padding: 0.5em;
-    }
-    .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
-      padding: 0.5em;
-    }
-    .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
-      background: #f8f8f8;
-    }
-    .highcharts-data-table tr:hover {
-      background: #f1f7ff;
-    }
-    .highcharts-figure, .highcharts-data-table table {
-      min-width: 700px; 
-      max-width: 1900px;
-      margin: 1em auto;
-    }
-
-    .highcharts-data-table table {
-      font-family: Verdana, sans-serif;
-      border-collapse: collapse;
-      border: 1px solid #EBEBEB;
-      margin: 10px auto;
-      text-align: center;
-      width: 100%;
-      max-width: 500px;
-    }
-    .highcharts-data-table caption {
-      padding: 1em 0;
-      font-size: 1.2em;
-      color: #555;
-    }
-    .highcharts-data-table th {
-      font-weight: 700;
-      padding: 0.5em;
-    }
-    .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
-      padding: 0.5em;
-    }
-    .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
-      background: #f8f8f8;
-    }
-    .highcharts-data-table tr:hover {
-      background: #f1f7ff;
-    }
+  .highcharts-data-table table {
+    font-family: Verdana, sans-serif;
+    border-collapse: collapse;
+    border: 1px solid #EBEBEB;
+    margin: 10px auto;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+  }
+  .highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;
+  }
+  .highcharts-data-table th {
+    font-weight: 700;
+    padding: 0.5em;
+  }
+  .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+    padding: 0.5em;
+  }
+  .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+  }
+  .highcharts-data-table tr:hover {
+    background: #f1f7ff;
+  }
 </style>
 <template>
   <v-container>
     <template>
-      <div v-for="(item, index) in jsondata" :key="item.moduleName">
-        <vue-excel-editor v-model="jsondata[index].indicators" :localized-label="myLabels"></vue-excel-editor>
+      <v-container fluid style="padding: 10px 0px;">
+      <v-layout row xs12>
+        <v-flex md6 style="padding-right: 10px">
+          <v-select :items="labOpts" v-model="selectedLab" label="Lab Name" dense></v-select>
+        </v-flex>
+        <v-flex md6 style="padding-left: 10px">
+          <v-select :items="submissionNumbers(selectedLab)" v-model="selectedSubmission"  filled label="Submission Number" dense></v-select>
+        </v-flex>
+      </v-layout>
+      </v-container>
+      <div  v-if="jsondata && getSelectedReportIndex > -1">
+        <div v-for="item in jsondata[getSelectedReportIndex].modules" :key="item.moduleName">
+          <div class="mt-2" style="display: flex; justify-content: space-between; width: 340px;">
+            <div><b>{{item.moduleName}}</b></div>
+            <div>{{item.moduleScore}}</div>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <vue-excel-editor ref="editor" width="400px" :readonly="true" v-model="item.indicators" :localized-label="myLabels"></vue-excel-editor>
+            <highcharts style="margin-top: -20px;" :options="item.chartData"></highcharts>
+          </div>
+        </div>
       </div>
     </template>
-    <!-- <v-container fluid>
-      <p style="color: red">{{this.totalSubmissions > 0 ? '' : 'No submissions found to aggregate on.'}}</p>
-      <v-row align="center">
-        <v-col cols="6">
-          <v-select
-            v-model="select"
-            v-on:change="changeValue"
-            :items="hospitals"
-            item-text="name"
-            item-value="id"
-            label="Select"
-            persistent-hint
-            return-object
-            single-line
-            clearable
-          ></v-select>
-        </v-col>
-      </v-row>
-      <v-row align="center">
-        <v-col cols="6">
-          <v-select
-            v-model="selectedDepartment"
-            v-on:change="changeDepartment"
-            :items="departments"
-            item-text="name"
-            item-value="id"
-            label="Select"
-            persistent-hint
-            return-object
-            single-line
-            clearable
-          ></v-select>
-        </v-col>
-      </v-row>
-    </v-container> -->
-    <!-- <figure class="highcharts-figure">
-      <div id="container"></div>
-    </figure> -->
   </v-container>
 </template>
 
@@ -121,8 +109,8 @@ import VueExcelEditor from 'vue-excel-editor';
 Vue.use(VueExcelEditor);
 drilldown( Highcharts );
 import { readOverAllStatistics, readHospitalsStatistics,
-        readAdminHospital, readHospitalDepartments } from '@/store/admin/getters';
-import { dispatchGetOverAllStatistics, dispatchGetHospitalStatistics,
+        readAdminHospital, readHospitalDepartments, readByLabReport } from '@/store/admin/getters';
+import { dispatchGetOverAllStatistics, dispatchGetHospitalStatistics, dispatchGetByLabReport,
         dispatchGetHospitals, dispatchGetHospitalDepartments} from '@/store/admin/actions';
 import { readUserProfile } from '@/store/main/getters';
 
@@ -136,52 +124,48 @@ export default class Reporting extends Vue {
   private total: any;
   private selectedDepartment: any = '';
   private totalSubmissions: number = 0;
+  private submissionOptions: any = [];
+  private selectedLab: any = '';
+  private selectedSubmission: any = 0;
+  private jsondata: any = [];
+  private barChartOptionsTemplate: any = {
+    chart: {
+      type: 'bar',
+      height: 170,
+    },
+    subtitle: {
+      text: '',
+    },
+    title: {
+      text: ''
+    },
+    series: [{
+      showInLegend: false,
+      data: []
+    }],
+    xAxis: {
+      categories: [],
+      title: {
+        text: 'Categories'
+      }
+    },
+    tooltip: {
+      shared: true,
+      enabled: true,
+      valueDecimals: 2,
+    },
+    yAxis: {
+      min: 0,
+      max: 100,
+      title: {
+        text: 'Score',
+      },
+    },
+  };
   private data() {
     return {
       select: '',
       items: [],
-      jsondata: [
-        {
-          moduleName: 'Test Menu and culture workload',
-          indicators: [
-            { name: 'Blood Cultures', score: 0 },
-            { name: 'Urine Cultures', score: 0 },
-            { name: 'Stool Cultures', score: 0 },
-            { name: 'Respiratory Cultures (not TB)', score: 0 },
-            { name: 'Wound Cultures', score: 0 },
-            { name: 'Cerebrospinal Fluid Cultures', score: 0 },
-          ],
-          chartType: 'pie',
-        },
-        {
-          moduleName: 'Analysis AST Workload',
-          indicators: [
-            { name: 'Automated AST instrument', score: 0 },
-            { name: 'Disk Diffusion', score: 0 },
-            { name: 'Gradient Strip (e.g., Etest/Liofilchem)', score: 0 },
-            { name: 'Broth microdilution (96-well tray)', score: 0 },
-            { name: 'Broth microdilution (tube method)', score: 0 },
-            { name: 'Agar dilution', score: 0 },
-          ],
-          chartType: 'pie',
-        },
-        {
-          moduleName: '1- FACILITY',
-          moduleScore: '73',
-          indicators: [
-            { name: 'Laboratory Facility', score: 75 },
-            { name: 'General Equipment Availability', score: 67 },
-            { name: 'Media Preparation Equipment Availability', score: 75 },
-            { name: 'Equipment Calibration Records', score: 0 },
-            { name: 'Thermometers', score: 0 },
-            { name: 'Temperature And Atmosphere Monitoring', score: 0 },
-            { name: 'Autoclave Management', score: 0 },
-            { name: 'Automated Equipment Availability And Maintenance', score: 0 },
-            { name: 'Inventory & Stock Outs', score: 0 },
-          ],
-          chartType: 'linechart',
-        },
-      ],
       myLabels:  {
         footerLeft: (top, bottom, total) => `Record ${top} to ${bottom} of ${total}`,
         first: 'First',
@@ -240,6 +224,10 @@ export default class Reporting extends Vue {
     return readHospitalDepartments(this.$store);
   }
 
+  get byLabReport() {
+    return readByLabReport(this.$store);
+  }
+
   private calculateTotalSubmissions(fallback) {
     this.totalSubmissions = this.hospitalStatistics && this.hospitalStatistics[0]
     && this.hospitalStatistics[0].total_submissions
@@ -250,15 +238,108 @@ export default class Reporting extends Vue {
       : 0;
   }
 
+  private refactorByLabReport() {
+    console.log('this.byLabReport', this.byLabReport);
+    const labs: any = [];
+    const submissionOptions = {};
+    this.byLabReport.forEach(r => {
+      const modules:any = [];
+      let submissionPerModule = {};
+      
+      r.submissions.forEach(sub => {
+        if (submissionPerModule[sub.module_name.trim()] && submissionPerModule[sub.module_name.trim()].length > 0) {
+          submissionPerModule[sub.module_name.trim()].push(sub);
+        } else {
+          submissionPerModule[sub.module_name.trim()] = [sub];
+        }
+      });
+      Object.keys(submissionPerModule).forEach((mod:any) => {
+        console.log('modk', mod, submissionPerModule);
+        let totalScore = 0;
+        let chartData: any = JSON.parse(JSON.stringify(this.barChartOptionsTemplate))
+        const indicators: any = [];
+        submissionPerModule[mod].forEach(sub => {
+          totalScore += sub.score;
+          indicators.push({ name: sub.indicator_name, score: parseFloat(sub.score).toFixed(2) });
+          chartData.series[0].data.push(parseFloat(sub.score));
+          chartData.xAxis.categories.push(sub.indicator_name);
+        });
+        let moduleScore: any = totalScore / submissionPerModule[mod].length;
+        moduleScore = parseFloat(moduleScore).toFixed(2);
+        chartData.subtitle.text = mod;
+        modules.push({
+          moduleName: mod,
+          moduleScore,
+          indicators,
+          chartData,
+        });
+      });
+      if (submissionOptions[r.name]) {
+        if (submissionOptions[r.name].indexOf(r.submission_no) < 0) {
+          submissionOptions[r.name].push(r.submission_no);
+        };
+      } else {
+        submissionOptions[r.name] = [ r.submission_no ];
+      }
+      labs.push({
+        name: r.name,
+        submissionNo: r.submission_no,
+        modules,
+      });
+    });
+    this.jsondata = labs;
+    // set drop down filter options. submission and submission number
+    Object.keys(submissionOptions).forEach(x => {
+      this.submissionOptions.push({name: x, submissions: submissionOptions[x]})
+    })
+    if (this.submissionOptions.length > 0) {
+      this.selectedLab =  this.submissionOptions[0].name;
+      this.selectedSubmission =  this.submissionOptions[0].submissions.length > 0 ? this.submissionOptions[0].submissions[0] : 0;
+    }
+    console.log('labslabs', this.jsondata);
+  }
+
+  get labOpts() {
+    return this.submissionOptions.map(x => x.name);
+  }
+
+  submissionNumbers(idx) {
+    const found = this.submissionOptions.find((x) => x.name);
+    if (found) {
+      return found.submissions;
+    } else if (this.submissionOptions.length > 0) {
+      return this.submissionOptions[0].submissionOptions;
+    } else {
+      return [];
+    }
+  }
+
+  get getSelectedReportIndex() {
+    if (this.selectedLab && this.selectedSubmission) {
+      const x = this.jsondata.findIndex((y) => {
+        return y.name === this.selectedLab && y.submissionNo === this.selectedSubmission;
+      });
+      return x;
+    } else {
+      return -1;
+    }
+  }
+
   private async mounted() {
     await dispatchGetHospitals(this.$store);
     this.consturctOverAllStatistics();
+    this.fetchByLabReport();
   }
 
   private async consturctOverAllStatistics() {
     await dispatchGetOverAllStatistics(this.$store);
     this.calculateTotalSubmissions(true);
     this.constructSurveyChart(this.overAllStatistics);
+  }
+
+  private async fetchByLabReport() {
+    await dispatchGetByLabReport(this.$store);
+    this.refactorByLabReport();
   }
 
   private async constructSelectedHospitalStatistics(hospital) {
