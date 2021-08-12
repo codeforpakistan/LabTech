@@ -1,4 +1,3 @@
-from backend.app.app.models import department, submission, survey
 from sqlalchemy.sql.expression import desc
 import pandas as pd
 from typing import Any, List
