@@ -30,7 +30,8 @@ export const api = {
     return axios.get<IHospital[]>(`${apiUrl}/api/v1/hospitals/`, authHeaders(token));
   },
   async createHospital(token: string, data: IHospitalCreate) {
-    return axios.post(`${apiUrl}/api/v1/hospitals/`, data, authHeaders(token));
+    return axios.post(`${apiUrl}/api/v1/hospitals/?create_indicators=`
+     + data.isCreateWithDefault ? '1' : '0', data, authHeaders(token));
   },
   async updateHospital(token: string, hospitalId: number, data: IHospitalUpdate) {
     return axios.put(`${apiUrl}/api/v1/hospitals/${hospitalId}`, data, authHeaders(token));
@@ -61,6 +62,9 @@ export const api = {
   },
   async getDepartmentSurveys(token: string, departmentId: number) {
     return axios.get(`${apiUrl}/api/v1/surveys/?department_id=` + departmentId, authHeaders(token));
+  },
+  async getModuleNames(token: string) {
+    return axios.get(`${apiUrl}/api/v1/departments/module_names/all`, authHeaders(token));
   },
   async getSuveyById(token: string, surveyId: number) {
     return axios.get(`${apiUrl}/api/v1/surveys/` + surveyId, authHeaders(token));

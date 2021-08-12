@@ -55,6 +55,7 @@ export interface IHospitalCreate {
     lat: string;
     lng: string;
     hospital_type: string;
+    isCreateWithDefault?: boolean;
 }
 
 export interface IDepartmentCreate {

@@ -9,6 +9,10 @@
           <v-form v-model="valid" ref="form" lazy-validation>
             <v-text-field label="Name" v-model="name" required></v-text-field>
             <v-text-field label="Address" type="text" v-model="address" required></v-text-field>
+            <v-checkbox
+              label="Copy default indicators and survey questions"
+              v-model="isCreateWithDefault"
+            ></v-checkbox>
             <!-- <v-text-field label="latitude" type="text" v-model="lat" required></v-text-field>
             <v-text-field label="longitude" type="text" v-model="lng" required></v-text-field> -->
             <!-- <div class="mt-3">
@@ -43,7 +47,6 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import {
-  IHospital,
   IHospitalCreate,
 } from '@/interfaces';
 import { dispatchGetHospitals, dispatchCreateHospital } from '@/store/admin/actions';
@@ -54,6 +57,7 @@ export default class CreateHospital extends Vue {
   public valid = false;
   public name: string = '';
   public hospitalType: string = '';
+  public isCreateWithDefault: boolean = true;
   public address: string = '';
   public lat: string = '';
   public lng: string = '';
@@ -86,6 +90,7 @@ export default class CreateHospital extends Vue {
         create_date: new Date(),
         owner_id: this.userProfile?.id || -1,
         hospital_type: this.hospitalType ? this.hospitalType.toUpperCase() : 'OTHER',
+        isCreateWithDefault: this.isCreateWithDefault,
       };
       await dispatchCreateHospital(this.$store, updatedHopital);
       this.$router.push('/main/admin/lab');

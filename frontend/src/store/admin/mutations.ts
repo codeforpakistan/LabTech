@@ -28,6 +28,9 @@ export const mutations = {
     setAllStatistics(state: AdminState, payload: any[]) {
         state.overAllStatistics = payload;
     },
+    setModuleNames(state: AdminState, payload: any[]) {
+        state.moduleNames = payload;
+    },
     setHospitalStatistics(state: AdminState, payload: any[]) {
         state.hospitalStatistics = payload;
     },
@@ -47,6 +50,4 @@ export const commitSetSurveys = commit(mutations.setDepartmentSurveys);
 export const commitHospitalStatistics = commit(mutations.setHospitalStatistics);
 export const commitOverAllStatistics = commit(mutations.setAllStatistics);
 export const commitByLabReport = commit(mutations.setByLabReport);
-
-
-
+export const commitModuleNames = commit(mutations.setModuleNames);

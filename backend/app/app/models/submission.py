@@ -1,6 +1,5 @@
 import datetime
 from typing import TYPE_CHECKING
-
 from sqlalchemy import Column, ForeignKey, Integer, String, JSON, Float, DateTime
 from sqlalchemy.orm import relationship
 
