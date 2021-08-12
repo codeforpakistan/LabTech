@@ -251,6 +251,26 @@ def get_submissions_by_lab(
         if apply_filter == 1:
             if submission.meta.get('id', 0) != lab_id:
                 continue
+        
+        # calculating scores
+        weigtage_list = []
+        for answer in submission.answers:
+            for option in answer.get('options', []):
+                if option['text'] == answer['answer']:
+                    try:
+                        _w = int(option.get('weigtage', 0))
+                    except:
+                        _w = 0
+                    weigtage_list.append(_w)
+        try:
+            if len(weigtage_list) > 0:
+                _score = sum(weigtage_list)/len(weigtage_list)
+            else:
+                _score = 0
+        except Exception as e:
+            print('ERROR', str(e))
+            _score = 0
+
         submissions_list.append({
             'submission_no': submission.submission_no,
             'indicatorId': submission.meta.get('indicatorId', 0),
@@ -259,6 +279,7 @@ def get_submissions_by_lab(
             'module_name': submission.meta.get('moduleName', ''),
             'indicator_name': submission.meta.get('indicatorName', ''),
             'answers': submission.answers,
+            'score': _score,
             'submission_id': submission.id,
             'created_date': submission.created_date,
             'comment': submission.comment,
@@ -294,29 +315,8 @@ def get_submissions_by_lab(
             end_date = submissions_df_by_labname_by_no['created_date'].iloc[-1]
             
             # converting df into json
-            # find scores per submission
             _submissions = submissions_df_by_labname_by_no.to_dict(orient='records')
-            for index, submission in enumerate(_submissions):
-                # get scores
-                weigtage_list = []
-                for answer in submission.get('answers', []):
-                    for option in answer.get('options', []):
-                        if option['text'] == answer['answer']:
-                            try:
-                                _w = int(option.get('weigtage', 0))
-                            except:
-                                _w = 0
-                            weigtage_list.append(_w)
-                try:
-                    if len(weigtage_list) > 0:
-                        submission['score'] = sum(weigtage_list)/len(weigtage_list)
-                    else:
-                        submission['score'] = 0
-                except Exception as e:
-                    print('ERROR', str(e))
-                    print('type', type(weigtage_list))
-                    print(weigtage_list)
-                
+            
             # append list of submissions by submission no
             submissions_by_lab.append({
                 'user': current_user.full_name,
@@ -330,6 +330,86 @@ def get_submissions_by_lab(
             })
 
     return submissions_by_lab
+
+
+@router.get("/report-by-lab-submission")
+def get_report_by_lab_submission(
+    db: Session = Depends(deps.get_db),
+    current_user: models.User = Depends(deps.get_current_active_user),
+    apply_filter: int = 0,
+    lab_id: int = 0,
+    submission_no: int = 0
+) -> Any:
+    """
+    Report by submission and lab
+    """
+
+    if crud.user.is_superuser(current_user) and apply_filter == 0:
+        submissions = db.query(Submission).all()
+    elif crud.user.is_superuser(current_user) and apply_filter == 1:
+        submissions = db.query(Submission).filter(Submission.submission_no == submission_no).all()
+    elif apply_filter == 0:
+        submissions = db.query(Submission).filter(Submission.owner_id == current_user.id).all()
+    else:
+        submissions = db.query(Submission).filter(
+            Submission.owner_id == current_user.id,
+            Submission.submission_no == submission_no
+        ).all()
+    
+    submissions_list = []
+    for submission in submissions:
+        if apply_filter == 1:
+            if submission.meta.get('id', 0) != lab_id:
+                continue
+        
+        # calculating scores
+        weigtage_list = []
+        for answer in submission.answers:
+            for option in answer.get('options', []):
+                if option['text'] == answer['answer']:
+                    try:
+                        _w = int(option.get('weigtage', 0))
+                    except:
+                        _w = 0
+                    weigtage_list.append(_w)
+        try:
+            if len(weigtage_list) > 0:
+                _score = sum(weigtage_list)/len(weigtage_list)
+            else:
+                _score = 0
+        except Exception as e:
+            print('ERROR', str(e))
+            _score = 0
+
+        submissions_list.append({
+            'submission_no': submission.submission_no,
+            'indicatorId': submission.meta.get('indicatorId', 0),
+            '_id': submission.meta.get('id', 0),
+            'name': submission.meta.get('hospitalName', ''),
+            'module_name': submission.meta.get('moduleName', ''),
+            'indicator_name': submission.meta.get('indicatorName', ''),
+            'answers': submission.answers,
+            'score': _score,
+            'submission_id': submission.id,
+            'created_date': submission.created_date,
+            'comment': submission.comment,
+            'images': submission.images,
+            'user': current_user.full_name
+        })
+    
+    if len(submissions_list) == 0:
+        return {
+            'success': False,
+            'message': 'no submissions found for the filters'
+        }
+
+    df = pd.DataFrame(submissions_list)
+    aggs = df[[
+        'module_name', 'indicator_name', 'score'
+    ]].groupby(['module_name', 'indicator_name'], as_index=False).mean()
+    report_dict = aggs.to_dict(orient='records')
+
+    return report_dict
 
 
 @router.get("/submission_nos/by-lab")
