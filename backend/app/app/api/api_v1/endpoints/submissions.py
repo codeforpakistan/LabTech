@@ -406,9 +406,20 @@ def get_report_by_lab_submission(
     aggs = df[[
         'module_name', 'indicator_name', 'score'
     ]].groupby(['module_name', 'indicator_name'], as_index=False).mean()
-    report_dict = aggs.to_dict(orient='records')
 
-    return report_dict
+    report_list = {}
+    for module_name in list(aggs.module_name.unique()):
+        aggs_by_module = aggs.loc[
+            aggs.module_name == module_name
+        ]
+        report_list[module_name] = {
+            'indicators': aggs_by_module.to_dict(orient='records'),
+            'score': sum(aggs_by_module.score)/len(aggs_by_module)
+        }
+    
+    # report_dict = aggs.to_dict(orient='records')
+
+    return report_list
 
 
 @router.get("/submission_nos/by-lab")
