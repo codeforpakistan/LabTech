@@ -385,7 +385,7 @@ def get_report_by_lab_submission(
             'indicatorId': submission.meta.get('indicatorId', 0),
             '_id': submission.meta.get('id', 0),
             'name': submission.meta.get('hospitalName', ''),
-            'module_name': submission.meta.get('moduleName', ''),
+            'module_name': submission.meta.get('moduleName', '').strip(),
             'indicator_name': submission.meta.get('indicatorName', ''),
             'answers': submission.answers,
             'score': _score,
