@@ -266,7 +266,6 @@ export default class Reporting extends Vue {
     console.log('this.byLabReport', this.byLabReport);
     console.log('this.byLabReportAccumulative = ', this.byLabReportAccumulative);
     console.log('this.labSubmissionNumbers = ', this.labSubmissionNumbers);
-    this.selectedLab = 'Islamabad Diagnostic Centre';
   }
 
   get labOpts() {
