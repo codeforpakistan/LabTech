@@ -7,7 +7,7 @@ import { AdminState } from './state';
 import { getStoreAccessors } from 'typesafe-vuex';
 import { commitSetUsers, commitSetUser, commitOverAllStatistics, commitHospitalStatistics, commitModuleNames } from './mutations';
 import {  commitSetHospital} from './mutations';
-import { commitSetHospitals, commitSetHospitalDepartments, commitSetSurveys, commitByLabReport} from './mutations';
+import { commitSetHospitals, commitSetHospitalDepartments, commitSetSurveys, commitByLabReport, commitByLabReportAccumulative, commitLabSubmissionNumbers} from './mutations';
 import { dispatchCheckApiError } from '../main/actions';
 import { commitAddNotification, commitRemoveNotification } from '../main/mutations';
 
@@ -209,6 +209,26 @@ export const actions = {
             await dispatchCheckApiError(context, error);
         }
     },
+    async actionGetByLabReportAccumulative(context: MainContext, query: string) {
+        try {
+            const response = await api.byLabAccumulative(context.rootState.main.token, query);
+            if (response) {
+                commitByLabReportAccumulative(context, response.data);
+            }
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
+    async actionGetLabSubmissions(context: MainContext, labID: string) {
+        try {
+            const response = await api.getLabSubmissions(context.rootState.main.token, labID);
+            if (response) {
+                commitLabSubmissionNumbers(context, response.data);
+            }
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
 };
 
 const { dispatch } = getStoreAccessors<AdminState, State>('');
@@ -234,3 +254,5 @@ export const dispatchCreateDepartmentSurvey = dispatch(actions.actionCreateDepar
 export const dispatchUpdateDepartmentSurvey = dispatch(actions.actionUpdateDepartmentSurvey);
 export const dispatchGetDepartmentSurvey = dispatch(actions.actionGetDepartmentSurvey);
 export const dispatchGetByLabReport = dispatch(actions.actionGetByLabReport);
+export const dispatchGetByLabReportAccumulative = dispatch(actions.actionGetByLabReportAccumulative);
+export const dispatchGetLabSubmissions = dispatch(actions.actionGetLabSubmissions);

@@ -37,6 +37,12 @@ export const mutations = {
     setByLabReport(state: AdminState, payload: any[]) {
         state.byLabReport = payload;
     },
+    setByLabReportAccumulative(state: AdminState, payload: any[]) {
+        state.byLabReportAccumulative = payload;
+    },
+    setLabSubmissionNumbers(state: AdminState, payload: any[]) {
+        state.labSubmissionNumbers = payload;
+    },
 };
 
 const { commit } = getStoreAccessors<AdminState, State>('');
@@ -50,4 +56,6 @@ export const commitSetSurveys = commit(mutations.setDepartmentSurveys);
 export const commitHospitalStatistics = commit(mutations.setHospitalStatistics);
 export const commitOverAllStatistics = commit(mutations.setAllStatistics);
 export const commitByLabReport = commit(mutations.setByLabReport);
+export const commitByLabReportAccumulative = commit(mutations.setByLabReportAccumulative);
+export const commitLabSubmissionNumbers = commit(mutations.setLabSubmissionNumbers);
 export const commitModuleNames = commit(mutations.setModuleNames);
