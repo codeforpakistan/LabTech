@@ -439,6 +439,8 @@ def get_submission_nos_by_lab(
     submission_nos = [
         submission.submission_no for submission in db.query(Submission).filter(Submission.survey_id.in_(_survey_ids)).all()
     ]
+    submission_nos = list(set(submission_nos))
+    submission_nos.sort()
     return {'lab_id': lab_id, 'submission_nos': submission_nos}
 
 
