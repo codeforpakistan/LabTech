@@ -253,39 +253,39 @@ export default class Reporting extends Vue {
             submissionPerModule[sub.module_name.trim()] = [sub];
           }
         });
-      }
-      Object.keys(submissionPerModule).forEach((mod: any) => {
-        let totalScore = 0;
-        const chartData: any = JSON.parse(JSON.stringify(this.barChartOptionsTemplate));
-        const indicators: any = [];
-        submissionPerModule[mod].forEach((sub: any) => {
-          totalScore += sub.score;
-          indicators.push({ name: sub.indicator_name, score: parseFloat(sub.score).toFixed(2) });
-          chartData.series[0].data.push(parseFloat(sub.score));
-          chartData.xAxis.categories.push(sub.indicator_name);
+        Object.keys(submissionPerModule).forEach((mod: any) => {
+          let totalScore = 0;
+          const chartData: any = JSON.parse(JSON.stringify(this.barChartOptionsTemplate));
+          const indicators: any = [];
+          submissionPerModule[mod].forEach((sub: any) => {
+            totalScore += sub.score;
+            indicators.push({ name: sub.indicator_name, score: parseFloat(sub.score).toFixed(2) });
+            chartData.series[0].data.push(parseFloat(sub.score));
+            chartData.xAxis.categories.push(sub.indicator_name);
+          });
+          let moduleScore: any = totalScore / submissionPerModule[mod].length;
+          moduleScore = parseFloat(moduleScore).toFixed(2);
+          chartData.subtitle.text = mod;
+          modules.push({
+            moduleName: mod,
+            moduleScore,
+            indicators,
+            chartData,
+          });
         });
-        let moduleScore: any = totalScore / submissionPerModule[mod].length;
-        moduleScore = parseFloat(moduleScore).toFixed(2);
-        chartData.subtitle.text = mod;
-        modules.push({
-          moduleName: mod,
-          moduleScore,
-          indicators,
-          chartData,
-        });
-      });
-      if (submissionOptions[lab.name]) {
-        if (submissionOptions[lab.name].indexOf(lab.submission_no) < 0) {
-          submissionOptions[lab.name].push(lab.submission_no);
+        if (submissionOptions[lab.name]) {
+          if (submissionOptions[lab.name].indexOf(lab.submission_no) < 0) {
+            submissionOptions[lab.name].push(lab.submission_no);
+          }
+        } else {
+          submissionOptions[lab.name] = [ lab.submission_no ];
         }
-      } else {
-        submissionOptions[lab.name] = [ lab.submission_no ];
+        labs.push({
+          name: lab.name,
+          submissionNo: lab.submission_no,
+          modules,
+        });
       }
-      labs.push({
-        name: lab.name,
-        submissionNo: lab.submission_no,
-        modules,
-      });
     });
     this.jsondata = labs;
     // set drop down filter options. submission and submission number
