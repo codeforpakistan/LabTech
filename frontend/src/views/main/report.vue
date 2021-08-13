@@ -137,17 +137,17 @@ export default class Reporting extends Vue {
       text: '',
     },
     title: {
-      text: ''
+      text: '',
     },
     series: [{
       showInLegend: false,
-      data: []
+      data: [],
     }],
     xAxis: {
       categories: [],
       title: {
-        text: 'Categories'
-      }
+        text: 'Categories',
+      },
     },
     tooltip: {
       shared: true,
@@ -242,23 +242,23 @@ export default class Reporting extends Vue {
     console.log('this.byLabReport', this.byLabReport);
     const labs: any = [];
     const submissionOptions = {};
-    this.byLabReport.forEach(r => {
-      const modules:any = [];
-      let submissionPerModule = {};
-      
-      r.submissions.forEach(sub => {
-        if (submissionPerModule[sub.module_name.trim()] && submissionPerModule[sub.module_name.trim()].length > 0) {
-          submissionPerModule[sub.module_name.trim()].push(sub);
-        } else {
-          submissionPerModule[sub.module_name.trim()] = [sub];
-        }
-      });
-      Object.keys(submissionPerModule).forEach((mod:any) => {
-        console.log('modk', mod, submissionPerModule);
+    this.byLabReport.forEach((lab: any) => {
+      const modules: any = [];
+      const submissionPerModule = {};
+      if (lab.name === this.selectedLab) {
+        lab.submissions.forEach((sub: any) => {
+          if (submissionPerModule[sub.module_name.trim()] && submissionPerModule[sub.module_name.trim()].length > 0) {
+            submissionPerModule[sub.module_name.trim()].push(sub);
+          } else {
+            submissionPerModule[sub.module_name.trim()] = [sub];
+          }
+        });
+      }
+      Object.keys(submissionPerModule).forEach((mod: any) => {
         let totalScore = 0;
-        let chartData: any = JSON.parse(JSON.stringify(this.barChartOptionsTemplate))
+        const chartData: any = JSON.parse(JSON.stringify(this.barChartOptionsTemplate));
         const indicators: any = [];
-        submissionPerModule[mod].forEach(sub => {
+        submissionPerModule[mod].forEach((sub: any) => {
           totalScore += sub.score;
           indicators.push({ name: sub.indicator_name, score: parseFloat(sub.score).toFixed(2) });
           chartData.series[0].data.push(parseFloat(sub.score));
@@ -274,37 +274,37 @@ export default class Reporting extends Vue {
           chartData,
         });
       });
-      if (submissionOptions[r.name]) {
-        if (submissionOptions[r.name].indexOf(r.submission_no) < 0) {
-          submissionOptions[r.name].push(r.submission_no);
-        };
+      if (submissionOptions[lab.name]) {
+        if (submissionOptions[lab.name].indexOf(lab.submission_no) < 0) {
+          submissionOptions[lab.name].push(lab.submission_no);
+        }
       } else {
-        submissionOptions[r.name] = [ r.submission_no ];
+        submissionOptions[lab.name] = [ lab.submission_no ];
       }
       labs.push({
-        name: r.name,
-        submissionNo: r.submission_no,
+        name: lab.name,
+        submissionNo: lab.submission_no,
         modules,
       });
     });
     this.jsondata = labs;
     // set drop down filter options. submission and submission number
-    Object.keys(submissionOptions).forEach(x => {
-      this.submissionOptions.push({name: x, submissions: submissionOptions[x]})
-    })
+    Object.keys(submissionOptions).forEach((x: any) => {
+      this.submissionOptions.push({name: x, submissions: submissionOptions[x]});
+    });
     if (this.submissionOptions.length > 0) {
-      this.selectedLab =  this.submissionOptions[0].name;
-      this.selectedSubmission =  this.submissionOptions[0].submissions.length > 0 ? this.submissionOptions[0].submissions[0] : 0;
+      this.selectedSubmission = this.submissionOptions[0].submissions.length > 0
+        ? this.submissionOptions[0].submissions[0]
+        : 0;
     }
-    console.log('labslabs', this.jsondata);
   }
 
   get labOpts() {
-    return this.submissionOptions.map(x => x.name);
+    return this.hospitals.map((x: any) => x.name);
   }
 
-  submissionNumbers(idx) {
-    const found = this.submissionOptions.find((x) => x.name);
+  private submissionNumbers(labNmae) {
+    const found = this.submissionOptions.find((x) => x.name ===  labNmae);
     if (found) {
       return found.submissions;
     } else if (this.submissionOptions.length > 0) {
@@ -328,6 +328,7 @@ export default class Reporting extends Vue {
   private async mounted() {
     await dispatchGetHospitals(this.$store);
     this.consturctOverAllStatistics();
+    this.selectedLab = this.hospitals[0].name;
     this.fetchByLabReport();
   }
 
