@@ -270,12 +270,13 @@ export default class Reporting extends Vue {
   }
 
   get labOpts() {
-    return ['Islamabad Diagnostic Centre'];
+    return this.hospitals.map((x: any) => x.name);
   }
 
   private async mounted() {
     await dispatchGetHospitals(this.$store);
     this.consturctOverAllStatistics();
+    this.selectedLab = this.hospitals[0].name;
     this.fetchByLabReport();
   }
 
