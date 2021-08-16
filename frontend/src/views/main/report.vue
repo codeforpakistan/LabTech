@@ -282,7 +282,7 @@ export default class Reporting extends Vue {
     await dispatchGetByLabReport(this.$store);
     await dispatchGetLabSubmissions(this.$store, this.labID);
     this.configureSubmissionListAndSelectedItem();
-    const query = `?apply_filter=0&lab_id=${this.labID}&submission_no=${this.selectedSubmission}`;
+    const query = `?apply_filter=1&lab_id=${this.labID}&submission_no=${this.selectedSubmission}`;
     await dispatchGetByLabReportAccumulative(this.$store, query);
     this.loadedSubmissionNumber = true;
   }
