@@ -12,6 +12,8 @@ const defaultState: AdminState = {
   hospitalDepartments: [],
   departmentSurveys: [],
   byLabReport: [],
+  byLabReportAccumulative: [],
+  labSubmissionNumbers: [],
 };
 
 export const adminModule = {

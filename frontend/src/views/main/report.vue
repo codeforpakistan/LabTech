@@ -77,22 +77,22 @@
       <v-container fluid style="padding: 10px 0px;">
       <v-layout row xs12>
         <v-flex md6 style="padding-right: 10px">
-          <v-select :items="labOpts" v-model="selectedLab" label="Lab Name" dense></v-select>
+          <v-select :items="labOpts" v-model="selectedLab" @change="setLabID" label="Lab Name" dense></v-select>
         </v-flex>
-        <v-flex md6 style="padding-left: 10px">
-          <v-select :items="submissionNumbers(selectedLab)" v-model="selectedSubmission"  filled label="Submission Number" dense></v-select>
+        <v-flex md6 style="padding-left: 10px" v-if="loadedSubmissionNumber && labSubmissionNumbers">
+          <v-select :items="submissionOpts" @change="fetchAccumulative" v-model="selectedSubmission"  filled label="Submission Number" dense></v-select>
         </v-flex>
       </v-layout>
       </v-container>
-      <div  v-if="jsondata && getSelectedReportIndex > -1">
-        <div v-for="item in jsondata[getSelectedReportIndex].modules" :key="item.moduleName">
+      <div v-if="loadedSubmissionNumber && byLabReportAccumulative">
+        <div v-for="item in byLabReportAccumulative" :key="item.name">
           <div class="mt-2" style="display: flex; justify-content: space-between; width: 340px;">
-            <div><b>{{item.moduleName}}</b></div>
-            <div>{{item.moduleScore}}</div>
+            <div><b>{{item.name}}</b></div>
+            <div>{{roundOff(item.data.score)}}</div>
           </div>
           <div style="display: flex; justify-content: space-between;">
-            <vue-excel-editor ref="editor" width="400px" :readonly="true" v-model="item.indicators" :localized-label="myLabels"></vue-excel-editor>
-            <highcharts style="margin-top: -20px;" :options="item.chartData"></highcharts>
+            <vue-excel-editor ref="editor" width="400px" :readonly="true" v-model="item.data.indicators" :localized-label="myLabels"></vue-excel-editor>
+            <highcharts v-if="item.data.indicators && item.data.indicators.length > 0" style="margin-top: -20px;" :options="getHighchartData(item)"></highcharts>
           </div>
         </div>
       </div>
@@ -102,16 +102,14 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { Store } from 'vuex';
 import Highcharts from 'highcharts';
-import drilldown from 'highcharts/modules/drilldown';
 import VueExcelEditor from 'vue-excel-editor';
 Vue.use(VueExcelEditor);
-drilldown( Highcharts );
-import { readOverAllStatistics, readHospitalsStatistics,
-        readAdminHospital, readHospitalDepartments, readByLabReport } from '@/store/admin/getters';
+import { readOverAllStatistics, readHospitalsStatistics, readlabSubmissionNumbers,
+  readAdminHospital, readHospitalDepartments, readByLabReport, readbyLabReportAccumulative } from '@/store/admin/getters';
 import { dispatchGetOverAllStatistics, dispatchGetHospitalStatistics, dispatchGetByLabReport,
-        dispatchGetHospitals, dispatchGetHospitalDepartments} from '@/store/admin/actions';
+  dispatchGetByLabReportAccumulative, dispatchGetHospitals, dispatchGetHospitalDepartments,
+  dispatchGetLabSubmissions } from '@/store/admin/actions';
 import { readUserProfile } from '@/store/main/getters';
 
 @Component
@@ -126,8 +124,10 @@ export default class Reporting extends Vue {
   private totalSubmissions: number = 0;
   private submissionOptions: any = [];
   private selectedLab: any = '';
+  private labID: any = '';
   private selectedSubmission: any = 0;
   private jsondata: any = [];
+  private loadedSubmissionNumber: any = false;
   private barChartOptionsTemplate: any = {
     chart: {
       type: 'bar',
@@ -137,17 +137,17 @@ export default class Reporting extends Vue {
       text: '',
     },
     title: {
-      text: ''
+      text: '',
     },
     series: [{
       showInLegend: false,
-      data: []
+      data: [],
     }],
     xAxis: {
       categories: [],
       title: {
-        text: 'Categories'
-      }
+        text: 'Categories',
+      },
     },
     tooltip: {
       shared: true,
@@ -208,6 +208,20 @@ export default class Reporting extends Vue {
     };
   }
 
+  private roundOff(num) {
+    return num.toFixed(2);
+  }
+
+  private getHighchartData(data: any) {
+    const chartData: any = JSON.parse(JSON.stringify(this.barChartOptionsTemplate));
+    data.data.indicators.forEach((item) => {
+      chartData.series[0].data.push(parseFloat(item.Score));
+      chartData.xAxis.categories.push(item.Indicator);
+    });
+    chartData.subtitle.text = data.name;
+    return chartData;
+  }
+
   get overAllStatistics() {
     return readOverAllStatistics(this.$store);
   }
@@ -228,268 +242,55 @@ export default class Reporting extends Vue {
     return readByLabReport(this.$store);
   }
 
-  private calculateTotalSubmissions(fallback) {
-    this.totalSubmissions = this.hospitalStatistics && this.hospitalStatistics[0]
-    && this.hospitalStatistics[0].total_submissions
-    ? this.hospitalStatistics[0].total_submissions
-    : fallback && this.overAllStatistics && this.overAllStatistics[0]
-      && this.overAllStatistics[0].total_submissions
-      ? this.overAllStatistics && this.overAllStatistics[0].total_submissions
-      : 0;
+  get byLabReportAccumulative() {
+    return readbyLabReportAccumulative(this.$store);
   }
 
-  private refactorByLabReport() {
-    console.log('this.byLabReport', this.byLabReport);
-    const labs: any = [];
-    const submissionOptions = {};
-    this.byLabReport.forEach(r => {
-      const modules:any = [];
-      let submissionPerModule = {};
-      
-      r.submissions.forEach(sub => {
-        if (submissionPerModule[sub.module_name.trim()] && submissionPerModule[sub.module_name.trim()].length > 0) {
-          submissionPerModule[sub.module_name.trim()].push(sub);
-        } else {
-          submissionPerModule[sub.module_name.trim()] = [sub];
-        }
-      });
-      Object.keys(submissionPerModule).forEach((mod:any) => {
-        console.log('modk', mod, submissionPerModule);
-        let totalScore = 0;
-        let chartData: any = JSON.parse(JSON.stringify(this.barChartOptionsTemplate))
-        const indicators: any = [];
-        submissionPerModule[mod].forEach(sub => {
-          totalScore += sub.score;
-          indicators.push({ name: sub.indicator_name, score: parseFloat(sub.score).toFixed(2) });
-          chartData.series[0].data.push(parseFloat(sub.score));
-          chartData.xAxis.categories.push(sub.indicator_name);
-        });
-        let moduleScore: any = totalScore / submissionPerModule[mod].length;
-        moduleScore = parseFloat(moduleScore).toFixed(2);
-        chartData.subtitle.text = mod;
-        modules.push({
-          moduleName: mod,
-          moduleScore,
-          indicators,
-          chartData,
-        });
-      });
-      if (submissionOptions[r.name]) {
-        if (submissionOptions[r.name].indexOf(r.submission_no) < 0) {
-          submissionOptions[r.name].push(r.submission_no);
-        };
-      } else {
-        submissionOptions[r.name] = [ r.submission_no ];
-      }
-      labs.push({
-        name: r.name,
-        submissionNo: r.submission_no,
-        modules,
-      });
-    });
-    this.jsondata = labs;
-    // set drop down filter options. submission and submission number
-    Object.keys(submissionOptions).forEach(x => {
-      this.submissionOptions.push({name: x, submissions: submissionOptions[x]})
-    })
-    if (this.submissionOptions.length > 0) {
-      this.selectedLab =  this.submissionOptions[0].name;
-      this.selectedSubmission =  this.submissionOptions[0].submissions.length > 0 ? this.submissionOptions[0].submissions[0] : 0;
-    }
-    console.log('labslabs', this.jsondata);
+  get labSubmissionNumbers() {
+    return readlabSubmissionNumbers(this.$store);
   }
 
   get labOpts() {
-    return this.submissionOptions.map(x => x.name);
+    return this.hospitals.map((x: any) => x.name);
   }
 
-  submissionNumbers(idx) {
-    const found = this.submissionOptions.find((x) => x.name);
-    if (found) {
-      return found.submissions;
-    } else if (this.submissionOptions.length > 0) {
-      return this.submissionOptions[0].submissionOptions;
-    } else {
-      return [];
-    }
-  }
-
-  get getSelectedReportIndex() {
-    if (this.selectedLab && this.selectedSubmission) {
-      const x = this.jsondata.findIndex((y) => {
-        return y.name === this.selectedLab && y.submissionNo === this.selectedSubmission;
-      });
-      return x;
-    } else {
-      return -1;
-    }
+  get submissionOpts() {
+    return ['All', ...this.labSubmissionNumbers.submission_nos];
   }
 
   private async mounted() {
     await dispatchGetHospitals(this.$store);
-    this.consturctOverAllStatistics();
-    this.fetchByLabReport();
+    this.selectedLab = this.hospitals[0].name;
+    this.setLabID();
   }
 
-  private async consturctOverAllStatistics() {
-    await dispatchGetOverAllStatistics(this.$store);
-    this.calculateTotalSubmissions(true);
-    this.constructSurveyChart(this.overAllStatistics);
+  private async fetchAccumulative() {
+    let query = `?apply_filter=1&lab_id=${this.labID}&submission_no=${this.selectedSubmission}`;
+    if (this.selectedSubmission === 'All') {
+      query = `?apply_filter=1&lab_id=${this.labID}&submission_no=0`;
+    }
+    await dispatchGetByLabReportAccumulative(this.$store, query);
+  }
+
+  private async setLabID() {
+    const lab = this.hospitals.find((l) => l.name === this.selectedLab);
+    this.labID = lab ? lab.id : '1';
+    this.fetchByLabReport();
   }
 
   private async fetchByLabReport() {
     await dispatchGetByLabReport(this.$store);
-    this.refactorByLabReport();
+    await dispatchGetLabSubmissions(this.$store, this.labID);
+    this.configureSubmissionListAndSelectedItem();
+    const query = `?apply_filter=1&lab_id=${this.labID}&submission_no=${this.selectedSubmission}`;
+    await dispatchGetByLabReportAccumulative(this.$store, query);
+    this.loadedSubmissionNumber = true;
   }
 
-  private async constructSelectedHospitalStatistics(hospital) {
-    this.totalSubmissions = 0;
-    this.selectedDepartment = {
-      id: '',
-      name: '',
-    };
-    await dispatchGetHospitalDepartments(this.$store, hospital.id);
-    await dispatchGetHospitalStatistics(this.$store, {
-      hospitalId: this.select.id,
-      departmentId: 0,
-    });
-    this.calculateTotalSubmissions(false);
-    this.constructSurveyChart(this.hospitalStatistics);
-  }
-
-  private reset() {
-    this.selectedDepartment = {
-      id: '',
-      name: '',
-    };
-    this.select = {
-      id: '',
-      name: '',
-    };
-  }
-
-  private async changeDepartment(value) {
-    if (!value && !this.select.id) {
-      this.reset();
-      this.consturctOverAllStatistics();
-      return;
-    } else if (this.select.id && !value) {
-      this.constructSelectedHospitalStatistics(this.select);
-    } else {
-      this.totalSubmissions = 0;
-      await dispatchGetHospitalStatistics(this.$store, {
-        hospitalId: this.select.id,
-        departmentId: this.selectedDepartment.id,
-      });
-      this.calculateTotalSubmissions(false);
-      this.constructSurveyChart(this.hospitalStatistics);
-    }
-
-  }
-
-  private async changeValue(value) {
-    if (!value) {
-      this.reset();
-      this.consturctOverAllStatistics();
-      return;
-    } else {
-      this.constructSelectedHospitalStatistics(value);
-    }
-  }
-
-  private constructSurveyChart(hospitalStatistics) {
-    const vm = this;
-    const pdata: any = [];
-    const ndata: any = [];
-    if (hospitalStatistics && hospitalStatistics[0] && hospitalStatistics[0].by_question) {
-        hospitalStatistics[0].by_question.forEach((each: any) => {
-          if (each.question) {
-            pdata.push([each.question, each.answer_true_perc, each.color, each.weightage]);
-            ndata.push([each.question, -each.answer_false_perc, each.color, each.weightage]);
-          }
-        });
-        Highcharts.chart({
-          chart: {
-            renderTo: 'container',
-            type: 'column',
-            inverted: true,
-          },
-          plotOptions: {
-            series: {
-              stacking: 'normal',
-              dataLabels: {
-                style: {
-                  fontSize: '9px',
-                },
-                format: '{y}%',
-              },
-            },
-          },
-          credits: {
-            text: `<b>Total Survey Submissions  ${this.totalSubmissions}</b>`,
-          },
-          yAxis: {
-            labels: {
-              format: '{value}%',
-              enabled: true,
-            },
-            stackLabels: {
-              enabled: true,
-              formatter() {
-                return Math.abs(this.total) + '%';
-              },
-            },
-            gridLineWidth: 0,
-            title: {
-              text: null,
-            },
-            floor: -210,
-          },
-          xAxis: {
-            labels: {
-              enabled: true,
-              style: {
-                fontSize: '13px',
-              },
-              formatter() {
-                const data = pdata.find((each) => each[0] === this.value);
-                return `<span style="color: ${data && data[2] ? data[2] : '#000000'}">${this.value.toString().toUpperCase()}</span>`;
-              },
-            },
-            lineWidth: 0,
-            tickLength: 0,
-            type: 'category',
-          },
-          exporting: {
-            enabled: false,
-          },
-          title: {
-            text: `Each Survey Question Response by <b>${this.selectedDepartment.name ? this.select.name + ' '
-            + this.selectedDepartment.name : this.select.name ? this.select.name : 'all hospitals'} ${this.selectedDepartment.name ? 'Department' : 'Departments'}</b>`,
-          },
-          tooltip: {
-            formatter() {
-              return '<span style="font-size: 10px">' + this.key + '</span><br/>' +
-                '<span style="color:' + this.color + '">\u25CF </span>' + this.series.name + ': <b>'
-                + Math.abs(this.y) + '%</b><br/>';
-            },
-          },
-          series: [{
-            type: 'column',
-            index: 0,
-            color: '#dd4532',
-            name: 'Strongly Distrust',
-            data: ndata,
-           }, {
-            type: 'column',
-            index: 1,
-            color: '#2eae94',
-            name: 'Strongly Trust',
-            data: pdata,
-          }],
-        });
-    } else {
-      // alert('error');
+  private configureSubmissionListAndSelectedItem() {
+    if (this.labSubmissionNumbers && this.labSubmissionNumbers.submission_nos
+      && this.labSubmissionNumbers.submission_nos.length > 0) {
+      this.selectedSubmission =  this.labSubmissionNumbers.submission_nos[0];
     }
   }
 

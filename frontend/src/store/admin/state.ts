@@ -9,4 +9,6 @@ export interface AdminState {
     hospitalDepartments: IDepartment[];
     departmentSurveys: ISurvey[];
     byLabReport: any;
+    byLabReportAccumulative: any;
+    labSubmissionNumbers: any;
 }

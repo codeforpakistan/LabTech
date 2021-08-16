@@ -33,6 +33,22 @@ export const getters = {
         return { ...state.departmentSurveys };
     },
     byLabReport: (state: AdminState) => state.byLabReport,
+    byLabReportAccumulative: (state: AdminState) => {
+        if (state.byLabReportAccumulative && !state.byLabReportAccumulative.message) {
+            const list: any = [];
+            Object.keys(state.byLabReportAccumulative).forEach((key) => {
+                const data = state.byLabReportAccumulative[key];
+                const indicators = data.indicators.map((x) => {
+                    return { Indicator: x.indicator_name, Score: x.score.toFixed(2) };
+                });
+                data.indicators = indicators;
+                list.push({name: key, data: state.byLabReportAccumulative[key]}) ;
+            });
+            return list;
+        }
+        return [];
+    },
+    labSubmissionNumbers: (state: AdminState) => state.labSubmissionNumbers,
 };
 
 const { read } = getStoreAccessors<AdminState, State>('');
@@ -51,4 +67,6 @@ export const readDepartmentSurveys = read(getters.departmentSurveys);
 export const readSurveyById = read(getters.survey);
 export const readAdminOneDepartment = read(getters.adminOneDepartment);
 export const readByLabReport = read(getters.byLabReport);
+export const readbyLabReportAccumulative = read(getters.byLabReportAccumulative);
+export const readlabSubmissionNumbers = read(getters.labSubmissionNumbers);
 export const readModuleNames = read(getters.moduleNames);

@@ -88,4 +88,13 @@ export const api = {
   async getByLabReport(token: string) {
     return axios.get(`${apiUrl}/api/v1/submissions/by-labs`, authHeaders(token));
   },
+  async byLabAccumulative(token: string, query: string = '') {
+    if (!query) {
+      query = '?apply_filter=0&lab_id=5&submission_no=0';
+    }
+    return axios.get(`${apiUrl}/api/v1/submissions/report-by-lab-submission${query}`, authHeaders(token));
+  },
+  async getLabSubmissions(token: string, labID: string = '5') {
+    return axios.get(`${apiUrl}/api/v1/submissions/submission_nos/by-lab?lab_id=${labID}`, authHeaders(token));
+  },
 };
