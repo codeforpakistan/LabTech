@@ -7,7 +7,8 @@ import { AdminState } from './state';
 import { getStoreAccessors } from 'typesafe-vuex';
 import { commitSetUsers, commitSetUser, commitOverAllStatistics, commitHospitalStatistics, commitModuleNames } from './mutations';
 import {  commitSetHospital} from './mutations';
-import { commitSetHospitals, commitSetHospitalDepartments, commitSetSurveys, commitByLabReport, commitByLabReportAccumulative, commitLabSubmissionNumbers} from './mutations';
+import { commitSetHospitals, commitSetHospitalDepartments, commitSetSurveys, commitByLabReport,
+    commitByLabReportAccumulative, commitLabSubmissionNumbers} from './mutations';
 import { dispatchCheckApiError } from '../main/actions';
 import { commitAddNotification, commitRemoveNotification } from '../main/mutations';
 

@@ -96,5 +96,5 @@ export const api = {
   },
   async getLabSubmissions(token: string, labID: string = '5') {
     return axios.get(`${apiUrl}/api/v1/submissions/submission_nos/by-lab?lab_id=${labID}`, authHeaders(token));
-  }
+  },
 };

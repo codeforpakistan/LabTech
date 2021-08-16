@@ -77,7 +77,7 @@
       <v-container fluid style="padding: 10px 0px;">
       <v-layout row xs12>
         <v-flex md6 style="padding-right: 10px">
-          <v-select :items="labOpts" v-model="selectedLab" label="Lab Name" dense></v-select>
+          <v-select :items="labOpts" v-model="selectedLab" @change="setLabID" label="Lab Name" dense></v-select>
         </v-flex>
         <v-flex md6 style="padding-left: 10px" v-if="loadedSubmissionNumber && labSubmissionNumbers">
           <v-select :items="labSubmissionNumbers.submission_nos" @change="fetchAccumulative" v-model="selectedSubmission"  filled label="Submission Number" dense></v-select>
@@ -85,7 +85,7 @@
       </v-layout>
       </v-container>
       <div  v-if="loadedSubmissionNumber && byLabReportAccumulative">
-        <div v-for="item in byLabReportAccumulative" :key="item.naame">
+        <div v-for="item in byLabReportAccumulative" :key="item.name">
           <div class="mt-2" style="display: flex; justify-content: space-between; width: 340px;">
             <div><b>{{item.name}}</b></div>
             <div>{{roundOff(item.data.score)}}</div>
@@ -110,8 +110,9 @@ Vue.use(VueExcelEditor);
 drilldown( Highcharts );
 import { readOverAllStatistics, readHospitalsStatistics, readlabSubmissionNumbers,
   readAdminHospital, readHospitalDepartments, readByLabReport, readbyLabReportAccumulative } from '@/store/admin/getters';
-import { dispatchGetOverAllStatistics, dispatchGetHospitalStatistics, dispatchGetByLabReport, dispatchGetByLabReportAccumulative,
-        dispatchGetHospitals, dispatchGetHospitalDepartments, dispatchGetLabSubmissions, } from '@/store/admin/actions';
+import { dispatchGetOverAllStatistics, dispatchGetHospitalStatistics, dispatchGetByLabReport,
+  dispatchGetByLabReportAccumulative, dispatchGetHospitals, dispatchGetHospitalDepartments,
+  dispatchGetLabSubmissions } from '@/store/admin/actions';
 import { readUserProfile } from '@/store/main/getters';
 
 @Component
@@ -126,6 +127,7 @@ export default class Reporting extends Vue {
   private totalSubmissions: number = 0;
   private submissionOptions: any = [];
   private selectedLab: any = '';
+  private labID: any = '';
   private selectedSubmission: any = 0;
   private jsondata: any = [];
   private loadedSubmissionNumber: any = false;
@@ -138,17 +140,17 @@ export default class Reporting extends Vue {
       text: '',
     },
     title: {
-      text: ''
+      text: '',
     },
     series: [{
       showInLegend: false,
-      data: []
+      data: [],
     }],
     xAxis: {
       categories: [],
       title: {
-        text: 'Categories'
-      }
+        text: 'Categories',
+      },
     },
     tooltip: {
       shared: true,
@@ -209,19 +211,18 @@ export default class Reporting extends Vue {
     };
   }
 
-  getHighchartData(data: any) {
-    let chartData: any = JSON.parse(JSON.stringify(this.barChartOptionsTemplate))
-    data.data.indicators.forEach(item => {
-      console.log('item', item);
+  private roundOff(num) {
+    return num.toFixed(2);
+  }
+
+  private getHighchartData(data: any) {
+    const chartData: any = JSON.parse(JSON.stringify(this.barChartOptionsTemplate));
+    data.data.indicators.forEach((item) => {
       chartData.series[0].data.push(parseFloat(item.Score));
       chartData.xAxis.categories.push(item.Indicator);
     });
     chartData.subtitle.text = data.name;
     return chartData;
-  } 
-
-  roundOff(num) {		
-		return num.toFixed(2);
   }
 
   get overAllStatistics() {
@@ -262,12 +263,6 @@ export default class Reporting extends Vue {
       : 0;
   }
 
-  private refactorByLabReport() {
-    console.log('this.byLabReport', this.byLabReport);
-    console.log('this.byLabReportAccumulative = ', this.byLabReportAccumulative);
-    console.log('this.labSubmissionNumbers = ', this.labSubmissionNumbers);
-  }
-
   get labOpts() {
     return this.hospitals.map((x: any) => x.name);
   }
@@ -276,7 +271,7 @@ export default class Reporting extends Vue {
     await dispatchGetHospitals(this.$store);
     this.consturctOverAllStatistics();
     this.selectedLab = this.hospitals[0].name;
-    this.fetchByLabReport();
+    this.setLabID();
   }
 
   private async consturctOverAllStatistics() {
@@ -285,24 +280,29 @@ export default class Reporting extends Vue {
     this.constructSurveyChart(this.overAllStatistics);
   }
 
-  async fetchAccumulative() {
-    let query = `?apply_filter=1&lab_id=5&submission_no=${this.selectedSubmission}`;
+  private async fetchAccumulative() {
+    const query = `?apply_filter=1&lab_id=${this.labID}&submission_no=${this.selectedSubmission}`;
     await dispatchGetByLabReportAccumulative(this.$store, query);
+  }
+
+  private async setLabID() {
+    const lab = this.hospitals.find((l) => l.name === this.selectedLab);
+    this.labID = lab ? lab.id : '1';
+    this.fetchByLabReport();
   }
 
   private async fetchByLabReport() {
     await dispatchGetByLabReport(this.$store);
-    let query = '?apply_filter=0&lab_id=5&submission_no=0';
-    await dispatchGetByLabReportAccumulative(this.$store, query);
-    let labID = '5';
-    await dispatchGetLabSubmissions(this.$store, labID);
+    await dispatchGetLabSubmissions(this.$store, this.labID);
     this.configureSubmissionListAndSelectedItem();
-    this.refactorByLabReport();
+    const query = `?apply_filter=1&lab_id=${this.labID}&submission_no=${this.selectedSubmission}`;
+    await dispatchGetByLabReportAccumulative(this.$store, query);
     this.loadedSubmissionNumber = true;
   }
 
   private configureSubmissionListAndSelectedItem() {
-    if (this.labSubmissionNumbers && this.labSubmissionNumbers.submission_nos && this.labSubmissionNumbers.submission_nos.length > 0) {
+    if (this.labSubmissionNumbers && this.labSubmissionNumbers.submission_nos
+      && this.labSubmissionNumbers.submission_nos.length > 0) {
       this.selectedSubmission =  this.labSubmissionNumbers.submission_nos[0];
     }
   }

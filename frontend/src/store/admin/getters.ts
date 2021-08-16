@@ -34,13 +34,12 @@ export const getters = {
     },
     byLabReport: (state: AdminState) => state.byLabReport,
     byLabReportAccumulative: (state: AdminState) => {
-        console.log('state.byLabReportAccumulative', state.byLabReportAccumulative);
-        if (state.byLabReportAccumulative) {
-            let list: any = [];
-            Object.keys(state.byLabReportAccumulative).forEach(key => {
-                let data = state.byLabReportAccumulative[key];
-                let indicators = data.indicators.map((x) => { 
-                    return { Indicator: x.indicator_name, Score: x.score.toFixed(2) }
+        if (state.byLabReportAccumulative && !state.byLabReportAccumulative.message) {
+            const list: any = [];
+            Object.keys(state.byLabReportAccumulative).forEach((key) => {
+                const data = state.byLabReportAccumulative[key];
+                const indicators = data.indicators.map((x) => {
+                    return { Indicator: x.indicator_name, Score: x.score.toFixed(2) };
                 });
                 data.indicators = indicators;
                 list.push({name: key, data: state.byLabReportAccumulative[key]}) ;
