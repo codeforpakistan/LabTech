@@ -343,11 +343,11 @@ def get_report_by_lab_submission(
     Report by submission and lab
     """
 
-    if crud.user.is_superuser(current_user) and apply_filter == 0:
+    if crud.user.is_superuser(current_user) and submission_no == 0:
         submissions = db.query(Submission).all()
-    elif crud.user.is_superuser(current_user) and apply_filter == 1:
+    elif crud.user.is_superuser(current_user) and submission_no != 0:
         submissions = db.query(Submission).filter(Submission.submission_no == submission_no).all()
-    elif apply_filter == 0:
+    elif submission_no == 0:
         submissions = db.query(Submission).filter(Submission.owner_id == current_user.id).all()
     else:
         submissions = db.query(Submission).filter(
