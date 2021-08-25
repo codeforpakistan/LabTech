@@ -29,13 +29,12 @@ export const actions = {
         try {
             const loadingNotification = { content: 'saving', showProgress: true };
             commitAddNotification(context, loadingNotification);
-            const response = (await Promise.all([
-                api.createHospital(context.rootState.main.token, payload),
-                await new Promise<void>((resolve) => setTimeout(() => resolve(), 500)),
-            ]))[0];
-            commitSetHospital(context, response.data);
-            commitRemoveNotification(context, loadingNotification);
-            commitAddNotification(context, { content: 'Hospital Record created successfully', color: 'success' });
+            const response = await api.createHospital(context.rootState.main.token, payload);
+            if (response) {
+                commitSetHospital(context, response.data);
+                commitRemoveNotification(context, loadingNotification);
+                commitAddNotification(context, { content: 'Hospital Record created successfully', color: 'success' });
+            }
         } catch (error) {
             await dispatchCheckApiError(context, error);
         }
