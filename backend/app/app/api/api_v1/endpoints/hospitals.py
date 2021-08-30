@@ -133,7 +133,7 @@ def delete_hospital(
     
     departments = db.query(Department).filter(Department.hospital_id == hospital.id)
     for department in departments:
-        surveys = db.query(Survey).filter(Survey.department_id == departments.id)
+        surveys = db.query(Survey).filter(Survey.department_id == department.id)
         for survey in surveys:
             submissions = db.query(Submission).filter(Submission.survey_id == survey.id)
             for submission in submissions:
