@@ -1,4 +1,3 @@
-from backend.app.app.models import submission
 from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException
