@@ -101,7 +101,7 @@ export default class AdminHospitals extends Vue {
   }
 
   public async deleteHospital(id: number, name: string) {
-    if (confirm(`Do you really want to delete ${name}, along with indicators and submissions?`)) {
+    if (confirm(`Do you want to delete ${name}, along with indicators and submissions?`)) {
         await dispatchDeleteHospital(this.$store, id);
         await dispatchGetHospitals(this.$store);
     }
