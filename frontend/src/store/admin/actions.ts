@@ -49,6 +49,17 @@ export const actions = {
             await dispatchCheckApiError(context, error);
         }
     },
+    async actionDeleteHospital(context: MainContext, id: number) {
+        try {
+            const loadingNotification = { content: 'deleting', showProgress: true };
+            const response = await api.deleteHospital(context.rootState.main.token, id);
+            if (response) {
+                commitRemoveNotification(context, loadingNotification);
+            }
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
     async actionGetModuleNames(context: MainContext) {
         try {
             const response = await api.getModuleNames(context.rootState.main.token);
@@ -242,6 +253,7 @@ export const dispatchGetHospitalStatistics = dispatch(actions.actionGetHospitalS
 export const dispatchGetHospitals = dispatch(actions.actionGetHospitals);
 export const dispatchCreateHospital = dispatch(actions.actionCreateHospital);
 export const dispatchUpdateHospital = dispatch(actions.actionUpdateHospital);
+export const dispatchDeleteHospital = dispatch(actions.actionDeleteHospital);
 
 export const dispatchGetHospitalDepartments = dispatch(actions.actionGetHospitalDepartments);
 export const dispatchCreateHospitalDepartment = dispatch(actions.actionCreateHospitalDepartment);

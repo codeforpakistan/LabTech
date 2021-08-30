@@ -18,7 +18,7 @@
           <v-tooltip top>
             <span>Edit</span>
             <v-btn slot="activator" flat :to="{name: 'main-admin-users-edit', params: {id: props.item.id}}">
-              <v-icon>edit</v-icon>
+              <v-icon>visibility</v-icon>
             </v-btn>
           </v-tooltip>
         </td>

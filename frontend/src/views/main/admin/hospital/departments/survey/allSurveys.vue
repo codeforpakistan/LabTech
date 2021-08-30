@@ -16,7 +16,7 @@ import { Component, Vue } from 'vue-property-decorator';
           <v-tooltip top>
             <span>Edit</span>
             <v-btn slot="activator" flat :to="{path: `/main/admin/lab/${hospitalId}/department/${departmentId}/survey/edit/${props.item.id}`, params: {departmentId: departmentId, hospitalId: hospitalId, surveyId: props.item.id}}">
-              <v-icon>edit</v-icon>
+              <v-icon>visibility</v-icon>
             </v-btn>
           </v-tooltip>
         </td>

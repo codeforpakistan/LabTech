@@ -20,13 +20,19 @@ import { Component, Vue } from 'vue-property-decorator';
           <v-tooltip top>
             <span>View / Edit Departments</span>
             <v-btn slot="activator" flat :to="{name: 'main-admin-hospitals-departments', params: {id: props.item.id}}">
-              <v-icon>home</v-icon>
+              <v-icon>visibility</v-icon>
             </v-btn>
           </v-tooltip>
           <v-tooltip top>
             <span>Edit</span>
             <v-btn slot="activator" flat :to="{name: 'main-admin-hospitals-edit', params: {id: props.item.id}}">
               <v-icon>edit</v-icon>
+            </v-btn>
+          </v-tooltip>
+           <v-tooltip top>
+            <span>Delete</span>
+            <v-btn slot="activator" flat  v-on:click.native="deleteHospital(props.item.id, props.item.name)">
+              <v-icon>delete</v-icon>
             </v-btn>
           </v-tooltip>
         </td>
@@ -39,7 +45,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Component, Vue } from 'vue-property-decorator';
 import { readAdminHospital } from '@/store/admin/getters';
 import { readUserProfile } from '@/store/main/getters';
-import { dispatchGetHospitals } from '@/store/admin/actions';
+import { dispatchGetHospitals, dispatchDeleteHospital } from '@/store/admin/actions';
 
 
 @Component
@@ -92,6 +98,13 @@ export default class AdminHospitals extends Vue {
 
   public async mounted() {
     await dispatchGetHospitals(this.$store);
+  }
+
+  public async deleteHospital(id: number, name: string) {
+    if (confirm(`Do you really want to delete ${name}, along with indicators and submissions?`)) {
+        await dispatchDeleteHospital(this.$store, id);
+        await dispatchGetHospitals(this.$store);
+    }
   }
 
   get hospitals() {
