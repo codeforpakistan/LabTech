@@ -1,3 +1,4 @@
+from backend.app.app.models import submission
 from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -130,5 +131,19 @@ def delete_hospital(
         raise HTTPException(status_code=404, detail="Hospital not found")
     if not crud.user.is_superuser(current_user) and (hospital.owner_id != current_user.id):
         raise HTTPException(status_code=400, detail="Not enough permissions")
+    
+    departments = db.query(Department).filter(Department.hospital_id == hospital.id)
+    for department in departments:
+        surveys = db.query(Survey).filter(Survey.department_id == departments.id)
+        for survey in surveys:
+            submissions = db.query(Submission).filter(Submission.survey_id == survey.id)
+            for submission in submissions:
+                db.delete(submission)
+                db.commit()
+            db.delete(survey)
+            db.commit()
+        db.delete(department)
+        db.commit()
+    
     hospital = crud.hospital.remove(db=db, id=id)
     return hospital
