@@ -1,5 +1,6 @@
 from typing import Optional
 
+from typing import List
 from pydantic import BaseModel
 
 
@@ -42,3 +43,6 @@ class Department(DepartmentInDBBase):
 # Properties properties stored in DB
 class DepartmentInDB(DepartmentInDBBase):
     pass
+
+class ModuleNames(BaseModel):
+    module_names: List[str]
