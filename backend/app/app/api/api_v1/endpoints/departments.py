@@ -140,8 +140,6 @@ def get_all_module_names(
     """
     Get question length for the given module names
     """
-
-    module_names = []
     departments = db.query(Department).filter(
         Department.module_name.in_(module_names)
     ).all()
