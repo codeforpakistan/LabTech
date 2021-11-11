@@ -44,5 +44,5 @@ class Department(DepartmentInDBBase):
 class DepartmentInDB(DepartmentInDBBase):
     pass
 
-class ModuleNames(BaseModel):
-    module_names: List[str]
+class IndicatorNames(BaseModel):
+    indicator_names: List[str]
