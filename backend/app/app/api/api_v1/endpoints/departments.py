@@ -143,7 +143,7 @@ def get_all_indicator_names_with_ques_length(
     results = {}
     for department in departments:
         survey = db.query(Survey).filter(Survey.department_id == department.id).first()
-        if (survey.get("questions", []):
+        if (survey.get("questions", [])):
             print("***")
             print(survey.questions)
             results[department.name] = len(survey.questions)
