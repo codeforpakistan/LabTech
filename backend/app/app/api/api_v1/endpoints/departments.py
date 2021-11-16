@@ -128,3 +128,24 @@ def get_all_module_names(
     return {
         'modules': _module_names
     }
+
+
+@router.post("/questions_length")
+def get_all_indicator_names_with_ques_length(
+    *,
+    db: Session = Depends(deps.get_db),
+    indicator_names: schemas.IndicatorNames,
+    current_user: models.User = Depends(deps.get_current_active_user)
+) -> Any:
+    """
+    Get question length for the given indicator names
+    """
+    departments = db.query(Department).filter(
+        Department.name.in_(indicator_names)
+    ).all()
+    results = {}
+    for department in departments:
+        survey = db.query(Survey).filter(Survey.department_id == department.id).first()
+        results[department.name] = len(survey.questions)
+
+    return results

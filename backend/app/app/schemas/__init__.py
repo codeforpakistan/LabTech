@@ -1,6 +1,6 @@
 from .item import Item, ItemCreate, ItemInDB, ItemUpdate
 from .hospital import Hospital, HospitalCreate, HospitalInDB, HospitalUpdate
-from .department import Department, DepartmentCreate, DepartmentInDB, DepartmentUpdate
+from .department import Department, DepartmentCreate, DepartmentInDB, DepartmentUpdate, IndicatorNames
 from .survey import Survey, SurveyCreate, SurveyInDB, SurveyUpdate
 from .feedback import Feedback, FeedbackCreate, FeedbackInDB, FeedbackUpdate
 from .msg import Msg
