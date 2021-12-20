@@ -37,7 +37,7 @@ export const api = {
     return axios.put(`${apiUrl}/api/v1/hospitals/${hospitalId}`, data, authHeaders(token));
   },
   async getHospitalDepartments(token: string, hospitalId: number) {
-    return axios.get<IDepartment[]>(`${apiUrl}/api/v1/departments/?hospital_id=` + hospitalId, authHeaders(token));
+    return axios.get<IDepartment[]>(`${apiUrl}/api/v1/departments/?hospital_id=` + hospitalId + '&skip=0&limit=200', authHeaders(token));
   },
   async deleteHospital(token: string, hospitalId: number) {
     return axios.delete(`${apiUrl}/api/v1/hospitals/` + hospitalId, authHeaders(token));
