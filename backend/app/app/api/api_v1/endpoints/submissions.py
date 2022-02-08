@@ -364,6 +364,11 @@ def get_report_by_lab_submission(
         # calculating scores
         weigtage_list = []
         for answer in submission.answers:
+
+            # skip answer if noScore flag is True
+            if answer.get('noScore'):
+                continue
+            
             for option in answer.get('options', []):
                 if option['text'] == answer['answer']:
                     try:
