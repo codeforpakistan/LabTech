@@ -8,7 +8,7 @@ default_context:
   secret_key: 'somethingverydifficult'
   first_superuser: 'admin@survey.com'
   first_superuser_password: 'hello1234'
-  backend_cors_origins: '["https://labtech.nih.org.pk", "http://labtech.nih.org.pk", "https://labtech.nih.org.pk:18443", "http://ec2-18-220-218-41.us-east-2.compute.amazonaws.com","http://localhost", "http://localhost:4200", "http://localhost:3000", "http://localhost:8080", "https://localhost", "https://localhost:4200", "https://localhost:3000", "https://localhost:8080", "http://dev.survey.com", "https://stag.survey.com", "https://survey.com", "http://local.dockertoolbox.tiangolo.com", "http://localhost.tiangolo.com"]'
+  backend_cors_origins: '["https://labtech.nih.org.pk", "http://labtech.nih.org.pk", "https://labtech.nih.org.pk:433", "http://ec2-18-220-218-41.us-east-2.compute.amazonaws.com","http://localhost", "http://localhost:4200", "http://localhost:3000", "http://localhost:8080", "https://localhost", "https://localhost:4200", "https://localhost:3000", "https://localhost:8080", "http://dev.survey.com", "https://stag.survey.com", "https://survey.com", "http://local.dockertoolbox.tiangolo.com", "http://localhost.tiangolo.com"]'
   smtp_port: '587'
   smtp_host: ''
   smtp_user: ''
