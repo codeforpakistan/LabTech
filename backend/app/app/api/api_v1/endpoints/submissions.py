@@ -414,7 +414,7 @@ def get_report_by_lab_submission(
 
     df = pd.DataFrame(submissions_list)
     aggs = df[[
-        'module_name', 'indicator_name', 'answers', 'score'
+        'module_name', 'indicator_name', 'score'
     ]].groupby(['module_name', 'indicator_name'], as_index=False).mean()
 
     report_list = {}
