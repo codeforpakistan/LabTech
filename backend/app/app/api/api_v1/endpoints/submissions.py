@@ -401,6 +401,11 @@ def get_report_by_lab_submission(
             'user': current_user.full_name
         })
     
+    # incase of single submission request
+    # return complete details including answers
+    if submission_no > 0:
+        return submissions_list
+
     if len(submissions_list) == 0:
         return {
             'success': False,
@@ -409,7 +414,7 @@ def get_report_by_lab_submission(
 
     df = pd.DataFrame(submissions_list)
     aggs = df[[
-        'module_name', 'indicator_name', 'score'
+        'module_name', 'indicator_name', 'answers', 'score'
     ]].groupby(['module_name', 'indicator_name'], as_index=False).mean()
 
     report_list = {}
