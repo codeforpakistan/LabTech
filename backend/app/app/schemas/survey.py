@@ -30,6 +30,7 @@ class SurveyInDBBase(SurveyBase):
     id: int
     name: str
     questions: List[Dict]
+    submissions: List[Dict]
     owner_id: int
     # department: str
     department_id: int
