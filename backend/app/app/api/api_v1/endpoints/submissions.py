@@ -403,8 +403,8 @@ def get_report_by_lab_submission(
     
     # incase of single submission request
     # return complete details including answers
-    if submission_no > 0:
-        return submissions_list
+    # if submission_no > 0:
+    #     return submissions_list
 
     if len(submissions_list) == 0:
         return {
